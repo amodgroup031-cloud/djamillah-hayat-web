@@ -240,6 +240,9 @@ button.talk{width:100%;border:none;background:none;text-align:start;color:var(--
 .pl-time{margin-inline-start:auto;font-size:12px;opacity:.85}
 #pl-seek{width:100%;accent-color:#D9AE4E;padding:0;border:none;background:none}
 .pl-src{color:#D9AE4E;font-weight:700;font-size:14px}
+select.ds-d,select.ds-m,select.ds-y{padding:12px 8px;font-weight:600;color:var(--ink)}
+label:has(.dsel){grid-column:1/-1}
+.dsel{display:grid;grid-template-columns:.8fr 1.5fr 1fr;gap:8px;margin-top:6px}
 body.has-player .app{padding-bottom:calc(200px + env(safe-area-inset-bottom,0px))}
 /* onboarding */
 .welcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:22px;padding-block:28px}
@@ -1488,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.13";
+const APP_VERSION = "1.0.14";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -2197,8 +2200,33 @@ render=function(){
     const row=document.createElement("div");row.className="talk-row";b.replaceWith(row);row.append(b);
     row.insertAdjacentHTML("beforeend",`<button class="fav-mini ${on?"on":""}" data-favaudio="${b.dataset.play}" aria-pressed="${on}" aria-label="${t("fav")}">${ICO_HEART(on)}</button>`);
   });
+  enhanceDates();
   checkBadges();
 };
+// Dates : jour, mois et année se choisissent directement dans trois listes
+function enhanceDates(){
+  const L={fr:["Jour","Mois","Année"],en:["Day","Month","Year"],ar:["اليوم","الشهر","السنة"]}[S.lang]||["Jour","Mois","Année"];
+  const loc=S.lang==="ar"?"ar":S.lang, y0=new Date().getFullYear();
+  document.querySelectorAll('input[type="date"]').forEach(inp=>{
+    const max=inp.max||"", ymax=max?+max.slice(0,4):y0;
+    inp.type="hidden"; inp.removeAttribute("required");
+    const box=document.createElement("div");box.className="dsel";
+    const mk=(cls,ph,opts)=>`<select class="${cls}" required aria-label="${ph}"><option value="">${ph}</option>${opts}</select>`;
+    let d="",m="",y="";
+    for(let i=1;i<=31;i++) d+=`<option value="${i}">${i}</option>`;
+    for(let i=0;i<12;i++) m+=`<option value="${i+1}">${new Intl.DateTimeFormat(loc,{month:"long"}).format(new Date(2000,i,1))}</option>`;
+    for(let i=ymax;i>=ymax-100;i--) y+=`<option value="${i}">${i}</option>`;
+    box.innerHTML=mk("ds-d",L[0],d)+mk("ds-m",L[1],m)+mk("ds-y",L[2],y);
+    inp.after(box); const lb=inp.closest("label"); if(lb) lb.classList.add("full");
+    const [sd,sm,sy]=box.querySelectorAll("select");
+    if(inp.value){const [a,b,c]=inp.value.split("-");sy.value=+a;sm.value=+b;sd.value=+c}
+    const upd=()=>{
+      if(sm.value&&sy.value){const last=new Date(+sy.value,+sm.value,0).getDate();[...sd.options].forEach(o=>{if(o.value)o.disabled=+o.value>last});if(+sd.value>last)sd.value=String(last)}
+      if(sd.value&&sm.value&&sy.value){let v=`${sy.value}-${String(sm.value).padStart(2,"0")}-${String(sd.value).padStart(2,"0")}`;if(max&&v>max)v=max;inp.value=v}else inp.value="";
+    };
+    box.addEventListener("change",upd);
+  });
+}
 document.addEventListener("click",e=>{
   const b=e.target.closest&&e.target.closest("button"); if(!b) return;
   const d=b.dataset;
