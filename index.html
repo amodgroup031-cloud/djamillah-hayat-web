@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.14";
+const APP_VERSION = "1.0.15";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -1693,13 +1693,31 @@ const MM = "669f8f9582b4e4eb3d88ad2e", MPAGE = "https://shows.acast.com/mufti-me
 const SPH = ep => ({src:`https://sphinx.acast.com/p/open/s/${MM}/e/${ep}/media.mp3`,page:"https://feeds.acast.com/public/shows/"+MM});
 const ORN = n => ({src:`https://archive.org/download/Ornement/fr-ornement${n}.mp3`,page:"https://archive.org/details/Ornement"});
 const MAG = f => ({src:`https://archive.org/download/les-regles-du-mariage-cheikh-otheymine-mounir-al-maghribi/${f}.mp3`,page:"https://archive.org/details/les-regles-du-mariage-cheikh-otheymine-mounir-al-maghribi"});
+const YT = (id) => ({yt:id,src:"yt:"+id,page:"https://www.youtube.com/watch?v="+id,af:true});
+const MADA="Coach Mada Sangaré · Côte d'Ivoire", KOITA="Imam Abdoulaye Koïta · Mali", NIANG="Oustaz Niang Mbaye · Sénégal", SALL="Oustaz Oumar Sall · Sénégal",
+ RBAH="Oustaz Ramadan Bah · Guinée", KONE="Oustaz Koné Moussa", OURY="Oustaz Mamadou Oury Diallo · Mamou, Guinée", TAIBOU="Oustaz Taïbou Bah · Guinée";
 // Sujets du mariage
-const TOPICS=[["all",{fr:"Tout",en:"All",ar:"الكل"}],["amour",{fr:"Amour et bonheur",en:"Love and happiness",ar:"المودة والسعادة"}],["choisir",{fr:"Avant le mariage",en:"Before marriage",ar:"قبل الزواج"}],["droits",{fr:"Droits et devoirs",en:"Rights and duties",ar:"الحقوق والواجبات"}],["famille",{fr:"Belle-famille",en:"In-laws",ar:"الأهل والأصهار"}],["enfants",{fr:"Enfants",en:"Children",ar:"الأولاد"}],["epreuves",{fr:"Épreuves et divorce",en:"Hardships and divorce",ar:"المشكلات والطلاق"}]];
+const TOPICS=[["all",{fr:"Tout",en:"All",ar:"الكل"}],["afrique",{fr:"Voix africaines",en:"African voices",ar:"أصوات إفريقية"}],["amour",{fr:"Amour et bonheur",en:"Love and happiness",ar:"المودة والسعادة"}],["choisir",{fr:"Avant le mariage",en:"Before marriage",ar:"قبل الزواج"}],["droits",{fr:"Droits et devoirs",en:"Rights and duties",ar:"الحقوق والواجبات"}],["famille",{fr:"Belle-famille",en:"In-laws",ar:"الأهل والأصهار"}],["enfants",{fr:"Enfants",en:"Children",ar:"الأولاد"}],["epreuves",{fr:"Épreuves et divorce",en:"Hardships and divorce",ar:"المشكلات والطلاق"}]];
 const MENK="Mufti Ismail Menk · Zimbabwe", OUAT="Imam Mahi Ouattara · Côte d'Ivoire", FARANSI="Abdelmalik Al-Faransi", MAGH="Mounir Al-Maghribi · Maroc (livre de Cheikh Al-Uthaymin)", EVRY="Grande Mosquée d'Évry";
 const AUDIO_APP = {
  fr:[
   {t:"amour",sh:EVRY,title:"Le mariage en islam",dur:"56 min",src:"https://archive.org/download/LeMariageEnIslam/www.mosquee-evry.fr_khutba_01-02-08_mariage-en-islam.mp3",page:"https://archive.org/details/LeMariageEnIslam"},
-  {t:"choisir",sh:OUAT,title:"Le mariage au milieu universitaire",yt:"SL8j17nnjOk",page:"https://www.youtube.com/watch?v=SL8j17nnjOk"},
+  {t:"amour",sh:MADA,title:"Vie, couple et famille",...YT("a27Krk31kw4")},
+  {t:"amour",sh:MADA,title:"Dans un couple, ce qu'il ne faut surtout pas dire",...YT("j6ncde7j2Y4")},
+  {t:"epreuves",sh:MADA,title:"Comment gérer l'infidélité d'un homme",...YT("9iF2rMIq5Mc")},
+  {t:"epreuves",sh:MADA,title:"Les femmes doivent fuir les hommes toxiques (RTI)",...YT("DMCy9LyNkyk")},
+  {t:"choisir",sh:OUAT,title:"Le mariage au milieu universitaire",...YT("SL8j17nnjOk")},
+  {t:"amour",sh:OUAT,title:"Le mariage",...YT("XjVjhqCntxk")},
+  {t:"droits",sh:OUAT,title:"Si les parents de ton épouse savaient que tu allais la faire souffrir…",...YT("Qxvy04MbZiE")},
+  {t:"amour",sh:NIANG,title:"Vie conjugale en islam : les bienfaits du mariage",...YT("gvLK3Utn7vE")},
+  {t:"amour",sh:NIANG,title:"Vie conjugale en islam : l'amour dans le mariage",...YT("C4nDIqtmJYI")},
+  {t:"amour",sh:SALL,title:"Les bienfaits du mariage",...YT("W6KrbJb046s")},
+  {t:"amour",sh:KONE,title:"Un mariage réussi en islam",...YT("bkqUzx6VCZg")},
+  {t:"droits",sh:KOITA,title:"Le problème des hommes mariés dans le foyer",...YT("O-mO6tUGDvM")},
+  {t:"famille",sh:KOITA,title:"Faites le mariage de vos enfants selon vos moyens, n'empruntez pas",...YT("yOdG50SqJa4")},
+  {t:"droits",sh:RBAH,title:"Le nouveau code civil guinéen et le mariage en islam",...YT("U1l99I2r7Ow")},
+  {t:"epreuves",sh:OURY,title:"Conférence sur le mariage et le divorce",...YT("pebCc-YrkZY")},
+  {t:"amour",sh:TAIBOU,title:"Le mariage (Dewgal) · en pular",...YT("Xnzn8YsEUO4")},
   {t:"amour",sh:FARANSI,title:"La valeur du mariage et de l'épouse vertueuse",dur:"cours 1",...ORN("01")},
   {t:"amour",sh:MAGH,title:"Les bienfaits du mariage",...MAG("10-Les-bienfaits-du-mariage")},
   {t:"choisir",sh:FARANSI,title:"Les questions que se posent les futurs époux",dur:"cours 2",...ORN("02")},
@@ -1751,10 +1769,11 @@ let PLAYER={item:null,state:"idle"};
 const audioEl=new Audio(); audioEl.preload="none";
 const fmtT=s=>{if(!isFinite(s))return "--:--";s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,"0");return h?`${h}:${String(m).padStart(2,"0")}:${x}`:`${m}:${x}`};
 const ICO_PLAY='<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>', ICO_PAUSE='<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.6" height="12" rx="1"/><rect x="9.4" y="2" width="3.6" height="12" rx="1"/></svg>';
+AUDIO_APP.en.forEach(a=>{if(a.sh===MENK)a.af=true});
 function audioListHTML(){
   const all=AUDIO_APP[S.lang]||AUDIO_APP.fr, tp=S.audioTopic||"all";
-  const present=new Set(all.map(a=>a.t));
-  const list=all.map((a,i)=>({...a,i})).filter(a=>tp==="all"||a.t===tp);
+  const present=new Set(all.map(a=>a.t)); if(all.some(a=>a.af)) present.add("afrique");
+  const list=all.map((a,i)=>({...a,i})).filter(a=>tp==="all"||(tp==="afrique"?a.af:a.t===tp));
   return `<p class="note" style="font-size:14px">${t("audioSub")}</p>
    <div class="chips topics">${TOPICS.filter(([k])=>k==="all"||present.has(k)).map(([k,l])=>`<button data-atopic="${k}" aria-pressed="${tp===k}">${L3(l)}</button>`).join("")}</div>
    <div class="card" style="padding-block:10px">${list.map(a=>{
