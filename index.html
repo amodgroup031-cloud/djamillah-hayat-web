@@ -1012,9 +1012,9 @@ function upcomingHTML(){
 }
 
 // ---------- Vues de l'onglet Plus ----------
-const MORE=[["school","mSchool","dSchool"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
+const MORE=[["school","mSchool","dSchool"],["tawba","mTawba","dTawba"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={school:viewSchool,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={school:viewSchool,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.16";
+const APP_VERSION = "1.0.17";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -3106,6 +3106,439 @@ render=function(){
   if(!S.gender||S.tab!=="today"||S.sub) return;
   const h=document.querySelector(".screen .hello"); if(h&&!document.querySelector(".sch-dq")) h.insertAdjacentHTML("afterend",dqHTML());
 };
+
+// ---------- Quitter un péché : contenu (1/2) ----------
+// w = avertissement, h = espoir, steps = plan, r = droits à rendre, d = invocation
+const SINS=[
+{id:"priere",ico:"🕌",t:{fr:"Je néglige la prière",en:"I neglect prayer",ar:"أنا أتهاون في الصلاة"},
+ w:{ar:"فَخَلَفَ مِن بَعْدِهِمْ خَلْفٌ أَضَاعُوا الصَّلَاةَ وَاتَّبَعُوا الشَّهَوَاتِ ۖ فَسَوْفَ يَلْقَوْنَ غَيًّا",src:"Coran 19:59",
+  t:{fr:"Allah avertit ceux qui délaissent la prière et suivent leurs passions : ils rencontreront la perdition. Le Prophète ﷺ a dit : « Entre l'homme et l'associationnisme et la mécréance, il y a l'abandon de la prière » (Muslim 82). La prière est le premier acte jugé le Jour dernier.",
+     en:"Allah warns those who neglect prayer and follow their desires: they will meet ruin. The Prophet ﷺ said: “Between a man and shirk and disbelief is abandoning prayer” (Muslim 82). Prayer is the first deed judged on the Last Day.",
+     ar:"توعّد الله من أضاعوا الصلاة واتبعوا الشهوات بأنهم سيلقون غيّاً. وقال النبي ﷺ: «إنّ بين الرجل وبين الشرك والكفر تركَ الصلاة» (مسلم 82). والصلاة أول ما يُحاسب عليه العبد يوم القيامة."}},
+ h:{ar:"إِنَّ الْحَسَنَاتِ يُذْهِبْنَ السَّيِّئَاتِ",src:"Coran 11:114",
+  t:{fr:"Ce verset vient juste après l'ordre de prier : chaque prière efface des péchés. Le Prophète ﷺ a comparé les cinq prières à une rivière devant la porte où l'on se lave cinq fois par jour : il ne reste aucune saleté (Bukhari 528). Recommencer aujourd'hui, c'est déjà se laver.",
+     en:"This verse comes right after the command to pray: every prayer wipes away sins. The Prophet ﷺ compared the five prayers to a river at your door in which you bathe five times a day: no dirt remains (Bukhari 528). Starting again today is already washing yourself.",
+     ar:"جاءت هذه الآية بعد الأمر بالصلاة، فكل صلاة تمحو الخطايا. وشبّه النبي ﷺ الصلوات الخمس بنهر على باب أحدكم يغتسل منه كل يوم خمس مرات، فلا يبقى من درنه شيء (البخاري 528). فالبدء من جديد اليوم هو أول الاغتسال."}},
+ steps:{fr:["Commencez par une seule prière que vous ne manquerez plus, par exemple le Fajr ou le Maghrib, puis ajoutez-en une chaque semaine.","Activez les heures de prière de l'application et mettez une alarme 10 minutes avant chaque prière.","Faites vos ablutions dès que l'heure entre : une fois purifié, on prie plus facilement.","Priez avec votre conjoint ou vos enfants, ou allez à la mosquée : le groupe vous porte.","Rattrapez peu à peu les prières manquées, par exemple une prière rattrapée avec chaque prière du jour."],
+  en:["Start with a single prayer you will never miss again, for example Fajr or Maghrib, then add one each week.","Turn on the app's prayer times and set an alarm 10 minutes before each prayer.","Make wudu as soon as the time comes in: once purified, praying is easier.","Pray with your spouse or children, or go to the mosque: the group carries you.","Gradually make up missed prayers, for example one make-up prayer with each daily prayer."],
+  ar:["ابدأ بصلاة واحدة لا تتركها أبداً، كالفجر أو المغرب، ثم أضف صلاة كل أسبوع.","فعّل مواقيت الصلاة في التطبيق، واضبط منبهاً قبل كل صلاة بعشر دقائق.","توضأ فور دخول الوقت، فالمتطهّر أقرب إلى الصلاة.","صلِّ مع زوجك أو أولادك، أو اذهب إلى المسجد، فالجماعة تعينك.","اقضِ ما فاتك من الصلوات شيئاً فشيئاً، كصلاة مقضية مع كل صلاة حاضرة."]},
+ r:null,
+ d:{ar:"رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ",src:"Coran 14:40",t:{fr:"Seigneur, fais que j'accomplisse assidûment la prière, ainsi qu'une partie de ma descendance ; exauce mon invocation.",en:"My Lord, make me steadfast in prayer, and some of my offspring; our Lord, accept my supplication.",ar:"دعاء إبراهيم عليه السلام: أن يجعله الله وذريته من المقيمين للصلاة."}}},
+
+{id:"mensonge",ico:"🗣️",t:{fr:"Je mens souvent",en:"I lie often",ar:"أكذب كثيراً"},
+ w:{ar:"وَإِنَّ الْكَذِبَ يَهْدِي إِلَى الْفُجُورِ، وَإِنَّ الْفُجُورَ يَهْدِي إِلَى النَّارِ",src:"Bukhari 6094 · Muslim 2607",
+  t:{fr:"Le Prophète ﷺ a dit : « Le mensonge mène à la perversion, et la perversion mène au Feu. L'homme ne cesse de mentir jusqu'à être inscrit auprès d'Allah comme grand menteur. » Dans le couple, chaque mensonge découvert détruit un peu de confiance.",
+     en:"The Prophet ﷺ said: “Lying leads to wickedness, and wickedness leads to the Fire. A man keeps lying until he is written with Allah as a liar.” In marriage, every lie discovered destroys a little trust.",
+     ar:"قال النبي ﷺ: «وإنّ الكذب يهدي إلى الفجور، وإنّ الفجور يهدي إلى النار، وإنّ الرجل ليكذب حتى يُكتب عند الله كذّاباً». وفي الزواج، كل كذبة تنكشف تهدم شيئاً من الثقة."}},
+ h:{ar:"إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ، وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ",src:"Bukhari 6094 · Muslim 2607",
+  t:{fr:"La même parole donne l'espoir : « La sincérité mène à la bonté, et la bonté mène au Paradis. L'homme ne cesse d'être sincère jusqu'à être inscrit auprès d'Allah comme véridique. » Chaque vérité dite aujourd'hui vous rapproche de ce rang.",
+     en:"The same hadith gives hope: “Truthfulness leads to righteousness, and righteousness leads to Paradise. A man keeps being truthful until he is written with Allah as truthful.” Every truth you tell today brings you closer to that rank.",
+     ar:"والحديث نفسه يبعث الأمل: «إنّ الصدق يهدي إلى البر، وإنّ البر يهدي إلى الجنة، وإنّ الرجل ليصدق حتى يُكتب عند الله صدّيقاً». فكل كلمة صادقة اليوم تقرّبك من هذه المنزلة."}},
+ steps:{fr:["Repérez quand vous mentez le plus : pour éviter un reproche ? pour paraître mieux ? pour l'argent ?","Avant de répondre, prenez trois secondes. Mieux vaut se taire que mentir.","Ne promettez que ce que vous pouvez tenir, surtout à votre conjoint et à vos enfants.","Quand vous avez menti, corrigez vite : « Pardon, ce que j'ai dit n'est pas exact. »","Notez chaque soir une vérité difficile que vous avez dite : c'est votre victoire du jour."],
+  en:["Notice when you lie most: to avoid blame? to look better? for money?","Before answering, take three seconds. Better to stay silent than to lie.","Only promise what you can keep, especially to your spouse and children.","When you have lied, correct it quickly: “Sorry, what I said is not true.”","Each evening, note one hard truth you told: that is your victory of the day."],
+  ar:["لاحظ متى تكذب أكثر: لتتجنب اللوم؟ لتبدو أفضل؟ من أجل المال؟","قبل أن تجيب، تمهّل ثلاث ثوانٍ، فالصمت خير من الكذب.","لا تَعِد إلا بما تستطيع الوفاء به، خاصة لزوجك وأولادك.","إذا كذبت فصحّح بسرعة: «عذراً، ما قلته غير صحيح».","سجّل كل مساء كلمة صادقة صعبة قلتها، فهي انتصارك في ذلك اليوم."]},
+ r:{fr:"Si votre mensonge a fait perdre un droit ou de l'argent à quelqu'un, réparez-le : c'est une condition du repentir.",en:"If your lie made someone lose a right or money, repair it: it is a condition of repentance.",ar:"إن تسبّب كذبك في ضياع حق أو مال لأحد، فردّه إليه، فهذا شرط من شروط التوبة."},
+ d:{ar:"اللَّهُمَّ إِنِّي أَسْأَلُكَ لِسَانًا صَادِقًا وَقَلْبًا سَلِيمًا",src:"Tirmidhi 3407",t:{fr:"Ô Allah, je Te demande une langue sincère et un cœur sain.",en:"O Allah, I ask You for a truthful tongue and a sound heart.",ar:"من دعاء النبي ﷺ."}}},
+
+{id:"medisance",ico:"🤐",t:{fr:"Je médis et je colporte",en:"I backbite and gossip",ar:"أغتاب وأنقل الكلام"},
+ w:{ar:"وَلَا يَغْتَب بَّعْضُكُم بَعْضًا ۚ أَيُحِبُّ أَحَدُكُمْ أَن يَأْكُلَ لَحْمَ أَخِيهِ مَيْتًا فَكَرِهْتُمُوهُ",src:"Coran 49:12",
+  t:{fr:"Allah compare la médisance au fait de manger la chair de son frère mort. Le Prophète ﷺ a dit : « Le colporteur de paroles n'entrera pas au Paradis » (Bukhari 6056). Dans les familles et les concessions, les commérages détruisent des foyers.",
+     en:"Allah compares backbiting to eating the flesh of one's dead brother. The Prophet ﷺ said: “The talebearer will not enter Paradise” (Bukhari 6056). In families and compounds, gossip destroys homes.",
+     ar:"شبّه الله الغيبة بأكل لحم الأخ ميتاً، وقال النبي ﷺ: «لا يدخل الجنة قتّات» أي نمّام (البخاري 6056). وفي العائلات والبيوت المشتركة تهدم النميمة البيوت."}},
+ h:{ar:"وَاتَّقُوا اللَّهَ ۚ إِنَّ اللَّهَ تَوَّابٌ رَّحِيمٌ",src:"Coran 49:12",
+  t:{fr:"Le même verset se termine par l'espoir : « Craignez Allah, car Allah accueille le repentir et Il est Miséricordieux. » Celui qui retient sa langue reçoit la promesse du Prophète ﷺ : « Qui me garantit ce qui est entre ses mâchoires… je lui garantis le Paradis » (Bukhari 6474).",
+     en:"The same verse ends with hope: “Fear Allah; Allah accepts repentance and is Merciful.” Whoever guards his tongue receives the Prophet's ﷺ promise: “Whoever guarantees me what is between his jaws… I guarantee him Paradise” (Bukhari 6474).",
+     ar:"وتُختم الآية نفسها بالرجاء: ﴿وَاتَّقُوا اللَّهَ إِنَّ اللَّهَ تَوَّابٌ رَّحِيمٌ﴾. ومن حفظ لسانه نال وعد النبي ﷺ: «من يضمن لي ما بين لَحْيَيه وما بين رجليه أضمن له الجنة» (البخاري 6474)."}},
+ steps:{fr:["Avant de parler de quelqu'un absent, demandez-vous : le dirais-je devant lui ?","Quand une conversation tourne au commérage, changez de sujet ou partez poliment.","Ne transmettez jamais une parole blessante : « Untel a dit ceci de toi » allume le feu.","Remplacez la critique par une invocation : « Qu'Allah le guide et nous guide. »","Faites un pacte avec votre conjoint : pas de critique des belles-familles entre vous."],
+  en:["Before speaking about someone absent, ask yourself: would I say it in front of them?","When a conversation turns to gossip, change the subject or leave politely.","Never pass on a hurtful word: “So-and-so said this about you” lights the fire.","Replace criticism with a prayer: “May Allah guide him and guide us.”","Make a pact with your spouse: no criticism of each other's families between you."],
+  ar:["قبل أن تتحدث عن غائب، اسأل نفسك: هل أقول هذا أمامه؟","إذا تحوّل الحديث إلى غيبة، فغيّر الموضوع أو انصرف بلطف.","لا تنقل كلمة جارحة أبداً، فعبارة «فلان قال عنك كذا» تشعل النار.","استبدل النقد بالدعاء: «هداه الله وهدانا».","اتفق مع زوجك على ألا ينتقد أحدكما أهل الآخر."]},
+ r:{fr:"Demandez pardon à la personne si cela n'entraîne pas un plus grand mal. Sinon, dites du bien d'elle là où vous l'avez critiquée, et invoquez pour elle.",en:"Ask the person's forgiveness if this does not cause greater harm. Otherwise, speak well of them where you criticised them, and pray for them.",ar:"استسمح الشخص إن لم يترتب على ذلك ضرر أكبر، وإلا فاذكره بخير حيث اغتبته، وادعُ له."},
+ d:{ar:"رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ وَلَا تَجْعَلْ فِي قُلُوبِنَا غِلًّا لِّلَّذِينَ آمَنُوا",src:"Coran 59:10",t:{fr:"Seigneur, pardonne-nous ainsi qu'à nos frères qui nous ont précédés dans la foi, et ne mets dans nos cœurs aucune rancune envers les croyants.",en:"Our Lord, forgive us and our brothers who preceded us in faith, and put no resentment in our hearts toward the believers.",ar:"دعاء لتطهير القلب من الغلّ."}}},
+
+{id:"colere",ico:"🔥",t:{fr:"J'insulte ou je frappe dans la colère",en:"I insult or hit when angry",ar:"أسبّ أو أضرب عند الغضب"},
+ w:{ar:"أَتَدْرُونَ مَا الْمُفْلِسُ؟",src:"Muslim 2581",
+  t:{fr:"Le Prophète ﷺ a dit : « Savez-vous qui est le ruiné ? » C'est celui qui viendra le Jour dernier avec prière, jeûne et zakat, mais qui aura insulté l'un, accusé l'autre et frappé un autre : ses bonnes œuvres leur seront données, jusqu'à ce qu'il ne lui reste rien. Frapper son conjoint ou ses enfants n'est jamais une solution : c'est un tort grave.",
+     en:"The Prophet ﷺ said: “Do you know who is bankrupt?” It is the one who comes on the Last Day with prayer, fasting and zakat, but who insulted one, slandered another and struck another: his good deeds will be given to them until nothing is left. Hitting your spouse or children is never a solution: it is a serious wrong.",
+     ar:"قال النبي ﷺ: «أتدرون ما المفلس؟» هو من يأتي يوم القيامة بصلاة وصيام وزكاة، ويأتي وقد شتم هذا وقذف هذا وضرب هذا، فيُعطى هؤلاء من حسناته حتى تفنى (مسلم 2581). وضرب الزوجة أو الأولاد ليس حلاً أبداً، بل ظلم عظيم."}},
+ h:{ar:"وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ ۗ وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ",src:"Coran 3:134",
+  t:{fr:"Allah aime ceux qui retiennent leur colère et pardonnent. Le Prophète ﷺ a dit : « Le fort est celui qui se maîtrise dans la colère » (Bukhari 6114). La maîtrise s'apprend : chaque colère retenue est une victoire comptée auprès d'Allah.",
+     en:"Allah loves those who restrain their anger and forgive. The Prophet ﷺ said: “The strong one is the one who controls himself when angry” (Bukhari 6114). Self-control can be learned: every anger held back is a victory counted with Allah.",
+     ar:"يحب الله الكاظمين الغيظ والعافين عن الناس، وقال النبي ﷺ: «إنما الشديد الذي يملك نفسه عند الغضب» (البخاري 6114). وضبط النفس يُتعلّم، وكل غضب تكظمه نصر يُكتب لك عند الله."}},
+ steps:{fr:["Dès que la colère monte, dites : « A'oûdhou billâhi mina-ch-chaytâni-r-rajîm » (Bukhari 3282).","Si vous êtes debout, asseyez-vous ; si vous êtes assis, allongez-vous (Abou Daoud 4782).","Taisez-vous et sortez de la pièce dix minutes. On parlera quand le calme sera revenu.","Faites vos ablutions : l'eau éteint le feu de la colère.","Si vous avez déjà frappé, demandez de l'aide à un imam, un aîné de confiance ou un conseiller, sans attendre."],
+  en:["As soon as anger rises, say: “A'udhu billahi mina-sh-shaytani-r-rajim” (Bukhari 3282).","If you are standing, sit down; if sitting, lie down (Abu Dawud 4782).","Stay silent and leave the room for ten minutes. You will talk when calm has returned.","Make wudu: water puts out the fire of anger.","If you have already hit someone, seek help from an imam, a trusted elder or a counsellor, without waiting."],
+  ar:["إذا ثار الغضب فقل: «أعوذ بالله من الشيطان الرجيم» (البخاري 3282).","إن كنت قائماً فاجلس، وإن كنت جالساً فاضطجع (أبو داود 4782).","اصمت واخرج من الغرفة عشر دقائق، وتحدّثوا حين يعود الهدوء.","توضأ، فالماء يطفئ نار الغضب.","إن كنت قد ضربت أحداً، فاطلب المساعدة من إمام أو كبير تثق به أو مستشار دون تأخير."]},
+ r:{fr:"Présentez des excuses sincères à la personne blessée, sans « mais ». Si quelqu'un est en danger chez vous, sa sécurité passe avant tout.",en:"Sincerely apologise to the person you hurt, with no “but”. If someone is in danger in your home, their safety comes first.",ar:"اعتذر اعتذاراً صادقاً لمن آذيته دون تبرير. وإن كان أحد في بيتك في خطر، فسلامته قبل كل شيء."},
+ d:{ar:"اللَّهُمَّ إِنِّي أَسْأَلُكَ كَلِمَةَ الْحَقِّ فِي الرِّضَا وَالْغَضَبِ",src:"Nasa'i, hadith de 'Ammâr ibn Yâsir",t:{fr:"Ô Allah, je Te demande la parole juste dans le contentement comme dans la colère.",en:"O Allah, I ask You for the word of truth in contentment and in anger.",ar:"من دعاء النبي ﷺ."}}},
+
+{id:"regards",ico:"📱",t:{fr:"Regards interdits et pornographie",en:"Forbidden looks and pornography",ar:"النظر المحرّم والإباحية"},
+ w:{ar:"إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَٰئِكَ كَانَ عَنْهُ مَسْئُولًا",src:"Coran 17:36",
+  t:{fr:"L'ouïe, la vue et le cœur seront interrogés. Allah ordonne aux croyants et aux croyantes de baisser le regard (24:30-31). Ces images abîment le cœur, refroidissent le couple et créent une dépendance réelle qui grandit si on la nourrit.",
+     en:"Hearing, sight and the heart will all be questioned. Allah commands believing men and women to lower their gaze (24:30-31). These images damage the heart, chill the marriage and create a real addiction that grows if fed.",
+     ar:"السمع والبصر والفؤاد كلها مسؤولة. وقد أمر الله المؤمنين والمؤمنات بغضّ البصر (النور: 30-31). وهذه الصور تُفسد القلب، وتُبرّد العلاقة الزوجية، وتصنع إدماناً حقيقياً يكبر كلما غُذّي."}},
+ h:{ar:"لَوْ لَمْ تُذْنِبُوا لَذَهَبَ اللَّهُ بِكُمْ وَلَجَاءَ بِقَوْمٍ يُذْنِبُونَ فَيَسْتَغْفِرُونَ اللَّهَ فَيَغْفِرُ لَهُمْ",src:"Muslim 2749",
+  t:{fr:"Le Prophète ﷺ a dit : « Si vous ne péchiez pas, Allah vous remplacerait par des gens qui pèchent, demandent pardon, et Il leur pardonnerait. » Allah attend votre retour. Beaucoup ont arrêté cette habitude : vous le pouvez aussi.",
+     en:"The Prophet ﷺ said: “If you did not sin, Allah would replace you with people who sin, seek forgiveness, and He would forgive them.” Allah awaits your return. Many have quit this habit: you can too.",
+     ar:"قال النبي ﷺ: «لو لم تذنبوا لذهب الله بكم ولجاء بقوم يذنبون فيستغفرون الله فيغفر لهم». فالله ينتظر رجوعك، وقد ترك كثيرون هذه العادة، وأنت تستطيع ذلك أيضاً."}},
+ steps:{fr:["Supprimez les applications, les comptes et les contacts qui vous y mènent, et installez un filtre sur le téléphone.","Ne gardez pas le téléphone au lit : chargez-le hors de la chambre la nuit.","Repérez vos moments à risque (seul, fatigué, tard le soir) et prévoyez une autre activité à ce moment-là.","Jeûnez lundi et jeudi : le Prophète ﷺ a conseillé le jeûne à qui ne peut pas encore se marier (Bukhari 5066).","Marié : rapprochez-vous de votre conjoint. Célibataire : préparez le mariage. Si vous n'y arrivez pas seul, parlez à un conseiller."],
+  en:["Delete the apps, accounts and contacts that lead you there, and install a filter on your phone.","Do not keep the phone in bed: charge it outside the bedroom at night.","Identify your risky moments (alone, tired, late at night) and plan another activity for them.","Fast on Mondays and Thursdays: the Prophet ﷺ advised fasting to those who cannot marry yet (Bukhari 5066).","Married: grow closer to your spouse. Single: prepare for marriage. If you cannot do it alone, talk to a counsellor."],
+  ar:["احذف التطبيقات والحسابات وجهات الاتصال التي تقودك إلى ذلك، وثبّت برنامج حماية على هاتفك.","لا تأخذ الهاتف إلى الفراش، واشحنه خارج غرفة النوم ليلاً.","حدّد أوقات الخطر (الوحدة، التعب، السهر) وخطّط لنشاط آخر فيها.","صُم الاثنين والخميس، فقد أوصى النبي ﷺ بالصوم من لم يستطع الزواج بعد (البخاري 5066).","إن كنت متزوجاً فاقترب من زوجك، وإن كنت أعزب فاستعدّ للزواج. وإن عجزت وحدك فتحدّث إلى مستشار."]},
+ r:null,
+ d:{ar:"يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",src:"Tirmidhi 2140",t:{fr:"Ô Toi qui retournes les cœurs, affermis mon cœur sur Ta religion.",en:"O Turner of hearts, keep my heart firm on Your religion.",ar:"كان النبي ﷺ يكثر من هذا الدعاء."}}},
+
+{id:"zina",ico:"💔",t:{fr:"Relation hors mariage ou adultère",en:"Relationship outside marriage or adultery",ar:"علاقة خارج الزواج أو خيانة"},
+ w:{ar:"وَلَا تَقْرَبُوا الزِّنَىٰ ۖ إِنَّهُ كَانَ فَاحِشَةً وَسَاءَ سَبِيلًا",src:"Coran 17:32",
+  t:{fr:"Allah ne dit pas seulement « ne commettez pas » mais « n'approchez pas » : les messages, les rendez-vous seuls à seuls et les regards y mènent. L'adultère trahit le conjoint, menace les enfants et la santé, et détruit des familles entières.",
+     en:"Allah does not only say “do not commit” but “do not approach”: messages, meetings alone and looks lead to it. Adultery betrays the spouse, threatens the children and health, and destroys whole families.",
+     ar:"لم يقل الله «لا تزنوا» فحسب، بل ﴿وَلَا تَقْرَبُوا﴾، فالرسائل والخلوة والنظرات طريق إليه. والخيانة الزوجية غدر بالزوج، وخطر على الأولاد والصحة، وهدم لأسر كاملة."}},
+ h:{ar:"إِلَّا مَن تَابَ وَآمَنَ وَعَمِلَ عَمَلًا صَالِحًا فَأُولَٰئِكَ يُبَدِّلُ اللَّهُ سَيِّئَاتِهِمْ حَسَنَاتٍ",src:"Coran 25:70",
+  t:{fr:"Juste après avoir cité ce péché, Allah promet : « Sauf celui qui se repent, croit et fait de bonnes œuvres : Allah changera leurs mauvaises actions en bonnes. » Le repentir sincère ne fait pas qu'effacer : il transforme. Repentez-vous en secret ; Allah vous a couvert, ne vous découvrez pas (Bukhari 6069).",
+     en:"Right after naming this sin, Allah promises: “Except whoever repents, believes and does good deeds: Allah will change their evil deeds into good ones.” Sincere repentance does not only erase: it transforms. Repent in secret; Allah has covered you, do not expose yourself (Bukhari 6069).",
+     ar:"بعد ذكر هذا الذنب وعد الله: ﴿إِلَّا مَن تَابَ وَآمَنَ وَعَمِلَ عَمَلًا صَالِحًا فَأُولَٰئِكَ يُبَدِّلُ اللَّهُ سَيِّئَاتِهِمْ حَسَنَاتٍ﴾. فالتوبة الصادقة لا تمحو فقط بل تُبدّل. تُب في السرّ، فقد سترك الله فلا تفضح نفسك (البخاري 6069)."}},
+ steps:{fr:["Coupez tout contact aujourd'hui : supprimez le numéro, les messages et les photos, et bloquez la personne.","Évitez tout tête-à-tête : « Un homme ne s'isole pas avec une femme sans que le diable soit le troisième » (Tirmidhi 2165).","Changez les trajets, les lieux et les horaires qui vous faisaient vous croiser.","Faites un dépistage médical discret pour protéger votre santé et celle de votre conjoint.","Investissez votre temps et votre tendresse dans votre foyer. Célibataire : avancez vers un mariage halal."],
+  en:["Cut all contact today: delete the number, messages and photos, and block the person.","Avoid any one-to-one meeting: “No man is alone with a woman except that the devil is the third” (Tirmidhi 2165).","Change the routes, places and times that made you meet.","Get a discreet medical test to protect your health and your spouse's.","Invest your time and tenderness in your home. Single: move towards a halal marriage."],
+  ar:["اقطع كل تواصل اليوم: احذف الرقم والرسائل والصور، واحظر الشخص.","تجنّب كل خلوة: «لا يخلونّ رجل بامرأة إلا كان ثالثهما الشيطان» (الترمذي 2165).","غيّر الطرق والأماكن والأوقات التي كانت تجمعكما.","قم بفحص طبي سرّي لتحمي صحتك وصحة زوجك.","استثمر وقتك وحنانك في بيتك، وإن كنت أعزب فامضِ نحو زواج حلال."]},
+ r:null,
+ d:{ar:"اللَّهُمَّ طَهِّرْ قَلْبِي وَحَصِّنْ فَرْجِي",src:"Ahmad 22211",t:{fr:"Ô Allah, purifie mon cœur et préserve ma chasteté.",en:"O Allah, purify my heart and protect my chastity.",ar:"دعا به النبي ﷺ للشاب الذي استأذنه في الزنا."}}}
+];
+
+// ---------- Quitter un péché : contenu (2/2) ----------
+SINS.push(
+{id:"alcool",ico:"🍺",t:{fr:"Alcool ou drogue",en:"Alcohol or drugs",ar:"الخمر أو المخدرات"},
+ w:{ar:"إِنَّمَا الْخَمْرُ وَالْمَيْسِرُ وَالْأَنصَابُ وَالْأَزْلَامُ رِجْسٌ مِّنْ عَمَلِ الشَّيْطَانِ فَاجْتَنِبُوهُ لَعَلَّكُمْ تُفْلِحُونَ",src:"Coran 5:90",
+  t:{fr:"Allah appelle l'alcool « une souillure, œuvre du diable ». Par lui, le diable veut semer la haine entre vous et vous détourner de la prière (5:91). L'alcool et la drogue ruinent la santé, l'argent du foyer et la confiance des enfants.",
+     en:"Allah calls intoxicants “filth, the work of the devil”. Through them the devil wants to sow hatred between you and turn you away from prayer (5:91). Alcohol and drugs ruin health, the household's money and the children's trust.",
+     ar:"سمّى الله الخمر ﴿رِجْسٌ مِّنْ عَمَلِ الشَّيْطَانِ﴾، وبها يريد الشيطان أن يوقع العداوة والبغضاء ويصدّ عن الصلاة (المائدة: 91). والخمر والمخدرات تُهلك الصحة ومال البيت وثقة الأولاد."}},
+ h:{ar:"قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا",src:"Coran 39:53",
+  t:{fr:"« Dis : Ô Mes serviteurs qui avez commis des excès à votre propre détriment, ne désespérez pas de la miséricorde d'Allah. Allah pardonne tous les péchés. » Aucune dépendance n'est plus forte que la miséricorde d'Allah. Le verset suivant ajoute : « Revenez repentants à votre Seigneur » (39:54).",
+     en:"“Say: O My servants who have transgressed against themselves, do not despair of Allah's mercy. Allah forgives all sins.” No addiction is stronger than Allah's mercy. The next verse adds: “Turn back to your Lord in repentance” (39:54).",
+     ar:"﴿قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ﴾، فلا إدمان أقوى من رحمة الله. وتقول الآية التالية: ﴿وَأَنِيبُوا إِلَىٰ رَبِّكُمْ﴾ (الزمر: 54)."}},
+ steps:{fr:["Si vous buvez beaucoup ou depuis longtemps, voyez un médecin avant d'arrêter : le sevrage brutal de l'alcool peut être dangereux.","Éloignez-vous des lieux et des amis liés à cette habitude, et ne gardez rien à la maison.","Confiez votre combat à une personne de confiance : un aîné, un imam ou votre conjoint.","Remplacez le moment habituel par autre chose : marche, sport, thé avec la famille, mosquée.","Le jour où l'envie est forte, utilisez le bouton « J'ai envie maintenant » de cette page."],
+  en:["If you drink heavily or have for a long time, see a doctor before stopping: sudden alcohol withdrawal can be dangerous.","Stay away from the places and friends linked to this habit, and keep nothing at home.","Share your struggle with a trusted person: an elder, an imam or your spouse.","Replace the usual moment with something else: a walk, sport, tea with the family, the mosque.","On days when the urge is strong, use the “I feel the urge now” button on this page."],
+  ar:["إن كنت تشرب كثيراً أو منذ مدة طويلة، فراجع طبيباً قبل التوقف، فالانقطاع المفاجئ عن الخمر قد يكون خطيراً.","ابتعد عن الأماكن والأصحاب المرتبطين بهذه العادة، ولا تُبقِ شيئاً منها في البيت.","أطلِع شخصاً تثق به على معركتك: كبيراً أو إماماً أو زوجك.","استبدل الوقت المعتاد بشيء آخر: المشي، الرياضة، الشاي مع الأسرة، المسجد.","في يوم تشتد فيه الرغبة، استعمل زر «أشعر بالرغبة الآن» في هذه الصفحة."]},
+ r:null,
+ d:{ar:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ مُنْكَرَاتِ الْأَخْلَاقِ وَالْأَعْمَالِ وَالْأَهْوَاءِ",src:"Tirmidhi 3591",t:{fr:"Ô Allah, je cherche refuge auprès de Toi contre les mauvais comportements, les mauvaises actions et les mauvaises passions.",en:"O Allah, I seek refuge in You from evil character, evil deeds and evil desires.",ar:"من دعاء النبي ﷺ."}}},
+
+{id:"paris",ico:"🎲",t:{fr:"Jeux d'argent et paris sportifs",en:"Gambling and sports betting",ar:"القمار والمراهنات الرياضية"},
+ w:{ar:"إِنَّمَا يُرِيدُ الشَّيْطَانُ أَن يُوقِعَ بَيْنَكُمُ الْعَدَاوَةَ وَالْبَغْضَاءَ فِي الْخَمْرِ وَالْمَيْسِرِ وَيَصُدَّكُمْ عَن ذِكْرِ اللَّهِ وَعَنِ الصَّلَاةِ",src:"Coran 5:91",
+  t:{fr:"Allah interdit le jeu de hasard (maysir) avec l'alcool. Les paris promettent de l'argent facile mais vident les poches, créent des dettes, des mensonges au conjoint et des disputes. L'argent de la dépense du foyer n'appartient pas au pari.",
+     en:"Allah forbids gambling (maysir) together with alcohol. Betting promises easy money but empties pockets, creates debts, lies to the spouse and quarrels. The household's money does not belong to betting.",
+     ar:"حرّم الله الميسر مع الخمر. والمراهنات تعد بمال سهل لكنها تفرغ الجيوب، وتجلب الديون والكذب على الزوج والخصام. ومال نفقة البيت ليس للرهان."}},
+ h:{ar:"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ",src:"Coran 65:2-3",
+  t:{fr:"« Quiconque craint Allah, Il lui donnera une issue et lui accordera Ses dons par des moyens sur lesquels il ne comptait pas. » En quittant le pari pour Allah, vous ne perdez pas une chance : vous ouvrez la porte d'une subsistance bénie.",
+     en:"“Whoever fears Allah, He will make a way out for him and provide for him from where he does not expect.” By leaving betting for Allah, you do not lose a chance: you open the door to blessed provision.",
+     ar:"﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ﴾. فإذا تركت الرهان لله لم تخسر فرصة، بل فتحت باب رزق مبارك."}},
+ steps:{fr:["Supprimez aujourd'hui toutes les applications et comptes de paris, et désinstallez-les du téléphone.","Ne gardez sur votre mobile money que l'argent du jour ; confiez le reste à votre conjoint ou à un compte d'épargne.","Évitez les lieux de paris et les groupes de pronostics.","Faites la liste de vos dettes et un plan pour les rembourser petit à petit.","Mettez chaque semaine de côté l'argent que vous auriez parié : vous verrez ce que vous gagnez vraiment."],
+  en:["Today, delete all betting apps and accounts and uninstall them from your phone.","Keep only the day's money in mobile money; give the rest to your spouse or a savings account.","Avoid betting shops and prediction groups.","List your debts and make a plan to repay them little by little.","Each week, set aside the money you would have bet: you will see what you really gain."],
+  ar:["احذف اليوم كل تطبيقات وحسابات المراهنات من هاتفك.","لا تُبقِ في محفظتك الإلكترونية إلا مال اليوم، وسلّم الباقي لزوجك أو لحساب ادخار.","تجنّب أماكن المراهنات ومجموعات التوقعات.","اكتب قائمة ديونك وخطة لسدادها شيئاً فشيئاً.","ادّخر كل أسبوع المال الذي كنت ستراهن به، وسترى ما تربحه حقاً."]},
+ r:{fr:"Si vous avez pris l'argent du foyer ou emprunté pour parier, dites-le à la personne concernée et remboursez selon un plan.",en:"If you took household money or borrowed to bet, tell the person concerned and repay according to a plan.",ar:"إن أخذت من مال البيت أو اقترضت للمراهنة، فأخبر صاحب الحق وسدّد وفق خطة."},
+ d:{ar:"اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",src:"Tirmidhi 3563",t:{fr:"Ô Allah, suffis-moi par ce que Tu as permis, loin de ce que Tu as interdit, et enrichis-moi par Ta grâce pour que je n'aie besoin que de Toi.",en:"O Allah, suffice me with what You have made lawful instead of what You have forbidden, and enrich me by Your grace so I need none but You.",ar:"دعاء علّمه النبي ﷺ لقضاء الدَّين."}}},
+
+{id:"vol",ico:"💰",t:{fr:"Vol, fraude ou corruption",en:"Theft, fraud or bribery",ar:"السرقة أو الغش أو الرشوة"},
+ w:{ar:"وَلَا تَأْكُلُوا أَمْوَالَكُم بَيْنَكُم بِالْبَاطِلِ وَتُدْلُوا بِهَا إِلَى الْحُكَّامِ",src:"Coran 2:188",
+  t:{fr:"Allah interdit de prendre les biens des autres injustement et de corrompre les responsables. Le Prophète ﷺ a maudit celui qui donne et celui qui reçoit le pot-de-vin (Abou Daoud 3580). Une famille nourrie d'argent illicite perd la baraka.",
+     en:"Allah forbids taking others' property unjustly and bribing officials. The Prophet ﷺ cursed the one who gives and the one who takes a bribe (Abu Dawud 3580). A family fed with unlawful money loses barakah.",
+     ar:"نهى الله عن أكل أموال الناس بالباطل وعن رشوة الحكام، ولعن النبي ﷺ الراشي والمرتشي (أبو داود 3580). والبيت الذي يُطعَم من الحرام تُنزع منه البركة."}},
+ h:{ar:"فَمَن تَابَ مِن بَعْدِ ظُلْمِهِ وَأَصْلَحَ فَإِنَّ اللَّهَ يَتُوبُ عَلَيْهِ",src:"Coran 5:39",
+  t:{fr:"« Quiconque se repent après son injustice et se réforme, Allah accepte son repentir. » La porte est ouverte, et rendre ce qui a été pris est la clé qui l'ouvre.",
+     en:"“Whoever repents after his wrongdoing and reforms, Allah accepts his repentance.” The door is open, and returning what was taken is the key that opens it.",
+     ar:"﴿فَمَن تَابَ مِن بَعْدِ ظُلْمِهِ وَأَصْلَحَ فَإِنَّ اللَّهَ يَتُوبُ عَلَيْهِ﴾، فالباب مفتوح، وردّ الحقوق هو مفتاحه."}},
+ steps:{fr:["Arrêtez dès aujourd'hui : refusez tout nouvel argent douteux, même « petit ».","Faites la liste de ce que vous avez pris et à qui.","Rendez ce qui a été pris, même discrètement ou petit à petit. Si la personne est introuvable, donnez l'équivalent en aumône en son nom.","Changez les pratiques qui vous y poussaient : caisse mal tenue, mauvaises fréquentations, train de vie trop élevé.","Gagnez moins mais halal : c'est cet argent qui porte la baraka dans le foyer."],
+  en:["Stop today: refuse any new doubtful money, even “small”.","List what you took and from whom.","Return what was taken, even discreetly or little by little. If the person cannot be found, give the equivalent in charity on their behalf.","Change the practices that pushed you: poorly kept accounts, bad company, too high a lifestyle.","Earn less but halal: that is the money that brings barakah to the home."],
+  ar:["توقّف من اليوم، وارفض كل مال مشبوه ولو كان «قليلاً».","اكتب قائمة بما أخذته وممن أخذته.","ردّ الحقوق ولو سرّاً أو على دفعات، فإن لم تجد صاحبها فتصدّق بقدرها عنه.","غيّر ما كان يدفعك إلى ذلك: حسابات مهملة، صحبة سيئة، نفقات فوق الطاقة.","اكسب أقل لكن حلالاً، فهذا المال هو الذي يحمل البركة إلى البيت."]},
+ r:{fr:"Rendre les biens est une condition du repentir. Le Prophète ﷺ a dit : « Que celui qui a fait du tort à son frère s'en libère aujourd'hui, avant le jour où il n'y aura plus ni dinar ni dirham » (Bukhari 2449).",en:"Returning property is a condition of repentance. The Prophet ﷺ said: “Whoever has wronged his brother, let him free himself from it today, before the day when there will be no dinar or dirham” (Bukhari 2449).",ar:"ردّ الحقوق شرط للتوبة، قال النبي ﷺ: «من كانت له مظلمة لأخيه فليتحلّله منها اليوم قبل أن لا يكون دينار ولا درهم» (البخاري 2449)."},
+ d:{ar:"اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",src:"Ibn Majah 925",t:{fr:"Ô Allah, je Te demande une science utile, une subsistance pure et des œuvres acceptées.",en:"O Allah, I ask You for beneficial knowledge, pure provision and accepted deeds.",ar:"كان النبي ﷺ يقوله بعد صلاة الصبح."}}},
+
+{id:"parents",ico:"👵",t:{fr:"Je manque de respect à mes parents",en:"I disrespect my parents",ar:"أسيء إلى والديّ"},
+ w:{ar:"فَلَا تَقُل لَّهُمَا أُفٍّ وَلَا تَنْهَرْهُمَا وَقُل لَّهُمَا قَوْلًا كَرِيمًا",src:"Coran 17:23",
+  t:{fr:"Allah interdit même de dire « ouf » à ses parents. Le Prophète ﷺ a cité la désobéissance aux parents parmi les plus grands péchés, juste après l'associationnisme (Bukhari 5976). Le mariage ne supprime pas ce devoir : il faut honorer ses parents sans léser son conjoint.",
+     en:"Allah forbids even saying “uff” to one's parents. The Prophet ﷺ listed disobedience to parents among the greatest sins, right after shirk (Bukhari 5976). Marriage does not remove this duty: honour your parents without wronging your spouse.",
+     ar:"نهى الله حتى عن قول «أفّ» للوالدين، وعدّ النبي ﷺ عقوق الوالدين من أكبر الكبائر بعد الإشراك بالله (البخاري 5976). والزواج لا يُسقط هذا الواجب: برّ والديك دون أن تظلم زوجك."}},
+ h:{ar:"أُولَٰئِكَ الَّذِينَ نَتَقَبَّلُ عَنْهُمْ أَحْسَنَ مَا عَمِلُوا وَنَتَجَاوَزُ عَن سَيِّئَاتِهِمْ",src:"Coran 46:16",
+  t:{fr:"Après avoir décrit celui qui dit « Seigneur, permets-moi de remercier pour Tes bienfaits envers moi et envers mes parents… je me repens à Toi », Allah promet : « Voilà ceux dont Nous accepterons les meilleures actions et passerons sur les mauvaises. » Il n'est jamais trop tard pour revenir vers ses parents.",
+     en:"After describing the one who says “My Lord, enable me to be grateful for Your favour upon me and my parents… I repent to You”, Allah promises: “Those are the ones from whom We accept the best of their deeds and overlook their misdeeds.” It is never too late to return to your parents.",
+     ar:"بعد ذكر من قال: ﴿رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ… إِنِّي تُبْتُ إِلَيْكَ﴾ وعد الله: ﴿أُولَٰئِكَ الَّذِينَ نَتَقَبَّلُ عَنْهُمْ أَحْسَنَ مَا عَمِلُوا﴾. فلا يفوت أبداً وقت الرجوع إلى الوالدين."}},
+ steps:{fr:["Appelez ou rendez visite à vos parents cette semaine, sans reproche, juste pour prendre des nouvelles.","Demandez-leur pardon simplement : « Pardonnez-moi pour ce que je vous ai fait de mal. »","Baissez la voix devant eux, même quand vous n'êtes pas d'accord.","Aidez-les concrètement : médicaments, courses, un peu d'argent selon vos moyens.","S'ils sont décédés : invoquez pour eux, faites l'aumône en leur nom et restez proche de leurs amis (Muslim 1631, Muslim 2552)."],
+  en:["Call or visit your parents this week, with no reproach, just to ask how they are.","Ask their forgiveness simply: “Forgive me for the wrong I did you.”","Lower your voice in front of them, even when you disagree.","Help them concretely: medicine, shopping, a little money according to your means.","If they have died: pray for them, give charity on their behalf and stay close to their friends (Muslim 1631, Muslim 2552)."],
+  ar:["اتصل بوالديك أو زرهما هذا الأسبوع دون عتاب، فقط لتطمئن عليهما.","اطلب منهما العفو ببساطة: «سامحاني على ما أسأت إليكما».","اخفض صوتك أمامهما ولو خالفتهما الرأي.","ساعدهما عملياً: الدواء، الحاجيات، شيء من المال بحسب قدرتك.","إن كانا قد توفيا: ادعُ لهما، وتصدّق عنهما، وصِل أصدقاءهما (مسلم 1631، مسلم 2552)."]},
+ r:{fr:"Le droit des parents se répare en leur demandant pardon et en les honorant pour le reste de leur vie.",en:"The parents' right is repaired by asking their forgiveness and honouring them for the rest of their lives.",ar:"يُستدرك حق الوالدين بطلب عفوهما وبرّهما بقية حياتهما."},
+ d:{ar:"رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",src:"Coran 17:24",t:{fr:"Seigneur, fais-leur miséricorde comme ils m'ont élevé quand j'étais petit.",en:"My Lord, have mercy on them as they raised me when I was small.",ar:"الدعاء الذي علّمنا الله إياه للوالدين."}}},
+
+{id:"marabout",ico:"🔮",t:{fr:"Je consulte des charlatans ou je porte des gris-gris",en:"I consult charlatans or wear amulets",ar:"أذهب إلى المشعوذين أو ألبس التمائم"},
+ w:{ar:"مَنْ أَتَى عَرَّافًا فَسَأَلَهُ عَنْ شَيْءٍ لَمْ تُقْبَلْ لَهُ صَلَاةٌ أَرْبَعِينَ لَيْلَةً",src:"Muslim 2230",
+  t:{fr:"Le Prophète ﷺ a dit : « Celui qui va voir un devin et l'interroge sur quelque chose, sa prière n'est pas acceptée pendant quarante nuits. » Et celui qui le croit a renié ce qui a été révélé à Muhammad ﷺ (Abou Daoud 3904). Les charlatans prennent l'argent, divisent les familles et accusent des innocents.",
+     en:"The Prophet ﷺ said: “Whoever goes to a fortune-teller and asks him about something, his prayer is not accepted for forty nights.” And whoever believes him has disbelieved in what was revealed to Muhammad ﷺ (Abu Dawud 3904). Charlatans take money, divide families and accuse the innocent.",
+     ar:"قال النبي ﷺ: «من أتى عرّافاً فسأله عن شيء لم تُقبل له صلاة أربعين ليلة»، ومن صدّقه فقد كفر بما أُنزل على محمد ﷺ (أبو داود 3904). والمشعوذون يأخذون المال، ويفرّقون الأسر، ويتّهمون الأبرياء."}},
+ h:{ar:"وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",src:"Coran 65:3",
+  t:{fr:"« Quiconque place sa confiance en Allah, Il lui suffit. » Vous n'avez besoin d'aucun intermédiaire : Allah entend votre invocation directement. Le Coran lui-même est guérison et protection (17:82).",
+     en:"“Whoever relies on Allah, He is sufficient for him.” You need no intermediary: Allah hears your supplication directly. The Quran itself is healing and protection (17:82).",
+     ar:"﴿وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ﴾، فلا تحتاج إلى وسيط، والله يسمع دعاءك مباشرة، والقرآن نفسه شفاء وحصن (الإسراء: 82)."}},
+ steps:{fr:["Retirez et détruisez les gris-gris et talismans de la maison, des enfants et de la voiture.","Ne retournez plus chez le devin ou le charlatan, et ne donnez plus d'argent pour des « travaux ».","Protégez-vous chaque matin et chaque soir avec Al-Ikhlâs, Al-Falaq et An-Nâs, trois fois (Abou Daoud 5082), et lisez Âyat al-Koursî avant de dormir (Bukhari 5010).","Pour une maladie, allez chez le médecin ; pour une roqya, choisissez un imam connu qui ne récite que le Coran et les invocations authentiques.","Pour un problème de couple ou d'argent, cherchez la vraie cause et parlez-en à un conseiller ou à un imam."],
+  en:["Remove and destroy the amulets and talismans in the house, on the children and in the car.","Do not go back to the fortune-teller or charlatan, and give no more money for “works”.","Protect yourself every morning and evening with Al-Ikhlas, Al-Falaq and An-Nas, three times (Abu Dawud 5082), and read Ayat al-Kursi before sleeping (Bukhari 5010).","For an illness, see a doctor; for ruqyah, choose a well-known imam who recites only the Quran and authentic supplications.","For a marriage or money problem, look for the real cause and talk to a counsellor or an imam."],
+  ar:["انزع التمائم والأحجبة من البيت ومن الأولاد ومن السيارة وأتلفها.","لا تعد إلى العرّاف أو المشعوذ، ولا تدفع مالاً بعد اليوم مقابل «أعمال».","تحصّن كل صباح ومساء بالإخلاص والفلق والناس ثلاثاً (أبو داود 5082)، واقرأ آية الكرسي قبل النوم (البخاري 5010).","للمرض اذهب إلى الطبيب، وللرقية اختر إماماً معروفاً لا يقرأ إلا القرآن والأدعية الثابتة.","لمشكلة زوجية أو مالية ابحث عن السبب الحقيقي، وتحدّث إلى مستشار أو إمام."]},
+ r:{fr:"Si un charlatan vous a fait accuser quelqu'un (une coépouse, une belle-mère, un voisin), demandez-lui pardon : c'était une injustice.",en:"If a charlatan made you accuse someone (a co-wife, a mother-in-law, a neighbour), ask their forgiveness: it was an injustice.",ar:"إن جعلك مشعوذ تتّهم أحداً (ضرّة أو حماة أو جاراً)، فاطلب منه العفو، فقد كان ذلك ظلماً."},
+ d:{ar:"حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",src:"Coran 9:129",t:{fr:"Allah me suffit. Il n'y a de divinité que Lui. En Lui je place ma confiance, et Il est le Seigneur du Trône immense.",en:"Allah is sufficient for me. There is no god but Him. In Him I put my trust, and He is the Lord of the mighty Throne.",ar:"آية التوكل."}}}
+);
+
+// Règles du repentir
+const TAWBA_HOPE={ar:"قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا",src:"Coran 39:53",
+ t:{fr:"« Dis : Ô Mes serviteurs qui avez commis des excès à votre propre détriment, ne désespérez pas de la miséricorde d'Allah. Allah pardonne tous les péchés. » Quel que soit votre péché, la porte du repentir est ouverte tant que l'âme n'a pas atteint la gorge (Tirmidhi 3537).",
+    en:"“Say: O My servants who have transgressed against themselves, do not despair of Allah's mercy. Allah forgives all sins.” Whatever your sin, the door of repentance is open until the soul reaches the throat (Tirmidhi 3537).",
+    ar:"مهما كان ذنبك، فباب التوبة مفتوح ما لم تبلغ الروح الحلقوم: «إنّ الله يقبل توبة العبد ما لم يُغرغر» (الترمذي 3537)."}};
+const TAWBA_COND={
+ fr:[["Arrêter maintenant","Quitter le péché aujourd'hui, pas « demain »."],["Regretter sincèrement","« Le regret est le repentir » (Ibn Majah 4252)."],["Décider de ne pas recommencer","Une ferme intention, même si l'on craint d'être faible."],["Rendre les droits","Si le péché a touché quelqu'un : rendre, réparer ou demander pardon."]],
+ en:[["Stop now","Leave the sin today, not “tomorrow”."],["Sincerely regret","“Regret is repentance” (Ibn Majah 4252)."],["Resolve not to return","A firm intention, even if you fear being weak."],["Return rights","If the sin affected someone: return, repair or ask forgiveness."]],
+ ar:[["الإقلاع الآن","اترك الذنب اليوم لا «غداً»."],["الندم الصادق","«الندم توبة» (ابن ماجه 4252)."],["العزم على عدم العودة","نية جازمة ولو خشيت الضعف."],["ردّ الحقوق","إن تعلّق الذنب بأحد: ردّ أو أصلح أو استسمح."]]
+};
+const TAWBA_PRAYER={
+ t:{fr:"La prière du repentir",en:"The prayer of repentance",ar:"صلاة التوبة"},
+ p:{fr:"Le Prophète ﷺ a dit : « Il n'y a pas un homme qui commet un péché, puis se purifie, prie deux rak'as et demande pardon à Allah, sans qu'Allah lui pardonne. » Puis il récita : « Ceux qui, s'ils commettent une turpitude ou font du tort à eux-mêmes, se souviennent d'Allah et demandent pardon pour leurs péchés… » (3:135) (Abou Daoud 1521).",
+    en:"The Prophet ﷺ said: “There is no man who commits a sin, then purifies himself, prays two rak'ahs and asks Allah's forgiveness, except that Allah forgives him.” Then he recited: “Those who, when they commit an immorality or wrong themselves, remember Allah and seek forgiveness for their sins…” (3:135) (Abu Dawud 1521).",
+    ar:"قال النبي ﷺ: «ما من رجل يذنب ذنباً ثم يقوم فيتطهّر ثم يصلي ركعتين ثم يستغفر الله إلا غفر الله له»، ثم قرأ: ﴿وَالَّذِينَ إِذَا فَعَلُوا فَاحِشَةً أَوْ ظَلَمُوا أَنفُسَهُمْ ذَكَرُوا اللَّهَ فَاسْتَغْفَرُوا لِذُنُوبِهِمْ﴾ (آل عمران: 135) (أبو داود 1521)."},
+ sayyid:"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+ sayyidT:{fr:"Le « maître de la demande de pardon » (Bukhari 6306) : celui qui le dit le soir avec conviction et meurt cette nuit-là entre au Paradis.",en:"The “master of seeking forgiveness” (Bukhari 6306): whoever says it in the evening with conviction and dies that night enters Paradise.",ar:"سيّد الاستغفار (البخاري 6306): من قاله من الليل موقناً به فمات قبل أن يصبح دخل الجنة."}
+};
+// Si l'on rechute
+const RELAPSE={ar:"أَذْنَبَ عَبْدِي ذَنْبًا، فَعَلِمَ أَنَّ لَهُ رَبًّا يَغْفِرُ الذَّنْبَ",src:"Bukhari 7507 · Muslim 2758",
+ t:{fr:"Un serviteur pécha, puis dit : « Seigneur, pardonne-moi. » Allah dit : « Mon serviteur a péché, et il a su qu'il a un Seigneur qui pardonne. » Il recommença, puis se repentit encore… et Allah lui pardonna à chaque fois. Le Prophète ﷺ a aussi dit : « Tout fils d'Adam pèche, et les meilleurs pécheurs sont ceux qui se repentent » (Tirmidhi 2499). Une chute n'efface pas vos victoires : relevez-vous maintenant.",
+    en:"A servant sinned, then said: “My Lord, forgive me.” Allah said: “My servant sinned, and he knew he has a Lord who forgives.” He did it again, then repented again… and Allah forgave him each time. The Prophet ﷺ also said: “Every son of Adam sins, and the best of sinners are those who repent” (Tirmidhi 2499). A fall does not erase your victories: get up now.",
+    ar:"أذنب عبد ذنباً فقال: «ربّ اغفر لي»، فقال الله: «أذنب عبدي ذنباً فعلم أن له ربّاً يغفر الذنب»، ثم عاد فتاب، فغفر الله له في كل مرة. وقال النبي ﷺ: «كل ابن آدم خطّاء، وخير الخطّائين التوابون» (الترمذي 2499). فالسقطة لا تمحو انتصاراتك، فانهض الآن."}};
+// Quand l'envie est là
+const URGE={
+ fr:["Dites : « A'oûdhou billâhi mina-ch-chaytâni-r-rajîm. »","Changez tout de suite de lieu : sortez, allez voir quelqu'un, ne restez pas seul.","Faites vos ablutions, puis priez deux rak'as.","Posez le téléphone et appelez une personne de confiance.","Demandez pardon avec le compteur ci-dessous : l'envie passe en quelques minutes."],
+ en:["Say: “A'udhu billahi mina-sh-shaytani-r-rajim.”","Change place right away: go out, see someone, do not stay alone.","Make wudu, then pray two rak'ahs.","Put down the phone and call a trusted person.","Seek forgiveness with the counter below: the urge passes in a few minutes."],
+ ar:["قل: «أعوذ بالله من الشيطان الرجيم».","غيّر مكانك فوراً: اخرج، زُر أحداً، لا تبقَ وحدك.","توضأ ثم صلِّ ركعتين.","ضع الهاتف جانباً واتصل بشخص تثق به.","استغفر بالعدّاد أدناه، فالرغبة تزول في دقائق."]
+};
+// Paliers
+const MILESTONES=[
+ [1,{fr:"Premier jour tenu. Le plus dur est de commencer, et vous l'avez fait.",en:"First day held. The hardest part is starting, and you did it.",ar:"أول يوم من الثبات. أصعب شيء هو البداية، وقد بدأت."}],
+ [3,{fr:"Trois jours. Votre cœur commence à respirer.",en:"Three days. Your heart is starting to breathe.",ar:"ثلاثة أيام. بدأ قلبك يتنفّس."}],
+ [7,{fr:"Une semaine entière ! Allah voit chacun de vos efforts.",en:"A whole week! Allah sees every one of your efforts.",ar:"أسبوع كامل! الله يرى كل جهد تبذله."}],
+ [14,{fr:"Deux semaines. L'habitude perd sa force, la vôtre grandit.",en:"Two weeks. The habit is losing its strength, yours is growing.",ar:"أسبوعان. العادة تضعف وقوتك تزداد."}],
+ [30,{fr:"Un mois ! Une nouvelle habitude est en train de naître.",en:"One month! A new habit is being born.",ar:"شهر كامل! عادة جديدة تولد."}],
+ [40,{fr:"Quarante jours. Remerciez Allah qui vous a affermi.",en:"Forty days. Thank Allah who has made you firm.",ar:"أربعون يوماً. احمد الله الذي ثبّتك."}],
+ [90,{fr:"Trois mois. Vous êtes devenu un exemple : aidez quelqu'un d'autre à se relever.",en:"Three months. You have become an example: help someone else get up.",ar:"ثلاثة أشهر. صرت قدوة، فأعِن غيرك على النهوض."}]
+];
+
+// ---------- Quitter un péché : guide, suivi, rechute, envie ----------
+const UI11={
+ fr:{mTawba:"Quitter un péché",dTawba:"Un guide et un suivi pour se repentir et changer",twIntro:"Vous voulez arrêter un péché mais vous ne savez pas comment ? Choisissez-le : l'application vous rappelle ce qu'Allah en dit, vous ouvre la porte de l'espoir, vous donne un plan et vous accompagne jour après jour.",
+  twHope:"Allah n'a jamais fermé Sa porte",twMine:"Mes combats",twChoose:"Quel péché voulez-vous quitter ?",twCond:"Les 4 conditions du repentir",twDays:"jours tenus",twDay:"jour tenu",twRecord:"Record : {n} jours",twNext:"Prochaine étape : {n} jours",
+  twHeld:"✓ J'ai tenu aujourd'hui",twFell:"J'ai rechuté",twTodayOk:"Aujourd'hui : tenu ✓ · +10 points",twTodayFell:"Aujourd'hui : rechute. Relevez-vous, Allah pardonne.",twPlan:"Voir mon plan",twUrge:"J'ai envie maintenant",twStop:"Arrêter ce suivi",twStopQ:"Arrêter le suivi de ce combat ?",
+  twWarn:"Ce qu'Allah et Son Messager ﷺ en disent",twOpen:"La porte de l'espoir",twSteps:"Votre plan pour arrêter",twRights:"Rendre les droits",twDua:"Votre invocation",twListen:"Écouter",twStart:"Commencer mon suivi",twTracked:"Voir mon suivi",
+  twUrgeT:"Tenez bon, l'envie va passer",twUrgeS:"La tentation est forte pendant quelques minutes, puis elle faiblit. Faites ces gestes, un par un :",twCount:"Touchez pour dire « Astaghfirou-llah »",twResisted:"C'est passé, j'ai tenu bon",twResistedOk:"Bravo ! Allah aime ceux qui reviennent vers Lui.",
+  twFallT:"Vous êtes tombé, mais la porte reste ouverte",twWhy:"Qu'est-ce qui vous a fait tomber ? (pour mieux l'éviter)",twWhyPh:"Ex. : seul le soir avec le téléphone…",twRise:"Je me relève",twNotes:"Ce qui m'a fait tomber",
+  twMilestone:"Nouvelle étape : {n} !",twPrivate:"Ce que vous notez ici reste uniquement sur votre téléphone. Personne d'autre ne le voit.",twTodayCard:"Mon chemin du repentir",twTodayQ:"Avez-vous tenu aujourd'hui ?",twSayyid:"Le maître de la demande de pardon",twFalls:"{n} rechutes, et toujours debout"},
+ en:{mTawba:"Leave a sin",dTawba:"A guide and tracker to repent and change",twIntro:"Do you want to stop a sin but don't know how? Choose it: the app reminds you what Allah says about it, opens the door of hope, gives you a plan and walks with you day after day.",
+  twHope:"Allah has never closed His door",twMine:"My struggles",twChoose:"Which sin do you want to leave?",twCond:"The 4 conditions of repentance",twDays:"days held",twDay:"day held",twRecord:"Record: {n} days",twNext:"Next step: {n} days",
+  twHeld:"✓ I held on today",twFell:"I relapsed",twTodayOk:"Today: held ✓ · +10 points",twTodayFell:"Today: relapse. Get up, Allah forgives.",twPlan:"See my plan",twUrge:"I feel the urge now",twStop:"Stop this tracker",twStopQ:"Stop tracking this struggle?",
+  twWarn:"What Allah and His Messenger ﷺ say about it",twOpen:"The door of hope",twSteps:"Your plan to stop",twRights:"Returning rights",twDua:"Your supplication",twListen:"Listen",twStart:"Start my tracker",twTracked:"See my tracker",
+  twUrgeT:"Hold on, the urge will pass",twUrgeS:"Temptation is strong for a few minutes, then it weakens. Do these things, one by one:",twCount:"Tap to say “Astaghfirullah”",twResisted:"It passed, I held on",twResistedOk:"Well done! Allah loves those who return to Him.",
+  twFallT:"You fell, but the door stays open",twWhy:"What made you fall? (to avoid it better)",twWhyPh:"E.g.: alone in the evening with the phone…",twRise:"I get up",twNotes:"What made me fall",
+  twMilestone:"New step: {n}!",twPrivate:"What you note here stays only on your phone. Nobody else sees it.",twTodayCard:"My path of repentance",twTodayQ:"Did you hold on today?",twSayyid:"The master of seeking forgiveness",twFalls:"{n} relapses, and still standing"},
+ ar:{mTawba:"ترك ذنب",dTawba:"دليل ومتابعة للتوبة والتغيير",twIntro:"تريد أن تترك ذنباً ولا تعرف كيف؟ اختره: يذكّرك التطبيق بما قاله الله فيه، ويفتح لك باب الرجاء، ويعطيك خطة، ويرافقك يوماً بعد يوم.",
+  twHope:"لم يُغلق الله بابه قط",twMine:"معاركي",twChoose:"أيّ ذنب تريد أن تتركه؟",twCond:"شروط التوبة الأربعة",twDays:"يوماً من الثبات",twDay:"يوم من الثبات",twRecord:"أفضل مدة: {n} يوماً",twNext:"المرحلة التالية: {n} يوماً",
+  twHeld:"✓ ثبتُّ اليوم",twFell:"سقطتُ مجدداً",twTodayOk:"اليوم: ثبات ✓ · +10 نقاط",twTodayFell:"اليوم: سقطة. انهض، فالله يغفر.",twPlan:"عرض خطتي",twUrge:"أشعر بالرغبة الآن",twStop:"إيقاف المتابعة",twStopQ:"إيقاف متابعة هذه المعركة؟",
+  twWarn:"ما قاله الله ورسوله ﷺ",twOpen:"باب الرجاء",twSteps:"خطتك للترك",twRights:"ردّ الحقوق",twDua:"دعاؤك",twListen:"استمع",twStart:"ابدأ المتابعة",twTracked:"عرض المتابعة",
+  twUrgeT:"اثبت، ستزول الرغبة",twUrgeS:"الإغراء قوي لبضع دقائق ثم يضعف. افعل هذه الخطوات واحدة تلو الأخرى:",twCount:"المس لتقول «أستغفر الله»",twResisted:"مرّت، وثبتُّ",twResistedOk:"أحسنت! الله يحب التوابين.",
+  twFallT:"سقطت، لكن الباب ما زال مفتوحاً",twWhy:"ما الذي أسقطك؟ (لتتجنّبه)",twWhyPh:"مثلاً: وحدي مساءً مع الهاتف…",twRise:"أنهض من جديد",twNotes:"ما أسقطني",
+  twMilestone:"مرحلة جديدة: {n}!",twPrivate:"ما تسجّله هنا يبقى على هاتفك فقط، ولا يراه أحد غيرك.",twTodayCard:"طريق توبتي",twTodayQ:"هل ثبتّ اليوم؟",twSayyid:"سيّد الاستغفار",twFalls:"{n} سقطات، وما زلت واقفاً"}
+};
+Object.keys(UI11).forEach(l=>Object.assign(UI2[l],UI11[l]));
+S.tawba=S.tawba||{fights:[],steps:{},ist:0,urgeOk:""};
+S.tw=S.tw||{v:"home"};
+const TW=S.tawba;
+const sinById=id=>SINS.find(s=>s.id===id);
+const dayDiff=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+const addDays=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return iso(x)};
+function held(f){return Math.max(0,dayDiff(f.start,iso(today))+(f.ok[iso(today)]===1?1:0))}
+const fightOf=id=>TW.fights.find(f=>f.id===id);
+
+// ---------- Vues ----------
+function viewTawba(){
+  const v=S.tw.v;
+  if(v==="sin") return twSin();
+  if(v==="urge") return twUrge();
+  if(v==="fall") return twFall();
+  return twHome();
+}
+function fightCard(f){
+  const s=sinById(f.id); if(!s) return "";
+  const n=held(f), st=f.ok[iso(today)], nx=MILESTONES.find(([m])=>m>n);
+  return `<div class="card tw-fight"><div class="tf-top"><span class="tf-ico">${s.ico}</span><b>${L3(s.t)}</b></div>
+   <div class="tf-count"><span class="tf-n">${n}</span><span>${n===1?t("twDay"):t("twDays")}</span></div>
+   ${nx?`<div class="progress"><i style="width:${n/nx[0]*100}%"></i></div><span class="tf-sub">${fmt(t("twNext"),{n:nx[0]})}${(f.best||0)>n?" · "+fmt(t("twRecord"),{n:f.best}):""}</span>`:`<span class="tf-sub">${fmt(t("twRecord"),{n:Math.max(f.best,n)})}</span>`}
+   ${f.falls?`<span class="tf-sub">${fmt(t("twFalls"),{n:f.falls})}</span>`:""}
+   ${st===1?`<div class="how ok"><b>${t("twTodayOk")}</b></div>`:st===0?`<div class="how ko"><b>${t("twTodayFell")}</b></div>`
+     :`<div class="tf-btns"><button class="btn" data-tw-held="${f.id}">${t("twHeld")}</button><button class="btn ghost" data-tw-fell="${f.id}">${t("twFell")}</button></div>`}
+   <div class="tf-links"><button class="listen" data-tw-sin="${f.id}">${t("twPlan")}</button><button class="listen tw-sos" data-tw-urge="${f.id}">🆘 ${t("twUrge")}</button></div>
+   ${(f.notes||[]).length?`<details class="tf-notes"><summary>${t("twNotes")} (${f.notes.length})</summary><ul>${f.notes.slice(0,8).map(x=>`<li><span>${x.d}</span> ${esc(x.t)}</li>`).join("")}</ul></details>`:""}
+   <button class="tf-stop" data-tw-stop="${f.id}">${t("twStop")}</button></div>`;
+}
+function twHome(){
+  const tr=TAWBA_HOPE;
+  return `<section class="hello"><h1>${t("mTawba")}</h1><p>${t("twIntro")}</p></section>
+  <div class="card tw-hope"><span class="eyebrow">${t("twHope")}</span><p class="ar verse">${tr.ar}</p><p class="src">${tr.src}</p>
+   <p>${L3(tr.t)}</p></div>
+  ${TW.fights.length?`<h2 class="tw-h2">${t("twMine")}</h2>${TW.fights.map(fightCard).join("")}`:""}
+  <h2 class="tw-h2">${t("twChoose")}</h2>
+  <div class="card" style="padding-block:4px">${SINS.map(s=>`<button class="tw-row" data-tw-sin="${s.id}"><span class="tr-ico">${s.ico}</span><span class="tr-t">${L3(s.t)}${fightOf(s.id)?` <em>· ${held(fightOf(s.id))} ${t("twDays")}</em>`:""}</span><i aria-hidden="true">›</i></button>`).join("")}</div>
+  <div class="card"><h3>${t("twCond")}</h3><ol class="tw-cond">${(TAWBA_COND[S.lang]||TAWBA_COND.fr).map(([a,b])=>`<li><b>${a}</b><span>${b}</span></li>`).join("")}</ol></div>
+  <div class="card"><h3>${L3(TAWBA_PRAYER.t)}</h3><p>${L3(TAWBA_PRAYER.p)}</p>
+   <div class="how"><b>${t("twSayyid")}</b><p class="ar verse tw-sayyid">${TAWBA_PRAYER.sayyid}</p><span>${L3(TAWBA_PRAYER.sayyidT)}</span></div>
+   <button class="listen" data-tw-say="sayyid">${ICO_SPK}${t("twListen")}</button></div>
+  <p class="note">🔒 ${t("twPrivate")}</p>`;
+}
+function twSin(){
+  const s=sinById(S.tw.id); if(!s){S.tw={v:"home"};return twHome()}
+  const done=TW.steps[s.id]||[], f=fightOf(s.id);
+  return `<section class="hello tw-head"><span class="tw-big">${s.ico}</span><h1>${L3(s.t)}</h1></section>
+  <div class="card tw-warn"><span class="eyebrow">⚠️ ${t("twWarn")}</span><p class="ar verse">${s.w.ar}</p><p class="src">${s.w.src}</p><p>${L3(s.w.t)}</p></div>
+  <div class="card tw-open"><span class="eyebrow">🌿 ${t("twOpen")}</span><p class="ar verse">${s.h.ar}</p><p class="src">${s.h.src}</p><p>${L3(s.h.t)}</p></div>
+  <div class="card"><h3>${t("twSteps")}</h3><div class="tw-steps">${(s.steps[S.lang]||s.steps.fr).map((x,i)=>`<label class="challenge" for="tws-${i}"><input type="checkbox" id="tws-${i}" data-tw-step="${i}" ${done.includes(i)?"checked":""}><span>${x}</span></label>`).join("")}</div></div>
+  ${s.r?`<div class="card"><h3>${t("twRights")}</h3><p>${L3(s.r)}</p></div>`:""}
+  <div class="card tw-dua"><span class="eyebrow">${t("twDua")}</span><p class="ar verse">${s.d.ar}</p><p class="src">${s.d.src}</p><p>${L3(s.d.t)}</p><button class="listen" data-tw-say="dua">${ICO_SPK}${t("twListen")}</button></div>
+  <div class="sch-btns">${f?`<button class="btn" id="tw-home">${t("twTracked")} · ${held(f)} ${t("twDays")}</button>`:`<button class="btn" data-tw-start="${s.id}">${t("twStart")}</button>`}
+   <button class="btn tw-sos-btn" data-tw-urge="${s.id}">🆘 ${t("twUrge")}</button></div>`;
+}
+function twUrge(){
+  const n=S.tw.count||0, goal=100;
+  return `<section class="hello"><h1>${t("twUrgeT")}</h1><p>${t("twUrgeS")}</p></section>
+  <div class="card"><ol class="tw-urge">${(URGE[S.lang]||URGE.fr).map(x=>`<li>${x}</li>`).join("")}</ol></div>
+  <div class="card tw-counter"><button class="tw-tap" id="tw-tap" aria-label="${t("twCount")}"><span class="tt-ar">أَسْتَغْفِرُ اللَّهَ</span><span class="tt-n">${n}<small>/${goal}</small></span></button>
+   <div class="progress"><i style="width:${Math.min(100,n/goal*100)}%"></i></div><span class="tf-sub">${t("twCount")}</span></div>
+  <div class="card tw-open"><p class="ar verse">${TAWBA_HOPE.ar}</p><p class="src">${TAWBA_HOPE.src}</p></div>
+  <button class="btn sch-go" id="tw-resisted">${t("twResisted")}</button>`;
+}
+function twFall(){
+  return `<section class="hello"><h1>${t("twFallT")}</h1></section>
+  <div class="card tw-open"><p class="ar verse">${RELAPSE.ar}</p><p class="src">${RELAPSE.src}</p><p>${L3(RELAPSE.t)}</p></div>
+  <div class="card"><h3>${L3(TAWBA_PRAYER.t)}</h3><p>${L3(TAWBA_PRAYER.p)}</p></div>
+  <label for="tw-why">${t("twWhy")}<textarea id="tw-why" rows="3" placeholder="${t("twWhyPh")}"></textarea></label>
+  <button class="btn sch-go" id="tw-rise">${t("twRise")}</button>`;
+}
+
+// ---------- Actions ----------
+function twGo(v,extra){S.tab="more";S.sub="tawba";S.tw=Object.assign({v},extra||{});save();render();scrollTo(0,0)}
+function twStart(id){
+  if(!fightOf(id)) TW.fights.unshift({id,start:iso(today),best:0,falls:0,ok:{},ms:[],notes:[]});
+  save(); toast(t("twStart")+" ✓",true); twGo("home");
+}
+function twHeldToday(id){
+  const f=fightOf(id); if(!f||f.ok[iso(today)]!=null) return;
+  f.ok[iso(today)]=1; const n=held(f); f.best=Math.max(f.best||0,n);
+  let bonus=0; for(const [m] of MILESTONES){if(n>=m&&!f.ms.includes(m)){f.ms.push(m);bonus+=m>=30?50:20}}
+  addPts(10+bonus); save();
+  const ms=MILESTONES.filter(([m])=>m<=n).pop();
+  if(bonus&&ms) toast(`<div class="bt"><span style="font-size:34px">🌿</span><div><span>${fmt(t("twMilestone"),{n:ms[0]+" "+(ms[0]===1?t("twDay"):t("twDays"))})}</span><b>${L3(ms[1])}</b></div></div>`,true);
+  else toast(`${t("twTodayOk")}`,true);
+  const y=scrollY;render();scrollTo(0,y);
+}
+function twFellToday(id){
+  const f=fightOf(id); if(!f) return;
+  f.best=Math.max(f.best||0,held(f)); f.ok[iso(today)]=0; f.falls=(f.falls||0)+1; f.start=addDays(iso(today),1); f.ms=[];
+  save(); twGo("fall",{id});
+}
+function twRise(){
+  const v=(document.getElementById("tw-why")||{}).value, f=fightOf(S.tw.id);
+  if(f&&v&&v.trim()){f.notes=f.notes||[];f.notes.unshift({d:iso(today),t:v.trim().slice(0,300)})}
+  save(); twGo("home");
+}
+
+// ---------- Événements ----------
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-tw-sin],[data-tw-start],[data-tw-held],[data-tw-fell],[data-tw-urge],[data-tw-stop],[data-tw-say],[data-gotawba],#tw-tap,#tw-resisted,#tw-rise,#tw-home");
+  if(!el) return;
+  const d=el.dataset;
+  if(d.twSin){twGo("sin",{id:d.twSin});return}
+  if(d.twStart){twStart(d.twStart);return}
+  if(d.twHeld){twHeldToday(d.twHeld);return}
+  if(d.twFell){twFellToday(d.twFell);return}
+  if(d.twUrge){twGo("urge",{id:d.twUrge,count:0});return}
+  if(d.gotawba){twGo("home");return}
+  if(d.twStop){confirmBox(t("twStopQ"),()=>{TW.fights=TW.fights.filter(f=>f.id!==d.twStop);save();render()});return}
+  if(d.twSay){if(d.twSay==="sayyid")speakSeq([[TAWBA_PRAYER.sayyid,"ar-SA"],[L3(TAWBA_PRAYER.sayyidT),VOICE[S.lang]]]);else{const s=sinById(S.tw.id);speakSeq([[s.d.ar,"ar-SA"],[L3(s.d.t),VOICE[S.lang]]])}return}
+  if(el.id==="tw-tap"){S.tw.count=(S.tw.count||0)+1;TW.ist=(TW.ist||0)+1;if(navigator.vibrate)try{navigator.vibrate(15)}catch(x){}
+    const nEl=el.querySelector(".tt-n");if(nEl)nEl.innerHTML=`${S.tw.count}<small>/100</small>`;const bar=el.parentElement.querySelector(".progress i");if(bar)bar.style.width=Math.min(100,S.tw.count)+"%";
+    if(S.tw.count===100)toast("أَسْتَغْفِرُ اللَّهَ ×100 ✓",true);clearTimeout(twGo._s);twGo._s=setTimeout(()=>{save();checkBadges()},800);return}
+  if(el.id==="tw-resisted"){if(TW.urgeOk!==iso(today)){TW.urgeOk=iso(today);addPts(10)}save();toast(t("twResistedOk"),true);twGo("home");return}
+  if(el.id==="tw-rise"){twRise();return}
+  if(el.id==="tw-home"){twGo("home");return}
+});
+document.addEventListener("change",e=>{
+  const c=e.target.closest&&e.target.closest("[data-tw-step]"); if(!c) return;
+  const id=S.tw.id, i=+c.dataset.twStep, a=TW.steps[id]||(TW.steps[id]=[]);
+  if(c.checked){if(!a.includes(i))a.push(i)}else TW.steps[id]=a.filter(x=>x!==i);
+  save();
+});
+// petite fenêtre de confirmation (pas de boîte de dialogue du navigateur)
+function confirmBox(msg,yes){
+  let m=document.getElementById("vmodal"); if(!m){m=document.createElement("div");m.id="vmodal";document.body.appendChild(m)}
+  m.hidden=false;m.innerHTML=`<div class="vm-in"><p style="margin:4px 0 12px;font-weight:700">${msg}</p><div class="tf-btns"><button class="btn" id="cb-yes">OK</button><button class="btn ghost" id="cb-no">${t("back")}</button></div></div>`;
+  document.getElementById("cb-yes").onclick=()=>{m.hidden=true;m.innerHTML="";yes()};
+  document.getElementById("cb-no").onclick=()=>{m.hidden=true;m.innerHTML=""};
+  return true;
+}
+// Retour : dans une page du guide, revenir au sommaire
+document.addEventListener("click",e=>{
+  if(S.sub!=="tawba"||!S.tw||S.tw.v==="home") return;
+  if(!(e.target.closest&&e.target.closest("#back"))) return;
+  e.stopPropagation();e.preventDefault();twGo("home");
+},true);
+const _schoolBack0=schoolBack;
+schoolBack=function(){if(S.sub==="tawba"&&S.tw&&S.tw.v!=="home"){twGo("home");return true}return _schoolBack0()};
+
+// Rappel discret sur l'écran Aujourd'hui (sans nommer le péché)
+const _renderTw=render;
+render=function(){
+  _renderTw();
+  if(!S.gender||S.tab!=="today"||S.sub||!TW.fights.length) return;
+  const f=TW.fights[0], n=held(f), st=f.ok[iso(today)];
+  const anchor=document.querySelector(".sch-dq")||document.querySelector(".screen .hello");
+  if(anchor&&!document.querySelector(".tw-today")) anchor.insertAdjacentHTML("afterend",`<div class="card tw-today"><div class="tt-row"><span class="tt-big">${n}</span><div><span class="eyebrow">🌿 ${t("twTodayCard")}</span><b>${n===1?t("twDay"):t("twDays")}</b></div></div>
+   ${st==null?`<span class="tf-sub">${t("twTodayQ")}</span><div class="tf-btns"><button class="btn" data-tw-held="${f.id}">${t("twHeld")}</button><button class="btn ghost" data-gotawba="1">${t("twUrge")}</button></div>`:`<button class="dq-go" data-gotawba="1">${st===1?t("twTodayOk"):t("twTodayFell")} ›</button>`}</div>`);
+};
+
+// Badges
+BADGES.push(
+ ["tw1",{fr:"Le premier pas vers Allah",en:"First step towards Allah",ar:"الخطوة الأولى إلى الله"},{fr:"Commencer le suivi d'un combat",en:"Start tracking a struggle",ar:"ابدأ متابعة معركة"},()=>TW.fights.length>0],
+ ["tw7",{fr:"Sept jours de victoire",en:"Seven days of victory",ar:"سبعة أيام من النصر"},{fr:"Tenir 7 jours de suite",en:"Hold on 7 days in a row",ar:"اثبت ٧ أيام متتالية"},()=>TW.fights.some(f=>Math.max(f.best||0,held(f))>=7)],
+ ["tw40",{fr:"Quarante jours de lumière",en:"Forty days of light",ar:"أربعون يوماً من النور"},{fr:"Tenir 40 jours de suite",en:"Hold on 40 days in a row",ar:"اثبت ٤٠ يوماً متتالية"},()=>TW.fights.some(f=>Math.max(f.best||0,held(f))>=40)],
+ ["ist100",{fr:"Cœur qui demande pardon",en:"A heart that seeks forgiveness",ar:"قلب مستغفر"},{fr:"Dire 100 fois « Astaghfirou-llah » avec le compteur",en:"Say “Astaghfirullah” 100 times with the counter",ar:"قل «أستغفر الله» ١٠٠ مرة بالعدّاد"},()=>(TW.ist||0)>=100]
+);
+Object.assign(BADGE_ICON,{tw1:"↺",tw7:"7j",tw40:"40j",ist100:"100"});
+Object.assign(MOTIF,{tawba:`<path d="M24 64V38a16 16 0 0 1 32 0v26z" fill="${IC.cream}"/><path d="M33 64V41a7 7 0 0 1 14 0v23z" fill="${IC.gold}"/><path d="M40 12v8M27 16l4 6M53 16l-4 6M20 26l6 3M60 26l-6 3" stroke="${IC.gold}" stroke-width="2.4" stroke-linecap="round"/>`});
+
+document.head.insertAdjacentHTML("beforeend",`<style>
+.tw-hope{text-align:center;border-color:var(--gold);background:linear-gradient(180deg,var(--surface),var(--soft))}.tw-hope .verse{font-size:24px}
+.tw-h2{font-size:20px;margin:8px 0 0}
+.tw-row{width:100%;display:flex;align-items:center;gap:12px;border:none;border-bottom:1px solid var(--line);background:none;padding:13px 0;text-align:start;color:var(--ink);font:inherit}
+.tw-row:last-child{border-bottom:none}.tr-ico{font-size:24px;width:40px;height:40px;display:grid;place-items:center;background:var(--soft);border-radius:12px;flex:none}
+.tr-t{flex:1;font-weight:700;font-size:15px}.tr-t em{font-style:normal;color:var(--gold);font-weight:800}.tw-row i{font-style:normal;font-size:22px;color:var(--muted)}
+.tw-cond{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px}.tw-cond b{display:block}.tw-cond span{font-size:14px;color:var(--muted)}
+.tw-sayyid{font-size:19px!important;line-height:1.9}
+.tw-head{align-items:flex-start}.tw-big{font-size:46px;line-height:1}
+.tw-warn{border-color:#C0473F;background:linear-gradient(180deg,var(--surface),rgba(192,71,63,.07))}.tw-warn .eyebrow{color:#C0473F}
+.tw-open{border-color:#2E9E6B;background:linear-gradient(180deg,var(--surface),rgba(46,158,107,.08))}.tw-open .eyebrow{color:#2E9E6B}
+.tw-warn .verse,.tw-open .verse,.tw-dua .verse{font-size:22px;text-align:center}
+.tw-steps{display:flex;flex-direction:column}.tw-steps .challenge{font-size:15px;font-weight:400;color:var(--ink);flex-direction:row;align-items:flex-start}
+.tw-dua{text-align:center;align-items:center}
+.tw-sos-btn{background:#C0473F;color:#fff}
+.tw-fight{border-color:var(--gold)}.tf-top{display:flex;align-items:center;gap:10px}.tf-ico{font-size:26px}
+.tf-count{display:flex;align-items:baseline;gap:8px}.tf-n{font-family:var(--f-display);font-size:54px;line-height:1;color:var(--accent)}
+.tf-sub{font-size:13px;color:var(--muted)}
+.tf-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tf-btns .btn{padding:12px 8px;font-size:14px}
+.tf-links{display:flex;gap:8px;flex-wrap:wrap}.tw-sos{color:#C0473F;border-color:rgba(192,71,63,.4)}
+.tf-stop{align-self:flex-end;border:none;background:none;color:var(--muted);font-size:12.5px;text-decoration:underline;padding:0}
+.tf-notes summary{font-size:13px;color:var(--muted);cursor:pointer}.tf-notes ul{margin:6px 0 0;padding-inline-start:18px;font-size:14px}.tf-notes li span{color:var(--gold);font-size:12px}
+.tw-urge{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.tw-counter{align-items:center;text-align:center}
+.tw-tap{width:190px;height:190px;border-radius:50%;border:6px solid var(--gold);background:radial-gradient(circle at 40% 35%,#11705F,#0B5247 60%,#052E28);color:#F4EEE2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 10px 26px rgba(11,82,71,.35);touch-action:manipulation}
+.tw-tap:active{transform:scale(.96)}.tt-ar{font-family:"Amiri Quran","Amiri",serif;font-size:26px}.tt-n{font-family:var(--f-display);font-size:40px;line-height:1}.tt-n small{font-size:16px;opacity:.7}
+.tw-counter .progress{width:100%}
+.tw-today{border-color:#2E9E6B}.tt-row{display:flex;align-items:center;gap:14px}.tt-big{font-family:var(--f-display);font-size:44px;color:var(--accent);line-height:1}
+.tt-row b{display:block}.tw-today .eyebrow{color:#2E9E6B}
+textarea#tw-why{width:100%;box-sizing:border-box}
+</style>`);
 
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
