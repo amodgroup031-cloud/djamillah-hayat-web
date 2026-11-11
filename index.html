@@ -1012,9 +1012,9 @@ function upcomingHTML(){
 }
 
 // ---------- Vues de l'onglet Plus ----------
-const MORE=[["school","mSchool","dSchool"],["tawba","mTawba","dTawba"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
+const MORE=[["school","mSchool","dSchool"],["quran","mQuran","dQuran"],["tawba","mTawba","dTawba"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={school:viewSchool,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={school:viewSchool,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.19";
+const APP_VERSION = "1.0.21";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -1676,6 +1676,7 @@ if(NATIVE){
   if(PL.App) PL.App.addListener("backButton",()=>{
     if(typeof schoolBack==="function"&&schoolBack()) return;
     if(typeof tawbaBack==="function"&&tawbaBack()) return;
+    if(typeof quranBack==="function"&&quranBack()) return;
     if(S.sub){S.sub=null;save();render();window.scrollTo(0,0)}
     else if(S.gender&&S.tab!=="today"){S.tab="today";save();render();window.scrollTo(0,0)}
     else PL.App.exitApp();
@@ -3421,6 +3422,329 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .tw-dhikr{width:100%;border:2px solid var(--gold);background:var(--surface);color:var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .tw-dhikr .ar{font-size:26px;color:var(--accent)}.tw-dhikr b{font-size:34px;color:var(--gold);font-family:var(--f-display)}.tw-dhikr small{color:var(--muted);font-size:12.5px}
 .tw-sayyid{font-size:19px!important;line-height:1.9;text-align:start;margin:6px 0}
+</style>`);
+
+// ---------- Coran : apprendre à lire (Mou'allim al-Qirâ'a) et mémoriser ----------
+const UI12={
+ fr:{mQuran:"Lire et mémoriser le Coran",dQuran:"Le professeur de lecture et la mémorisation, verset par verset",qrIntro:"Apprenez à lire l'arabe du Coran pas à pas avec le professeur de lecture, puis mémorisez les sourates en écoutant de grands récitateurs.",
+  qaida:"Le professeur de lecture",qaidaSub:"Mou'allim al-Qirâ'a · 8 leçons, des lettres jusqu'aux mots du Coran",memo:"Mémoriser le Coran",memoSub:"Écoutez, répétez, cachez le texte et faites-vous corriger",
+  lessonN:"Leçon {n}",done:"Réussie",tapHear:"Touchez une case pour l'entendre.",practice:"S'entraîner · 5 questions",listenChoose:"Écoutez puis choisissez ce que vous avez entendu",replay:"Réécouter",
+  qGood:"Bien lu !",qBad:"Ce n'était pas cela. Écoutez encore.",qRes:"{s} bonnes réponses sur 5",qPass:"Leçon réussie, passez à la suivante.",qFail:"Entraînez-vous encore un peu : il faut 4 bonnes réponses.",
+  ttsNote:"La voix arabe des leçons est celle du téléphone. Pour une prononciation parfaite, écoutez le récitateur dans « Mémoriser le Coran ».",
+  verses:"{n} versets",memoOf:"{m}/{n} versets mémorisés",reciter:"Récitateur",repeat:"Répéter chaque verset",pauseRep:"Laisser le temps de répéter",show:"Affichage",shText:"Texte",shHint:"Indices",shHide:"Caché",trans:"Traduction",
+  playAll:"Écouter la sourate",stop:"Arrêter",playV:"Écouter",recite:"Réciter",known:"Je le connais",knownOk:"Mémorisé",loading:"Chargement de la sourate…",offlineQ:"Connectez-vous à Internet une première fois pour charger cette sourate.",
+  listening:"Récitez le verset maintenant…",checkOk:"Excellent ! {p} % du verset bien récité.",checkKo:"{p} % du verset reconnu. Revoyez les mots en rouge et réessayez.",micNoQ:"La reconnaissance vocale en arabe n'est pas disponible sur ce téléphone.",
+  surahDone:"Sourate mémorisée ! Qu'Allah la garde dans votre cœur.",tapReveal:"Touchez le texte pour le voir",muallimTip:"Avec « Mou'allim », le cheikh récite lentement et laisse un temps pour que vous répétiez.",howMemo:"Méthode conseillée",
+  hm1:"Écoutez le verset 3 fois en suivant le texte.",hm2:"Répétez-le avec « Laisser le temps de répéter ».",hm3:"Passez en « Indices », puis « Caché », et récitez de mémoire.",hm4:"Touchez « Réciter » : l'application vérifie votre récitation.",hm5:"Révisez chaque jour les versets déjà appris avant d'en commencer de nouveaux.",
+  rMuallim:"Al-Husary · Mou'allim (enseignement)",rHusary:"Al-Husary",rAlafasy:"Mishary Alafasy",rMinshawi:"Al-Minshawi"},
+ en:{mQuran:"Read and memorise the Quran",dQuran:"The reading teacher and memorisation, verse by verse",qrIntro:"Learn to read Quranic Arabic step by step with the reading teacher, then memorise surahs by listening to great reciters.",
+  qaida:"The reading teacher",qaidaSub:"Mu'allim al-Qira'a · 8 lessons, from letters to Quranic words",memo:"Memorise the Quran",memoSub:"Listen, repeat, hide the text and get corrected",
+  lessonN:"Lesson {n}",done:"Passed",tapHear:"Tap a tile to hear it.",practice:"Practise · 5 questions",listenChoose:"Listen, then choose what you heard",replay:"Listen again",
+  qGood:"Well read!",qBad:"That was not it. Listen again.",qRes:"{s} correct answers out of 5",qPass:"Lesson passed, move on to the next one.",qFail:"Practise a little more: you need 4 correct answers.",
+  ttsNote:"The Arabic voice in the lessons is the phone's voice. For perfect pronunciation, listen to the reciter in “Memorise the Quran”.",
+  verses:"{n} verses",memoOf:"{m}/{n} verses memorised",reciter:"Reciter",repeat:"Repeat each verse",pauseRep:"Leave time to repeat",show:"Display",shText:"Text",shHint:"Hints",shHide:"Hidden",trans:"Translation",
+  playAll:"Listen to the surah",stop:"Stop",playV:"Listen",recite:"Recite",known:"I know it",knownOk:"Memorised",loading:"Loading the surah…",offlineQ:"Connect to the Internet once to load this surah.",
+  listening:"Recite the verse now…",checkOk:"Excellent! {p}% of the verse recited correctly.",checkKo:"{p}% of the verse recognised. Review the words in red and try again.",micNoQ:"Arabic speech recognition is not available on this phone.",
+  surahDone:"Surah memorised! May Allah keep it in your heart.",tapReveal:"Tap the text to see it",muallimTip:"With “Mu'allim”, the sheikh recites slowly and leaves time for you to repeat.",howMemo:"Recommended method",
+  hm1:"Listen to the verse 3 times while following the text.",hm2:"Repeat it with “Leave time to repeat”.",hm3:"Switch to “Hints”, then “Hidden”, and recite from memory.",hm4:"Tap “Recite”: the app checks your recitation.",hm5:"Every day, revise the verses already learned before starting new ones.",
+  rMuallim:"Al-Husary · Mu'allim (teaching)",rHusary:"Al-Husary",rAlafasy:"Mishary Alafasy",rMinshawi:"Al-Minshawi"},
+ ar:{mQuran:"قراءة القرآن وحفظه",dQuran:"معلّم القراءة والحفظ آيةً آية",qrIntro:"تعلّم قراءة القرآن خطوة بخطوة مع معلّم القراءة، ثم احفظ السور بالاستماع إلى كبار القرّاء.",
+  qaida:"معلّم القراءة",qaidaSub:"ثمانية دروس من الحروف إلى كلمات القرآن",memo:"حفظ القرآن",memoSub:"استمع، وردّد، وأخفِ النص، ودع التطبيق يصحّح لك",
+  lessonN:"الدرس {n}",done:"منجز",tapHear:"المس خانةً لتسمعها.",practice:"تدرّب · 5 أسئلة",listenChoose:"استمع ثم اختر ما سمعت",replay:"أعد الاستماع",
+  qGood:"أحسنت القراءة!",qBad:"ليس هذا. استمع مرة أخرى.",qRes:"{s} إجابات صحيحة من 5",qPass:"نجحت في الدرس، انتقل إلى التالي.",qFail:"تدرّب قليلاً بعد، يلزم 4 إجابات صحيحة.",
+  ttsNote:"الصوت العربي في الدروس هو صوت الهاتف. وللنطق المتقن استمع إلى القارئ في «حفظ القرآن».",
+  verses:"{n} آيات",memoOf:"{m}/{n} آيات محفوظة",reciter:"القارئ",repeat:"تكرار كل آية",pauseRep:"اترك وقتاً للترديد",show:"العرض",shText:"النص",shHint:"تلميح",shHide:"مخفي",trans:"الترجمة",
+  playAll:"استمع إلى السورة",stop:"إيقاف",playV:"استمع",recite:"سمِّع",known:"أحفظها",knownOk:"محفوظة",loading:"جارٍ تحميل السورة…",offlineQ:"اتصل بالإنترنت مرة واحدة لتحميل هذه السورة.",
+  listening:"سمِّع الآية الآن…",checkOk:"ممتاز! {p}٪ من الآية صحيحة.",checkKo:"تم التعرف على {p}٪ من الآية. راجع الكلمات الحمراء وأعد المحاولة.",micNoQ:"التعرّف على الصوت بالعربية غير متاح على هذا الهاتف.",
+  surahDone:"حفظت السورة! حفظها الله في قلبك.",tapReveal:"المس النص لتراه",muallimTip:"مع «المعلّم» يقرأ الشيخ ببطء ويترك وقتاً لتردّد بعده.",howMemo:"الطريقة المقترحة",
+  hm1:"استمع إلى الآية ثلاث مرات مع متابعة النص.",hm2:"ردّدها مع «اترك وقتاً للترديد».",hm3:"انتقل إلى «تلميح» ثم «مخفي» وسمِّع من حفظك.",hm4:"المس «سمِّع» ليتحقق التطبيق من تلاوتك.",hm5:"راجع كل يوم ما حفظته قبل أن تبدأ بالجديد.",
+  rMuallim:"الحصري · المعلّم",rHusary:"الحصري",rAlafasy:"مشاري العفاسي",rMinshawi:"المنشاوي"}
+};
+Object.keys(UI12).forEach(l=>Object.assign(UI2[l],UI12[l]));
+
+// ---------- Sourates proposées ----------
+const QSURAH={1:["الفاتحة","Al-Fâtiha",{fr:"L'Ouverture",en:"The Opening"},7],36:["يس","Yâ-Sîn",{fr:"Yâ-Sîn",en:"Ya-Sin"},83],67:["الملك","Al-Moulk",{fr:"La Royauté",en:"The Dominion"},30],
+78:["النبأ","An-Naba'",{fr:"La Nouvelle",en:"The Tidings"},40],79:["النازعات","An-Nâzi'ât",{fr:"Les Anges qui arrachent",en:"Those Who Pull Out"},46],80:["عبس","'Abasa",{fr:"Il s'est renfrogné",en:"He Frowned"},42],81:["التكوير","At-Takwîr",{fr:"L'Obscurcissement",en:"The Overthrowing"},29],82:["الانفطار","Al-Infitâr",{fr:"La Rupture",en:"The Cleaving"},19],83:["المطففين","Al-Moutaffifîn",{fr:"Les Fraudeurs",en:"The Defrauders"},36],84:["الانشقاق","Al-Inchiqâq",{fr:"La Déchirure",en:"The Splitting"},25],85:["البروج","Al-Bouroûj",{fr:"Les Constellations",en:"The Constellations"},22],86:["الطارق","At-Târiq",{fr:"L'Astre nocturne",en:"The Night Comer"},17],87:["الأعلى","Al-A'lâ",{fr:"Le Très-Haut",en:"The Most High"},19],88:["الغاشية","Al-Ghâchiya",{fr:"L'Enveloppante",en:"The Overwhelming"},26],89:["الفجر","Al-Fajr",{fr:"L'Aube",en:"The Dawn"},30],90:["البلد","Al-Balad",{fr:"La Cité",en:"The City"},20],91:["الشمس","Ach-Chams",{fr:"Le Soleil",en:"The Sun"},15],92:["الليل","Al-Layl",{fr:"La Nuit",en:"The Night"},21],93:["الضحى","Ad-Douhâ",{fr:"Le Jour montant",en:"The Morning Hours"},11],94:["الشرح","Ach-Charh",{fr:"L'Ouverture de la poitrine",en:"The Relief"},8],95:["التين","At-Tîn",{fr:"Le Figuier",en:"The Fig"},8],96:["العلق","Al-'Alaq",{fr:"L'Adhérence",en:"The Clinging Clot"},19],97:["القدر","Al-Qadr",{fr:"La Destinée",en:"The Power"},5],98:["البينة","Al-Bayyina",{fr:"La Preuve",en:"The Clear Proof"},8],99:["الزلزلة","Az-Zalzala",{fr:"La Secousse",en:"The Earthquake"},8],100:["العاديات","Al-'Âdiyât",{fr:"Les Coursiers",en:"The Courser"},11],101:["القارعة","Al-Qâri'a",{fr:"Le Fracas",en:"The Calamity"},11],102:["التكاثر","At-Takâthour",{fr:"La Course aux richesses",en:"The Rivalry"},8],103:["العصر","Al-'Asr",{fr:"Le Temps",en:"The Time"},3],104:["الهمزة","Al-Houmaza",{fr:"Les Calomniateurs",en:"The Slanderer"},9],105:["الفيل","Al-Fîl",{fr:"L'Éléphant",en:"The Elephant"},5],106:["قريش","Qouraych",{fr:"Qouraych",en:"Quraysh"},4],107:["الماعون","Al-Mâ'oûn",{fr:"L'Ustensile",en:"Small Kindnesses"},7],108:["الكوثر","Al-Kawthar",{fr:"L'Abondance",en:"Abundance"},3],109:["الكافرون","Al-Kâfiroûn",{fr:"Les Infidèles",en:"The Disbelievers"},6],110:["النصر","An-Nasr",{fr:"Le Secours",en:"The Help"},3],111:["المسد","Al-Masad",{fr:"Les Fibres",en:"The Palm Fibre"},5],112:["الإخلاص","Al-Ikhlâs",{fr:"Le Monothéisme pur",en:"Sincerity"},4],113:["الفلق","Al-Falaq",{fr:"L'Aube naissante",en:"The Daybreak"},5],114:["الناس","An-Nâs",{fr:"Les Hommes",en:"Mankind"},6]};
+const QORDER=[1,...Array.from({length:37},(_,i)=>114-i),67,36];
+const RECITERS=[["muallim","rMuallim","Husary_Muallim_128kbps"],["husary","rHusary","Husary_128kbps"],["alafasy","rAlafasy","Alafasy_128kbps"],["minshawi","rMinshawi","Minshawy_Murattal_128kbps"]];
+
+// ---------- Le professeur de lecture (Qâ'ida) ----------
+const LETTERS=[["ا","ألف","alif"],["ب","باء","bâ"],["ت","تاء","tâ"],["ث","ثاء","thâ"],["ج","جيم","jîm"],["ح","حاء","hâ"],["خ","خاء","khâ"],["د","دال","dâl"],["ذ","ذال","dhâl"],["ر","راء","râ"],["ز","زاي","zây"],["س","سين","sîn"],["ش","شين","chîn"],["ص","صاد","sâd"],["ض","ضاد","dâd"],["ط","طاء","tâ"],["ظ","ظاء","zhâ"],["ع","عين","'ayn"],["غ","غين","ghayn"],["ف","فاء","fâ"],["ق","قاف","qâf"],["ك","كاف","kâf"],["ل","لام","lâm"],["م","ميم","mîm"],["ن","نون","noûn"],["ه","هاء","hâ"],["و","واو","wâw"],["ي","ياء","yâ"]];
+const NOJOIN="ادذرزو";
+const CONS=LETTERS.slice(1).map(x=>x[0]);
+const forms=l=>NOJOIN.includes(l)?[l,l,"ـ"+l,"ـ"+l]:[l,l+"ـ","ـ"+l+"ـ","ـ"+l];
+const QWORDS=[["اللَّه",{fr:"Allah",en:"Allah"}],["رَبِّ",{fr:"Seigneur",en:"Lord"}],["الْحَمْدُ",{fr:"la louange",en:"praise"}],["الرَّحْمَٰنِ",{fr:"le Tout Miséricordieux",en:"the Most Merciful"}],["مَالِكِ",{fr:"Maître",en:"Master"}],["يَوْمِ",{fr:"jour",en:"day"}],["الدِّينِ",{fr:"la Rétribution",en:"Judgement"}],["نَعْبُدُ",{fr:"nous adorons",en:"we worship"}],["نَسْتَعِينُ",{fr:"nous demandons l'aide",en:"we seek help"}],["صِرَاطَ",{fr:"chemin",en:"path"}],["قُلْ",{fr:"dis",en:"say"}],["أَحَدٌ",{fr:"Unique",en:"One"}],["الصَّمَدُ",{fr:"l'Absolu",en:"the Eternal"}],["النَّاسِ",{fr:"les hommes",en:"mankind"}],["الْفَلَقِ",{fr:"l'aube",en:"daybreak"}],["الْكَوْثَرَ",{fr:"l'abondance",en:"abundance"}]];
+const QAIDA=[
+ {id:"q1",t:{fr:"Les 28 lettres",en:"The 28 letters",ar:"الحروف الثمانية والعشرون"},x:{fr:"L'arabe s'écrit et se lit de droite à gauche. Il a 28 lettres. Écoutez le nom de chaque lettre et répétez-le à voix haute.",en:"Arabic is written and read from right to left. It has 28 letters. Listen to the name of each letter and repeat it aloud.",ar:"تُكتب العربية وتُقرأ من اليمين إلى اليسار، وحروفها ثمانية وعشرون. استمع إلى اسم كل حرف وردّده بصوت مسموع."},
+  items:()=>LETTERS.map(([l,n,tr])=>({show:l,say:n,sub:tr}))},
+ {id:"q2",t:{fr:"Les formes des lettres",en:"Letter shapes",ar:"أشكال الحروف"},x:{fr:"Une lettre change de forme selon sa place : seule, au début, au milieu ou à la fin du mot. Six lettres (ا د ذ ر ز و) ne s'attachent jamais à la lettre qui suit.",en:"A letter changes shape according to its place: alone, at the start, middle or end of a word. Six letters (ا د ذ ر ز و) never join the following letter.",ar:"يتغيّر شكل الحرف بحسب موضعه: منفرداً، أو في أول الكلمة أو وسطها أو آخرها. وستة حروف (ا د ذ ر ز و) لا تتصل بما بعدها."},
+  items:()=>LETTERS.map(([l,n,tr])=>({show:forms(l).join("  "),say:n,sub:tr,q:l})),quizFrom:()=>LETTERS.map(([l,n])=>({show:l,say:n}))},
+ {id:"q3",t:{fr:"Les voyelles courtes",en:"Short vowels",ar:"الحركات"},x:{fr:"La fatha (◌َ) se lit « a », la kasra (◌ِ) se lit « i », la damma (◌ُ) se lit « ou ». Exemple : بَ « ba », بِ « bi », بُ « bou ».",en:"Fathah (◌َ) reads “a”, kasrah (◌ِ) reads “i”, dammah (◌ُ) reads “u”. Example: بَ “ba”, بِ “bi”, بُ “bu”.",ar:"الفتحة (◌َ) والكسرة (◌ِ) والضمة (◌ُ). مثال: بَ بِ بُ."},
+  items:()=>CONS.flatMap(l=>[l+"َ",l+"ِ",l+"ُ"].map(s=>({show:s,say:s}))),grp:3},
+ {id:"q4",t:{fr:"Les voyelles longues (madd)",en:"Long vowels (madd)",ar:"حروف المدّ"},x:{fr:"Quand une voyelle est suivie de ا, ي ou و, on l'allonge de deux temps : بَا « bâ », بِي « bî », بُو « boû ».",en:"When a vowel is followed by ا, ي or و, it is lengthened by two counts: بَا “baa”, بِي “bii”, بُو “buu”.",ar:"إذا جاء بعد الحركة ألف أو ياء أو واو مُدّت حركتين: بَا بِي بُو."},
+  items:()=>CONS.flatMap(l=>[l+"َا",l+"ِي",l+"ُو"].map(s=>({show:s,say:s}))),grp:3},
+ {id:"q5",t:{fr:"Le soukoun",en:"Sukun",ar:"السكون"},x:{fr:"Le soukoun (◌ْ) signifie que la lettre n'a pas de voyelle : on la colle à la lettre d'avant. Exemple : أَبْ « ab », أِبْ « ib », أُبْ « oub ».",en:"Sukun (◌ْ) means the letter has no vowel: it is joined to the letter before. Example: أَبْ “ab”, إِبْ “ib”, أُبْ “ub”.",ar:"السكون (◌ْ) يعني أن الحرف بلا حركة فيُنطق متصلاً بما قبله: أَبْ إِبْ أُبْ."},
+  items:()=>CONS.flatMap(l=>["أَ"+l+"ْ","إِ"+l+"ْ","أُ"+l+"ْ"].map(s=>({show:s,say:s}))),grp:3},
+ {id:"q6",t:{fr:"Le tanwîn",en:"Tanwin",ar:"التنوين"},x:{fr:"Deux voyelles sur une lettre ajoutent un son « n » : بًا « ban », بٍ « bin », بٌ « boun ».",en:"Two vowel marks on a letter add an “n” sound: بًا “ban”, بٍ “bin”, بٌ “bun”.",ar:"تنوين الفتح والكسر والضم يضيف نوناً ساكنة في النطق: بًا بٍ بٌ."},
+  items:()=>CONS.filter(l=>l!=="ة").flatMap(l=>[l+"ًا",l+"ٍ",l+"ٌ"].map(s=>({show:s,say:s}))),grp:3},
+ {id:"q7",t:{fr:"La chadda",en:"Shaddah",ar:"الشدّة"},x:{fr:"La chadda (◌ّ) double la lettre : on la prononce deux fois, une avec soukoun et une avec voyelle. Exemple : رَبِّ « rab-bi ».",en:"Shaddah (◌ّ) doubles the letter: it is pronounced twice, once with sukun and once with a vowel. Example: رَبِّ “rab-bi”.",ar:"الشدّة (◌ّ) تعني حرفين: الأول ساكن والثاني متحرك. مثال: رَبِّ."},
+  items:()=>["رَبِّ","إِنَّ","ثُمَّ","أُمِّ","حَقٌّ","مُحَمَّدٌ","الْجَنَّةَ","كُلُّ","الشَّمْسُ","النَّاسِ","اللَّهُ","يَدَّ"].map(s=>({show:s,say:s}))},
+ {id:"q8",t:{fr:"Lire des mots du Coran",en:"Reading Quranic words",ar:"قراءة كلمات من القرآن"},x:{fr:"Vous pouvez maintenant lire des mots de la Fâtiha et des petites sourates. Lisez d'abord seul, puis touchez pour vérifier.",en:"You can now read words from Al-Fatihah and the short surahs. Read on your own first, then tap to check.",ar:"تستطيع الآن قراءة كلمات من الفاتحة وقصار السور. اقرأ بنفسك أولاً ثم المس لتتحقق."},
+  items:()=>QWORDS.map(([w,m])=>({show:w,say:w,sub:S.lang==="ar"?"":L3(m)}))}
+];
+
+// ---------- État ----------
+S.quran=S.quran||{mem:{},qdone:{},rec:"muallim",rep:1,pause:false,hide:0,tr:true};
+S.qr=S.qr||{v:"home"};
+const QR=S.quran;
+const QCACHE={};
+const QMARKS=/[ؐ-ًؚ-ٰٟۖ-ۭـ]/g;
+const qnorm=s=>s.replace(QMARKS,"").replace(/[ٱأإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/ؤ/g,"و").replace(/ئ/g,"ي").replace(/[^ء-ي\s]/g,"").trim();
+const memCount=n=>(QR.mem[n]||[]).length;
+const pad3=x=>String(x).padStart(3,"0");
+
+async function loadSurah(n){
+  if(QCACHE[n]) return QCACHE[n];
+  try{const c=localStorage.getItem("djh-q-"+n);if(c){QCACHE[n]=JSON.parse(c);return QCACHE[n]}}catch(e){}
+  let d=null;
+  try{const r=await fetch("quran/"+n+".json");if(r.ok)d=await r.json()}catch(e){}
+  if(!d){
+    const r=await fetch(`https://api.alquran.cloud/v1/surah/${n}/editions/quran-uthmani,fr.hamidullah,en.sahih`);
+    const j=(await r.json()).data;
+    const ar=j[0].ayahs.map(a=>a.text);
+    if(n!==1&&n!==9){const w=ar[0].split(" ");if(w.slice(0,4).map(qnorm).join(" ")==="بسم الله الرحمن الرحيم")ar[0]=w.slice(4).join(" ")}
+    d={n,ar,fr:j[1].ayahs.map(a=>a.text),en:j[2].ayahs.map(a=>a.text),g:j[0].ayahs.map(a=>a.number)};
+  }
+  d.ar=d.ar.map(x=>x.replace(/^\ufeff/,""));
+  QCACHE[n]=d; try{localStorage.setItem("djh-q-"+n,JSON.stringify(d))}catch(e){}
+  return d;
+}
+
+// ---------- Vues ----------
+function viewQuran(){
+  const v=S.qr.v;
+  if(v==="qaida") return qaidaHome();
+  if(v==="qlesson") return qaidaLesson();
+  if(v==="qquiz") return qaidaQuiz();
+  if(v==="memo") return memoHome();
+  if(v==="surah") return surahView();
+  return quranHome();
+}
+function quranHome(){
+  const qd=QAIDA.filter(l=>QR.qdone[l.id]>=4).length, ms=QORDER.filter(n=>memCount(n)>=QSURAH[n][3]).length;
+  return `<section class="hello"><h1>${t("mQuran")}</h1><p>${t("qrIntro")}</p></section>
+  <button class="qr-big" data-qr="qaida"><span class="qr-ic ar">ا ب ت</span><span><b>${t("qaida")}</b><small>${t("qaidaSub")}</small><i class="progress"><i style="width:${qd/QAIDA.length*100}%"></i></i><em>${qd}/${QAIDA.length}</em></span></button>
+  <button class="qr-big" data-qr="memo"><span class="qr-ic ar">۩</span><span><b>${t("memo")}</b><small>${t("memoSub")}</small><i class="progress"><i style="width:${ms/QORDER.length*100}%"></i></i><em>${ms}/${QORDER.length}</em></span></button>
+  <div class="card"><h3>${t("howMemo")}</h3><ol class="sch-how">${["hm1","hm2","hm3","hm4","hm5"].map(k=>`<li>${t(k)}</li>`).join("")}</ol></div>
+  <div class="card sch-key"><p class="ar verse">خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ</p><p class="src">Bukhari 5027</p></div>`;
+}
+function qaidaHome(){
+  return `<section class="hello"><span class="eyebrow">${t("mQuran")}</span><h1>${t("qaida")}</h1><p>${t("qaidaSub")}</p></section>
+  <div class="card">${QAIDA.map((l,i)=>{const ok=QR.qdone[l.id]>=4;return `<button class="sch-row ${ok?"ok":""}" data-ql="${l.id}"><span class="sch-num">${ok?"✓":i+1}</span><span class="sch-t"><b>${L3(l.t)}</b><span>${ok?t("done")+" · "+"★".repeat(QR.qdone[l.id]):fmt(t("lessonN"),{n:i+1})}</span></span><i aria-hidden="true">›</i></button>`}).join("")}</div>
+  <p class="note">${t("ttsNote")}</p>`;
+}
+function qaidaLesson(){
+  const l=QAIDA.find(x=>x.id===S.qr.ql), it=l.items(), i=QAIDA.indexOf(l);
+  return `<section class="hello"><span class="eyebrow">${t("qaida")} · ${fmt(t("lessonN"),{n:i+1})}</span><h1>${L3(l.t)}</h1></section>
+  <div class="card"><p style="margin:0;line-height:1.6">${L3(l.x)}</p><p class="note" style="margin:0">🔊 ${t("tapHear")}</p></div>
+  <div class="qa-grid ${l.grp?"g3":""} ${l.id==="q2"?"wide":""} ${l.id==="q8"||l.id==="q7"?"words":""}">${it.map((x,k)=>`<button class="qa-tile" data-say="${k}"><span class="ar">${x.show}</span>${x.sub?`<small>${x.sub}</small>`:""}</button>`).join("")}</div>
+  <button class="btn sch-go" id="qa-quiz">${t("practice")} ›</button>`;
+}
+function qaidaQuiz(){
+  const z=S.qr.quiz, r=z.rounds[z.i], sel=z.sel;
+  return `<section class="hello"><span class="eyebrow">${L3(QAIDA.find(x=>x.id===S.qr.ql).t)}</span><h1 class="sch-q-of">${fmt(t("qOf"),{i:z.i+1,n:5})}</h1></section>
+  <div class="progress"><i style="width:${(z.i+(sel!=null?1:0))/5*100}%"></i></div>
+  <div class="card" style="align-items:center;text-align:center"><p class="sch-q" style="font-weight:600">${t("listenChoose")}</p>
+   <button class="qa-play" id="qa-play" aria-label="${t("replay")}">🔊</button>
+   <div class="qa-opts">${r.opts.map((o,k)=>{let c="";if(sel!=null){if(k===r.a)c="right";else if(k===sel)c="wrong";else c="dim"}return `<button class="qa-opt ${c}" data-qa="${k}" ${sel!=null?"disabled":""}><span class="ar">${o.show}</span></button>`}).join("")}</div>
+   ${sel!=null?`<p class="tw-msg ${sel===r.a?"ok":""}">${sel===r.a?t("qGood"):t("qBad")}</p><button class="btn sch-go" id="qa-next">${z.i<4?t("next"):t("seeResult")} ›</button>`:""}
+  </div>
+  ${z.end?"":""}`;
+}
+function memoHome(){
+  return `<section class="hello"><span class="eyebrow">${t("mQuran")}</span><h1>${t("memo")}</h1><p>${t("memoSub")}</p></section>
+  <div class="card">${QORDER.map(n=>{const [a,tr,m,c]=QSURAH[n],k=memCount(n),ok=k>=c;return `<button class="sch-row ${ok?"ok":""}" data-surah="${n}"><span class="sch-num qr-n">${ok?"✓":n}</span><span class="sch-t"><b>${tr} <span class="ar qr-an">${a}</span></b><span>${S.lang==="ar"?"":L3(m)+" · "}${fmt(t("verses"),{n:c})}${k?" · "+fmt(t("memoOf"),{m:k,n:c}):""}</span></span><i aria-hidden="true">›</i></button>`}).join("")}</div>`;
+}
+function surahView(){
+  const n=S.qr.n, [an,tr,mn,cnt]=QSURAH[n], d=QCACHE[n], mem=QR.mem[n]||[];
+  if(!d){loadSurah(n).then(()=>{if(S.sub==="quran"&&S.qr.v==="surah"&&S.qr.n===n){const sy=scrollY;render();scrollTo(0,sy)}}).catch(()=>{const el=document.getElementById("qr-load");if(el)el.textContent=t("offlineQ")});}
+  const chip=(k,v,label,cur)=>`<button class="qr-chip ${cur===v?"on":""}" data-qset="${k}" data-v="${v}">${label}</button>`;
+  return `<section class="hello qr-hello"><span class="eyebrow">${tr}${S.lang==="ar"?"":" · "+L3(mn)}</span><h1 class="ar qr-title">سُورَةُ ${an}</h1>
+   <p>${fmt(t("verses"),{n:cnt})} · ${fmt(t("memoOf"),{m:mem.length,n:cnt})}</p><div class="progress"><i style="width:${mem.length/cnt*100}%"></i></div></section>
+  <div class="card qr-ctl">
+   <span class="eyebrow">${t("reciter")}</span><div class="qr-chips">${RECITERS.map(([id,k])=>chip("rec",id,t(k),QR.rec)).join("")}</div>
+   ${QR.rec==="muallim"?`<p class="note" style="margin:0">${t("muallimTip")}</p>`:""}
+   <span class="eyebrow">${t("repeat")}</span><div class="qr-chips">${[1,3,5,10].map(x=>chip("rep",x,x+"×",QR.rep)).join("")}</div>
+   <label class="tw-step"><input type="checkbox" id="qr-pause" ${QR.pause?"checked":""}><span>${t("pauseRep")}</span></label>
+   <span class="eyebrow">${t("show")}</span><div class="qr-chips">${[[0,"shText"],[1,"shHint"],[2,"shHide"]].map(([v,k])=>chip("hide",v,t(k),QR.hide)).join("")}${S.lang!=="ar"?`<button class="qr-chip ${QR.tr?"on":""}" id="qr-tr">${t("trans")}</button>`:""}</div>
+  </div>
+  <button class="btn sch-go" id="qr-all">${QP.playing?"■ "+t("stop"):"▶ "+t("playAll")}</button>
+  ${d?`${n!==1&&n!==9?`<p class="ar verse qr-basm">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>`:""}
+   ${d.ar.map((v,i)=>{const k=i+1,isM=mem.includes(k),w=v.split(" ");
+    const txt=QR.hide===1&&!isRev(k)?`${w[0]} <span class="qr-blur">${w.slice(1).join(" ")}</span>`:QR.hide===2&&!isRev(k)?`<span class="qr-blur">${v}</span>`:v;
+    return `<article class="card qr-ay ${isM?"mem":""} ${QP.playing&&QP.k===k?"playing":""}" id="ay-${k}">
+     <div class="qr-line"><p class="ar qr-txt" data-reveal="${k}">${txt}</p><span class="qr-num">${String(k).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x])}</span></div>
+     ${QR.tr&&S.lang!=="ar"?`<p class="qr-trl">${(d[S.lang]||d.fr)[i]}</p>`:""}
+     <div class="qr-check" id="chk-${k}" hidden></div>
+     <div class="qr-acts"><button data-qplay="${k}">▶ ${t("playV")}</button><button data-qrec="${k}">🎙 ${t("recite")}</button><button class="${isM?"on":""}" data-qmem="${k}">${isM?"✓ "+t("knownOk"):"○ "+t("known")}</button></div></article>`}).join("")}`
+  :`<p class="note" id="qr-load" style="text-align:center">${t("loading")}</p>`}`;
+}
+const REV=new Set();const isRev=k=>REV.has(S.qr.n+":"+k);
+
+// ---------- Audio de récitation ----------
+const QP={playing:false,k:0,audio:null,timer:null,single:false};
+function qUrl(n,k,fallback){
+  if(fallback){const d=QCACHE[n];return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${d.g[k-1]}.mp3`}
+  const r=RECITERS.find(x=>x[0]===QR.rec)||RECITERS[0];
+  return `https://everyayah.com/data/${r[2]}/${pad3(n)}${pad3(k)}.mp3`;
+}
+function qStop(){QP.playing=false;clearTimeout(QP.timer);if(QP.audio){QP.audio.pause();QP.audio.src=""}document.querySelectorAll(".qr-ay.playing").forEach(e=>e.classList.remove("playing"));const b=document.getElementById("qr-all");if(b)b.textContent="▶ "+t("playAll")}
+function qPlay(k,single){
+  try{if(typeof audioEl!=="undefined"&&audioEl&&!audioEl.paused)audioEl.pause()}catch(e){}
+  qStop(); if(!QCACHE[S.qr.n]) return;
+  QP.playing=true;QP.single=single;QP.n=S.qr.n;QP.k=k;QP.left=QR.rep;
+  const b=document.getElementById("qr-all");if(b)b.textContent="■ "+t("stop");
+  qStep(false);
+}
+function qStep(fb){
+  if(!QP.playing) return;
+  const n=QP.n,k=QP.k,a=QP.audio||(QP.audio=new Audio());
+  document.querySelectorAll(".qr-ay.playing").forEach(e=>e.classList.remove("playing"));
+  const el=document.getElementById("ay-"+k);if(el){el.classList.add("playing");el.scrollIntoView({block:"center",behavior:"smooth"})}
+  a.src=qUrl(n,k,fb);
+  a.onerror=()=>{if(!fb)qStep(true);else qStop()};
+  a.onended=()=>{
+    const wait=QR.pause?Math.min(30000,(a.duration||4)*1000+600):250;
+    QP.timer=setTimeout(()=>{
+      if(!QP.playing) return;
+      QP.left--; if(QP.left>0){qStep(fb);return}
+      if(QP.single||k>=QSURAH[n][3]){qStop();return}
+      QP.k=k+1;QP.left=QR.rep;qStep(false);
+    },wait);
+  };
+  a.play().catch(()=>{if(!fb)qStep(true);else qStop()});
+}
+
+// ---------- Vérifier la récitation ----------
+async function listenAr(){
+  if(NATIVE&&PL.SpeechRecognition){
+    const av=await PL.SpeechRecognition.available(); if(!av||!av.available) throw 0;
+    await PL.SpeechRecognition.requestPermissions();
+    const res=await PL.SpeechRecognition.start({language:"ar-SA",maxResults:1,prompt:t("listening"),partialResults:false,popup:true});
+    return (res&&res.matches&&res.matches[0])||"";
+  }
+  const R=window.SpeechRecognition||window.webkitSpeechRecognition; if(!R) throw 0;
+  return await new Promise((ok,ko)=>{const r=new R();r.lang="ar-SA";r.onresult=e=>ok(e.results[0][0].transcript);r.onerror=()=>ko(0);r.onend=()=>ok("");r.start()});
+}
+async function qCheck(k){
+  const n=S.qr.n,d=QCACHE[n],box=document.getElementById("chk-"+k); if(!d||!box) return;
+  qStop(); box.hidden=false; box.innerHTML=`<p class="note" style="margin:0">🎙 ${t("listening")}</p>`;
+  let said="";
+  try{said=await listenAr()}catch(e){box.innerHTML=`<p class="note" style="margin:0">${t("micNoQ")}</p>`;return}
+  const words=d.ar[k-1].split(" ").filter(w=>qnorm(w)), got=qnorm(said).split(/\s+/).filter(Boolean);
+  const pool=[...got]; let hit=0;
+  const marks=words.map(w=>{const nw=qnorm(w);const j=pool.findIndex(x=>x===nw||(nw.length>3&&(x.includes(nw)||nw.includes(x))&&Math.abs(x.length-nw.length)<=2));if(j>=0){pool.splice(j,1);hit++;return `<span class="ok">${w}</span>`}return `<span class="ko">${w}</span>`});
+  const p=Math.round(hit/words.length*100), ok=p>=80;
+  box.innerHTML=`<p class="ar qr-mark">${marks.join(" ")}</p><p class="tw-msg ${ok?"ok":""}">${fmt(t(ok?"checkOk":"checkKo"),{p})}</p>`;
+  if(ok&&!(QR.mem[n]||[]).includes(k)) setMem(n,k,true,true);
+}
+function setMem(n,k,on,keepScroll){
+  const m=QR.mem[n]=QR.mem[n]||[];
+  if(on&&!m.includes(k)){m.push(k);if(typeof addPts==="function")addPts(5)}
+  if(!on){const i=m.indexOf(k);if(i>=0)m.splice(i,1)}
+  if(on&&m.length===QSURAH[n][3]&&!(QR.doneS||[]).includes(n)){QR.doneS=[...(QR.doneS||[]),n];if(typeof addPts==="function")addPts(50);toast(`<div class="bt"><div><span>۩ ${QSURAH[n][1]}</span><b>${t("surahDone")}</b></div></div>`,true)}
+  save();
+  if(!keepScroll){const sy=scrollY;render();scrollTo(0,sy)}
+  else{const el=document.getElementById("ay-"+k);if(el){el.classList.toggle("mem",on);const b=el.querySelector("[data-qmem]");if(b){b.className=on?"on":"";b.textContent=(on?"✓ "+t("knownOk"):"○ "+t("known"))}}}
+}
+
+// ---------- Exercices du professeur ----------
+function sayAr(s){speakSeq([[s,"ar-SA"]])}
+function startQaidaQuiz(){
+  const l=QAIDA.find(x=>x.id===S.qr.ql), pool=(l.quizFrom||l.items)(), rounds=[];
+  const pick=()=>pool[Math.floor(Math.random()*pool.length)];
+  for(let i=0;i<5;i++){
+    let base=Math.floor(Math.random()*pool.length);
+    if(l.grp) base-=base%l.grp;
+    const set=l.grp?pool.slice(base,base+l.grp):(()=>{const s=[pool[base]];while(s.length<3){const x=pick();if(!s.includes(x))s.push(x)}return s})();
+    const opts=[...set].sort(()=>Math.random()-.5);
+    rounds.push({opts,a:opts.indexOf(set[l.grp?Math.floor(Math.random()*l.grp):0])});
+  }
+  S.qr={...S.qr,v:"qquiz",quiz:{rounds,i:0,sel:null,s:0}};save();render();scrollTo(0,0);
+  setTimeout(()=>{const r=rounds[0];sayAr(r.opts[r.a].say)},400);
+}
+
+// ---------- Événements ----------
+function qrGo(o){S.tab="more";S.sub="quran";S.qr={...S.qr,...o};save();render();scrollTo(0,0)}
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-qr],[data-ql],[data-say],[data-qa],[data-surah],[data-qset],[data-qplay],[data-qrec],[data-qmem],[data-reveal],#qa-quiz,#qa-play,#qa-next,#qr-all,#qr-tr");
+  if(!el||S.sub!=="quran") return;
+  const d=el.dataset;
+  if(d.qr){qrGo({v:d.qr});return}
+  if(d.ql){qrGo({v:"qlesson",ql:d.ql});return}
+  if(d.say!==undefined){const l=QAIDA.find(x=>x.id===S.qr.ql);const it=l.items()[+d.say];sayAr(it.say);el.classList.add("hit");setTimeout(()=>el.classList.remove("hit"),500);return}
+  if(el.id==="qa-quiz"){startQaidaQuiz();return}
+  if(el.id==="qa-play"){const z=S.qr.quiz,r=z.rounds[z.i];sayAr(r.opts[r.a].say);return}
+  if(d.qa!==undefined){const z=S.qr.quiz;if(z.sel!=null)return;z.sel=+d.qa;if(z.sel===z.rounds[z.i].a){z.s++;if(typeof addPts==="function")addPts(2)}save();render();return}
+  if(el.id==="qa-next"){const z=S.qr.quiz;
+    if(z.i<4){z.i++;z.sel=null;save();render();scrollTo(0,0);setTimeout(()=>{const r=z.rounds[z.i];sayAr(r.opts[r.a].say)},350);return}
+    const id=S.qr.ql,prev=QR.qdone[id]||0;if(z.s>prev)QR.qdone[id]=z.s;if(z.s>=4&&prev<4&&typeof addPts==="function")addPts(20);
+    toast(`${fmt(t("qRes"),{s:z.s})} · ${z.s>=4?t("qPass"):t("qFail")}`,z.s>=4);qrGo({v:z.s>=4?"qaida":"qlesson"});return}
+  if(d.surah){REV.clear();qrGo({v:"surah",n:+d.surah});return}
+  if(d.qset){const v=d.qset==="rec"?d.v:+d.v;QR[d.qset]=v;if(d.qset==="rec"&&QP.playing){const k=QP.k;save();render();qPlay(k,QP.single);return}save();const sy=scrollY;render();scrollTo(0,sy);return}
+  if(el.id==="qr-tr"){QR.tr=!QR.tr;save();const sy=scrollY;render();scrollTo(0,sy);return}
+  if(el.id==="qr-all"){if(QP.playing)qStop();else qPlay(1,false);return}
+  if(d.qplay){qPlay(+d.qplay,true);return}
+  if(d.qrec){qCheck(+d.qrec);return}
+  if(d.qmem){const n=S.qr.n,k=+d.qmem;setMem(n,k,!(QR.mem[n]||[]).includes(k),true);return}
+  if(d.reveal&&QR.hide){const key=S.qr.n+":"+d.reveal;REV.has(key)?REV.delete(key):REV.add(key);const sy=scrollY;render();scrollTo(0,sy);return}
+});
+document.addEventListener("change",e=>{if(e.target.id==="qr-pause"){QR.pause=e.target.checked;save()}});
+document.addEventListener("click",e=>{
+  if(S.sub!=="quran"||!S.qr||S.qr.v==="home") return;
+  if(!(e.target.closest&&e.target.closest("#back"))) return;
+  e.stopPropagation();e.preventDefault();quranBack();
+},true);
+function quranBack(){
+  if(S.sub!=="quran"||!S.qr||S.qr.v==="home") return false;
+  qStop();
+  const up={qlesson:"qaida",qquiz:"qlesson",surah:"memo",qaida:"home",memo:"home"}[S.qr.v]||"home";
+  S.qr={...S.qr,v:up};save();render();scrollTo(0,0);return true;
+}
+BADGES.push(
+ ["qr1",{fr:"Première sourate",en:"First surah",ar:"أول سورة"},{fr:"Mémoriser une sourate entière",en:"Memorise a whole surah",ar:"احفظ سورة كاملة"},()=>(QR.doneS||[]).length>=1],
+ ["qr10",{fr:"Dix sourates",en:"Ten surahs",ar:"عشر سور"},{fr:"Mémoriser 10 sourates",en:"Memorise 10 surahs",ar:"احفظ عشر سور"},()=>(QR.doneS||[]).length>=10],
+ ["qaida",{fr:"Je sais lire",en:"I can read",ar:"أعرف القراءة"},{fr:"Réussir les 8 leçons du professeur de lecture",en:"Pass the 8 reading teacher lessons",ar:"انجح في دروس معلّم القراءة الثمانية"},()=>QAIDA.every(l=>QR.qdone[l.id]>=4)]
+);
+Object.assign(BADGE_ICON,{qr1:"١",qr10:"١٠",qaida:"أ"});
+Object.assign(MOTIF,{quran:`<path d="M16 50l24-10 24 10-24 12z" fill="${IC.gold}"/><path d="M22 28c6-3 12-3 18 1v20c-6-4-12-4-18-1z" fill="${IC.cream}"/><path d="M58 28c-6-3-12-3-18 1v20c6-4 12-4 18-1z" fill="${IC.cream}" opacity=".85"/><path d="M40 29v20" stroke="${IC.gold}" stroke-width="2"/>`});
+document.head.insertAdjacentHTML("beforeend",`<style>
+.qr-big{width:100%;display:flex;gap:14px;align-items:center;text-align:start;border:1.5px solid var(--gold);background:linear-gradient(135deg,var(--surface),var(--soft));border-radius:20px;padding:16px;color:var(--ink);font:inherit}
+.qr-big>span:last-child{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.qr-big b{font-size:17px;font-family:var(--f-display)}.qr-big small{color:var(--muted);font-size:13px}.qr-big em{font-style:normal;font-size:12px;color:var(--gold);font-weight:800}
+.qr-ic{flex:none;width:64px;height:64px;border-radius:18px;background:var(--accent);color:#F3DFA2;display:grid;place-items:center;font-size:24px;line-height:1}
+.qa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.qa-grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.qa-grid.wide,.qa-grid.words{grid-template-columns:repeat(2,minmax(0,1fr))}
+.qa-tile{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:0;transition:transform .15s}
+.qa-tile .ar{font-family:var(--f-verse);font-size:34px;line-height:1.6;color:var(--accent)}.qa-grid.wide .qa-tile .ar{font-size:26px;letter-spacing:2px}.qa-grid.words .qa-tile .ar{font-size:28px}
+.qa-tile small{font-size:12px;color:var(--muted)}.qa-tile.hit{transform:scale(.94);border-color:var(--gold);background:var(--soft)}
+.qa-play{width:84px;height:84px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:34px;box-shadow:0 6px 16px rgba(13,102,87,.3)}
+.qa-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+.qa-opt{border:1.5px solid var(--line);background:var(--surface);border-radius:16px;padding:8px 4px;color:var(--ink)}.qa-opt .ar{font-family:var(--f-verse);font-size:34px;color:var(--accent)}
+.qa-opt.right{border-color:#2E9E6B;background:rgba(46,158,107,.12)}.qa-opt.wrong{border-color:#C0473F;background:rgba(192,71,63,.10)}.qa-opt.dim{opacity:.5}
+.qr-n{font-size:13px}.qr-an{font-size:17px;color:var(--accent);font-weight:400}
+.qr-title{font-family:var(--f-verse)!important;font-size:34px!important;color:var(--accent)}
+.qr-ctl{gap:8px}.qr-chips{display:flex;flex-wrap:wrap;gap:6px}
+.qr-chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:700}
+.qr-chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qr-basm{font-size:24px}
+.qr-ay{gap:8px}.qr-ay.playing{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,78,.25)}.qr-ay.mem{border-inline-start:5px solid #2E9E6B}
+.qr-txt{font-family:var(--f-verse);font-size:27px;line-height:2.1;margin:0;color:var(--ink);text-align:right}
+.qr-line{display:flex;direction:rtl;align-items:center;gap:10px}.qr-line .qr-txt{flex:1;min-width:0}
+.qr-num{flex:none;display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);font-size:15px;font-family:var(--f-ar);line-height:1;vertical-align:middle}
+.qr-blur{filter:blur(7px);user-select:none}
+.qr-trl{margin:0;font-size:14px;color:var(--muted);line-height:1.55}
+.qr-acts{display:flex;gap:6px;flex-wrap:wrap}.qr-acts button{flex:1;min-width:0;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:8px 6px;font:inherit;font-size:13px;font-weight:700}
+.qr-acts button.on{background:#2E9E6B;border-color:#2E9E6B;color:#fff}
+.qr-mark{font-family:var(--f-verse);font-size:22px;margin:0;line-height:2}.qr-mark .ok{color:#2E9E6B}.qr-mark .ko{color:#C0473F;text-decoration:underline}
 </style>`);
 
 scheduleNotifications();
