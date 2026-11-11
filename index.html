@@ -1012,9 +1012,9 @@ function upcomingHTML(){
 }
 
 // ---------- Vues de l'onglet Plus ----------
-const MORE=[["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
+const MORE=[["school","mSchool","dSchool"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={school:viewSchool,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.15";
+const APP_VERSION = "1.0.16";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -1673,6 +1673,7 @@ async function copyText(v){
 }
 if(NATIVE){
   if(PL.App) PL.App.addListener("backButton",()=>{
+    if(typeof schoolBack==="function"&&schoolBack()) return;
     if(S.sub){S.sub=null;save();render();window.scrollTo(0,0)}
     else if(S.gender&&S.tab!=="today"){S.tab="today";save();render();window.scrollTo(0,0)}
     else PL.App.exitApp();
@@ -2442,6 +2443,669 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .af-real p{margin:2px 0 0}
 .af ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
 </style>`);
+
+// ---------- École DJAMILLAH HAYAT : programme (niveau 1) ----------
+// Chaque question : a = numéro de la bonne réponse ; fr/en/ar = [question, [choix], explication]
+const SCHOOL_LEVELS=[
+ {n:1,t:{fr:"Les fondements",en:"The foundations",ar:"الأسس"}},
+ {n:2,t:{fr:"Vivre sa foi",en:"Living your faith",ar:"عيش الإيمان"}},
+ {n:3,t:{fr:"Le foyer musulman",en:"The Muslim home",ar:"البيت المسلم"}}
+];
+const SCHOOL=[
+{id:"piliers",lv:1,t:{fr:"Les cinq piliers de l'islam",en:"The five pillars of Islam",ar:"أركان الإسلام الخمسة"},
+ parts:[
+  {h:{fr:"Une maison posée sur cinq colonnes",en:"A house built on five pillars",ar:"بيت قائم على خمسة أعمدة"},
+   p:{fr:"Le Prophète ﷺ a dit : « L'islam est bâti sur cinq piliers : attester qu'il n'y a de divinité qu'Allah et que Muhammad est le Messager d'Allah, accomplir la prière, donner la zakat, faire le pèlerinage à la Maison sacrée et jeûner le mois de Ramadan. » Comme une maison tient sur ses colonnes, la vie du musulman tient sur ces cinq actes.",
+      en:"The Prophet ﷺ said: “Islam is built on five: testifying that there is no god but Allah and that Muhammad is the Messenger of Allah, establishing prayer, giving zakat, pilgrimage to the House and fasting Ramadan.” As a house stands on its pillars, a Muslim's life stands on these five acts.",
+      ar:"قال النبي ﷺ: «بُنِيَ الإسلامُ على خمسٍ: شهادةِ أن لا إله إلا الله وأنّ محمداً رسولُ الله، وإقامِ الصلاة، وإيتاءِ الزكاة، والحجّ، وصومِ رمضان». فكما يقوم البيت على أعمدته، تقوم حياة المسلم على هذه الأعمال الخمسة."}},
+  {h:{fr:"La chahada, la porte d'entrée",en:"The shahada, the entrance door",ar:"الشهادتان باب الدخول"},
+   p:{fr:"Le premier pilier est la chahada : « Achhadou an lâ ilâha illa-llâh, wa achhadou anna Mouhammadan rasoûlou-llâh ». On entre en islam en la prononçant avec sincérité et conviction. Elle signifie qu'on n'adore qu'Allah seul et qu'on suit l'exemple de Son Messager ﷺ. Tous les autres piliers en découlent.",
+      en:"The first pillar is the shahada: “Ashhadu an la ilaha illa-llah, wa ashhadu anna Muhammadan rasulu-llah”. One enters Islam by saying it sincerely and with conviction. It means worshipping Allah alone and following the example of His Messenger ﷺ. All the other pillars flow from it.",
+      ar:"الركن الأول هو الشهادتان: «أشهد أن لا إله إلا الله، وأشهد أنّ محمداً رسول الله». يدخل بها المرء الإسلام إذا نطق بها صادقاً موقناً، ومعناها ألّا يُعبد إلا الله وحده، وأن يُتّبع رسوله ﷺ. ومنها تنبع بقية الأركان."}},
+  {h:{fr:"Prière, zakat, jeûne et pèlerinage",en:"Prayer, zakat, fasting and pilgrimage",ar:"الصلاة والزكاة والصوم والحج"},
+   p:{fr:"La prière se fait cinq fois par jour. La zakat est une part obligatoire des biens donnée aux ayants droit, comme les pauvres. Le jeûne se fait pendant le mois de Ramadan. Le pèlerinage à La Mecque est obligatoire une fois dans la vie pour celui qui en a les moyens (Coran 3:97).",
+      en:"Prayer is performed five times a day. Zakat is an obligatory share of wealth given to those entitled to it, such as the poor. Fasting is done during the month of Ramadan. Pilgrimage to Mecca is obligatory once in a lifetime for those who are able (Quran 3:97).",
+      ar:"الصلاة خمس مرات في اليوم. والزكاة حقّ واجب في المال يُعطى لمستحقيه كالفقراء. والصوم في شهر رمضان. والحج إلى مكة واجب مرة في العمر على المستطيع (آل عمران: 97)."}},
+  {h:{fr:"Dans votre foyer",en:"In your home",ar:"في بيتك"},
+   p:{fr:"Les piliers se vivent mieux ensemble : prier en famille, préparer le repas de rupture du jeûne ensemble, décider ensemble de l'aumône. Les enfants apprennent d'abord en regardant leurs parents : votre exemple est leur première école.",
+      en:"The pillars are best lived together: praying as a family, preparing the iftar together, deciding on charity together. Children first learn by watching their parents: your example is their first school.",
+      ar:"تُعاش الأركان أجمل حين تكون معاً: الصلاة جماعةً في البيت، وتحضير الإفطار معاً، والاتفاق على الصدقة معاً. والأطفال يتعلمون أولاً بالنظر إلى والديهم، فقدوتك هي مدرستهم الأولى."}}
+ ],
+ ar:"بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ",src:"Bukhari 8 · Muslim 16",
+ q:[
+  {a:1,fr:["Sur combien de piliers l'islam est-il bâti ?",["Quatre","Cinq","Six"],"Le hadith dit : « L'islam est bâti sur cinq. »"],en:["On how many pillars is Islam built?",["Four","Five","Six"],"The hadith says: “Islam is built on five.”"],ar:["على كم ركن بُني الإسلام؟",["أربعة","خمسة","ستة"],"قال ﷺ: «بُني الإسلام على خمس»."]},
+  {a:2,fr:["Quel est le premier pilier ?",["La prière","Le jeûne","La chahada (attestation de foi)"],"La chahada vient en premier : c'est par elle qu'on entre en islam."],en:["What is the first pillar?",["Prayer","Fasting","The shahada (testimony of faith)"],"The shahada comes first: it is how one enters Islam."],ar:["ما الركن الأول؟",["الصلاة","الصوم","الشهادتان"],"الشهادتان أولاً، وبهما يدخل المرء الإسلام."]},
+  {a:0,fr:["Le pèlerinage (hajj) est obligatoire…",["une fois dans la vie, pour qui en a les moyens","chaque année","seulement pour les hommes"],"Allah dit : « Le pèlerinage à la Maison est un devoir envers Allah pour qui en a les moyens » (3:97)."],en:["The pilgrimage (hajj) is obligatory…",["once in a lifetime, for those who are able","every year","only for men"],"Allah says: pilgrimage to the House is a duty owed to Allah by whoever is able (3:97)."],ar:["الحج واجب…",["مرة في العمر على المستطيع","كل سنة","على الرجال فقط"],"قال تعالى: ﴿وَلِلَّهِ عَلَى النَّاسِ حِجُّ الْبَيْتِ مَنِ اسْتَطَاعَ إِلَيْهِ سَبِيلًا﴾ (آل عمران: 97)."]},
+  {a:1,fr:["Pendant quel mois jeûne-t-on obligatoirement ?",["Cha'ban","Ramadan","Dhoul-Hijja"],"Le jeûne obligatoire est celui du mois de Ramadan (2:185)."],en:["In which month is fasting obligatory?",["Sha'ban","Ramadan","Dhul-Hijjah"],"The obligatory fast is the month of Ramadan (2:185)."],ar:["في أي شهر يجب الصوم؟",["شعبان","رمضان","ذو الحجة"],"الصوم الواجب هو صوم شهر رمضان (البقرة: 185)."]},
+  {a:2,fr:["Qu'est-ce que la zakat ?",["Une prière du soir","Un cadeau aux beaux-parents","Une part obligatoire des biens donnée aux ayants droit"],"La zakat est l'aumône obligatoire : un droit des pauvres sur nos biens."],en:["What is zakat?",["An evening prayer","A gift to the in-laws","An obligatory share of wealth given to those entitled"],"Zakat is the obligatory alms: a right of the poor over our wealth."],ar:["ما الزكاة؟",["صلاة في المساء","هدية للأصهار","حق واجب في المال يُعطى لمستحقيه"],"الزكاة هي الصدقة الواجبة، وهي حق للفقراء في أموالنا."]}
+ ]},
+
+{id:"iman",lv:1,t:{fr:"Les six piliers de la foi",en:"The six pillars of faith",ar:"أركان الإيمان الستة"},
+ parts:[
+  {h:{fr:"Le hadith de Jibril",en:"The hadith of Jibril",ar:"حديث جبريل"},
+   p:{fr:"Un jour, l'ange Jibril vint sous l'apparence d'un homme et interrogea le Prophète ﷺ sur l'islam, la foi (îmân) et l'excellence (ihsân). Sur la foi, le Prophète ﷺ répondit : « C'est que tu croies en Allah, en Ses anges, en Ses livres, en Ses messagers, au Jour dernier, et que tu croies au destin, dans son bien et dans son mal. »",
+      en:"One day the angel Jibril came in the form of a man and asked the Prophet ﷺ about Islam, faith (iman) and excellence (ihsan). About faith, the Prophet ﷺ answered: “That you believe in Allah, His angels, His books, His messengers, the Last Day, and that you believe in destiny, its good and its bad.”",
+      ar:"جاء جبريل عليه السلام في صورة رجل فسأل النبي ﷺ عن الإسلام والإيمان والإحسان، فقال في الإيمان: «أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر، وتؤمن بالقدر خيره وشره»."}},
+  {h:{fr:"Allah, les anges et les livres",en:"Allah, the angels and the books",ar:"الله والملائكة والكتب"},
+   p:{fr:"Allah est Unique, sans associé (sourate 112). Les anges sont créés de lumière et obéissent à Allah : Jibril a transmis la révélation. Les livres révélés sont notamment la Tawrât (Torah) à Moussa, le Zabour (Psaumes) à Daoud, l'Injîl (Évangile) à 'Issa, et le Coran, le dernier, à Muhammad ﷺ.",
+      en:"Allah is One, without partner (surah 112). Angels are created from light and obey Allah: Jibril brought the revelation. The revealed books include the Tawrah (Torah) to Musa, the Zabur (Psalms) to Dawud, the Injil (Gospel) to 'Isa, and the Quran, the last, to Muhammad ﷺ.",
+      ar:"الله واحد لا شريك له (سورة الإخلاص). والملائكة خُلقوا من نور ويطيعون الله، وجبريل هو الذي نزل بالوحي. ومن الكتب المنزلة: التوراة على موسى، والزبور على داود، والإنجيل على عيسى، والقرآن آخرها على محمد ﷺ."}},
+  {h:{fr:"Les messagers, le Jour dernier et le destin",en:"The messengers, the Last Day and destiny",ar:"الرسل واليوم الآخر والقدر"},
+   p:{fr:"Allah a envoyé des prophètes à tous les peuples ; Muhammad ﷺ est le sceau des prophètes (33:40). Le Jour dernier, chacun sera jugé sur ses actes. Croire au destin, c'est savoir que rien n'arrive sans la permission d'Allah : on agit de son mieux, puis on accepte avec patience ce qu'on ne peut changer.",
+      en:"Allah sent prophets to every people; Muhammad ﷺ is the seal of the prophets (33:40). On the Last Day, everyone will be judged by their deeds. Believing in destiny means knowing nothing happens without Allah's permission: we do our best, then accept with patience what we cannot change.",
+      ar:"أرسل الله رسلاً إلى كل الأمم، ومحمد ﷺ خاتم النبيين (الأحزاب: 40). وفي اليوم الآخر يُحاسب كل إنسان على عمله. والإيمان بالقدر أن تعلم أنه لا يقع شيء إلا بإذن الله، فتعمل بأحسن ما تستطيع ثم ترضى بصبر بما لا تملك تغييره."}},
+  {h:{fr:"L'ihsân à la maison",en:"Ihsan at home",ar:"الإحسان في البيت"},
+   p:{fr:"Le Prophète ﷺ a défini l'ihsân : « Adorer Allah comme si tu Le voyais ; car si tu ne Le vois pas, Lui te voit. » Dans le couple, l'ihsân, c'est bien traiter son conjoint même quand personne ne regarde. Et la foi au destin apaise le foyer face aux épreuves : maladie, manque d'argent, attente d'un enfant.",
+      en:"The Prophet ﷺ defined ihsan: “To worship Allah as though you see Him; for if you do not see Him, He sees you.” In marriage, ihsan means treating your spouse well even when no one is watching. And faith in destiny calms the home in trials: illness, lack of money, waiting for a child.",
+      ar:"عرّف النبي ﷺ الإحسان فقال: «أن تعبد الله كأنك تراه، فإن لم تكن تراه فإنه يراك». وفي الزواج، الإحسان أن تُحسن إلى زوجك حتى حين لا يراك أحد. والإيمان بالقدر يُسكّن البيت أمام الابتلاءات: المرض، وضيق الرزق، وانتظار الولد."}}
+ ],
+ ar:"أَنْ تُؤْمِنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الْآخِرِ وَتُؤْمِنَ بِالْقَدَرِ خَيْرِهِ وَشَرِّهِ",src:"Muslim 8",
+ q:[
+  {a:1,fr:["Combien y a-t-il de piliers de la foi ?",["Cinq","Six","Sept"],"Allah, les anges, les livres, les messagers, le Jour dernier et le destin : six."],en:["How many pillars of faith are there?",["Five","Six","Seven"],"Allah, the angels, the books, the messengers, the Last Day and destiny: six."],ar:["كم عدد أركان الإيمان؟",["خمسة","ستة","سبعة"],"الله والملائكة والكتب والرسل واليوم الآخر والقدر: ستة."]},
+  {a:0,fr:["Quel ange a transmis la révélation au Prophète ﷺ ?",["Jibril","Mikaïl","Israfil"],"C'est Jibril qui est descendu avec la révélation."],en:["Which angel brought the revelation to the Prophet ﷺ?",["Jibril","Mika'il","Israfil"],"It was Jibril who came down with the revelation."],ar:["أيّ الملائكة نزل بالوحي على النبي ﷺ؟",["جبريل","ميكائيل","إسرافيل"],"جبريل عليه السلام هو الذي نزل بالوحي."]},
+  {a:2,fr:["Qui est le dernier des prophètes ?",["'Issa (Jésus)","Moussa (Moïse)","Muhammad ﷺ"],"Allah dit qu'il est « le sceau des prophètes » (33:40)."],en:["Who is the last of the prophets?",["'Isa (Jesus)","Musa (Moses)","Muhammad ﷺ"],"Allah says he is “the seal of the prophets” (33:40)."],ar:["من خاتم الأنبياء؟",["عيسى","موسى","محمد ﷺ"],"قال تعالى: ﴿وَخَاتَمَ النَّبِيِّينَ﴾ (الأحزاب: 40)."]},
+  {a:0,fr:["Que signifie l'ihsân ?",["Adorer Allah comme si on Le voyait","Donner beaucoup d'argent","Faire le pèlerinage deux fois"],"Définition du Prophète ﷺ dans le hadith de Jibril (Muslim 8)."],en:["What does ihsan mean?",["Worshipping Allah as though you see Him","Giving a lot of money","Doing the pilgrimage twice"],"The Prophet's ﷺ definition in the hadith of Jibril (Muslim 8)."],ar:["ما معنى الإحسان؟",["أن تعبد الله كأنك تراه","أن تنفق مالاً كثيراً","أن تحج مرتين"],"هذا تعريف النبي ﷺ في حديث جبريل (مسلم 8)."]},
+  {a:1,fr:["Quel livre a été révélé à Moussa ?",["L'Injîl","La Tawrât (Torah)","Le Zabour"],"La Tawrât a été révélée à Moussa, l'Injîl à 'Issa, le Zabour à Daoud."],en:["Which book was revealed to Musa?",["The Injil","The Tawrah (Torah)","The Zabur"],"The Tawrah was revealed to Musa, the Injil to 'Isa, the Zabur to Dawud."],ar:["أيّ كتاب أُنزل على موسى؟",["الإنجيل","التوراة","الزبور"],"التوراة على موسى، والإنجيل على عيسى، والزبور على داود."]}
+ ]},
+
+{id:"tahara",lv:1,t:{fr:"La purification",en:"Purification",ar:"الطهارة"},
+ parts:[
+  {h:{fr:"La moitié de la foi",en:"Half of faith",ar:"شطر الإيمان"},
+   p:{fr:"Le Prophète ﷺ a dit : « La purification est la moitié de la foi » (Muslim 223). Et la prière n'est pas acceptée sans purification (Muslim 224). Avant de se tenir devant Allah, le croyant purifie son corps, ses vêtements et le lieu où il prie.",
+      en:"The Prophet ﷺ said: “Purification is half of faith” (Muslim 223). And prayer is not accepted without purification (Muslim 224). Before standing before Allah, the believer purifies his body, his clothes and the place where he prays.",
+      ar:"قال النبي ﷺ: «الطُّهور شطر الإيمان» (مسلم 223)، ولا تُقبل صلاة بغير طهور (مسلم 224). فقبل الوقوف بين يدي الله يُطهّر المؤمن بدنه وثوبه ومكان صلاته."}},
+  {h:{fr:"Les ablutions (woudou)",en:"Ablution (wudu)",ar:"الوضوء"},
+   p:{fr:"Allah dit : « Ô vous qui croyez ! Lorsque vous vous levez pour la prière, lavez vos visages et vos mains jusqu'aux coudes ; passez les mains mouillées sur vos têtes ; et lavez-vous les pieds jusqu'aux chevilles » (5:6). On commence par l'intention et « Bismillah », on lave les mains, la bouche et le nez, puis on suit cet ordre, en commençant par la droite.",
+      en:"Allah says: “O you who believe! When you rise for prayer, wash your faces and your hands up to the elbows, wipe your heads, and wash your feet up to the ankles” (5:6). We begin with the intention and “Bismillah”, wash the hands, mouth and nose, then follow this order, starting with the right side.",
+      ar:"قال تعالى: ﴿يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قُمْتُمْ إِلَى الصَّلَاةِ فَاغْسِلُوا وُجُوهَكُمْ وَأَيْدِيَكُمْ إِلَى الْمَرَافِقِ وَامْسَحُوا بِرُءُوسِكُمْ وَأَرْجُلَكُمْ إِلَى الْكَعْبَيْنِ﴾ (المائدة: 6). نبدأ بالنية والتسمية، ونغسل الكفين والفم والأنف، ثم نتّبع هذا الترتيب مبتدئين باليمين."}},
+  {h:{fr:"Ce qui annule les ablutions, et le grand lavage",en:"What breaks ablution, and the full bath",ar:"نواقض الوضوء والغسل"},
+   p:{fr:"Les ablutions sont annulées notamment par l'urine, les selles, les gaz, le sommeil profond et la perte de conscience. Le grand lavage (ghousl) de tout le corps est obligatoire après les rapports conjugaux, et pour la femme à la fin des règles et des lochies (saignements après l'accouchement).",
+      en:"Ablution is broken notably by urine, stools, wind, deep sleep and loss of consciousness. The full bath (ghusl) of the whole body is obligatory after marital relations, and for women at the end of menstruation and postnatal bleeding.",
+      ar:"ينتقض الوضوء خاصةً بالبول والغائط والريح والنوم العميق وزوال العقل. ويجب الغسل لجميع البدن بعد الجماع، وعلى المرأة عند انقطاع الحيض والنفاس."}},
+  {h:{fr:"Sans eau : le tayammoum",en:"Without water: tayammum",ar:"التيمم عند فقد الماء"},
+   p:{fr:"Quand il n'y a pas d'eau, ou si la maladie empêche de l'utiliser, on fait le tayammoum : frapper une terre pure avec les mains puis les passer sur le visage et les mains (5:6). Montrez à vos enfants comment faire leurs ablutions en les faisant à côté d'eux : c'est le premier pas vers la prière.",
+      en:"When there is no water, or illness prevents its use, one performs tayammum: striking clean earth with the hands then wiping the face and hands (5:6). Show your children how to make wudu by doing it next to them: it is the first step towards prayer.",
+      ar:"إذا فُقد الماء أو منع المرض من استعماله، تيمّم المسلم: يضرب بيديه صعيداً طيباً ثم يمسح وجهه وكفيه (المائدة: 6). وعلّم أطفالك الوضوء بأن تتوضأ بجانبهم، فهو أول الطريق إلى الصلاة."}}
+ ],
+ ar:"الطُّهُورُ شَطْرُ الْإِيمَانِ",src:"Muslim 223",
+ q:[
+  {a:0,fr:["Selon le hadith, la purification est la moitié…",["de la foi","de la prière","du jeûne"],"« La purification est la moitié de la foi » (Muslim 223)."],en:["According to the hadith, purification is half of…",["faith","prayer","fasting"],"“Purification is half of faith” (Muslim 223)."],ar:["في الحديث: الطهور شطر…",["الإيمان","الصلاة","الصيام"],"«الطهور شطر الإيمان» (مسلم 223)."]},
+  {a:1,fr:["Pour la tête, pendant les ablutions, on…",["la lave entièrement","passe les mains mouillées dessus","ne fait rien"],"Le verset dit : « passez les mains mouillées sur vos têtes » (5:6)."],en:["For the head, during wudu, we…",["wash it entirely","wipe it with wet hands","do nothing"],"The verse says: “wipe your heads” (5:6)."],ar:["في الوضوء، الرأس…",["يُغسل كله","يُمسح باليد المبتلّة","لا يُفعل به شيء"],"قال تعالى: ﴿وَامْسَحُوا بِرُءُوسِكُمْ﴾ (المائدة: 6)."]},
+  {a:2,fr:["Après les rapports conjugaux, il faut…",["seulement se laver les mains","attendre le lendemain","faire le grand lavage (ghousl)"],"Le ghousl est obligatoire après les rapports conjugaux avant de prier."],en:["After marital relations, one must…",["only wash the hands","wait until the next day","perform the full bath (ghusl)"],"Ghusl is obligatory after marital relations before praying."],ar:["بعد الجماع يجب…",["غسل اليدين فقط","الانتظار إلى الغد","الغسل"],"الغسل واجب بعد الجماع قبل الصلاة."]},
+  {a:1,fr:["S'il n'y a pas d'eau pour prier, on…",["laisse la prière","fait le tayammoum","attend plusieurs jours"],"Allah a permis le tayammoum avec une terre pure (5:6)."],en:["If there is no water to pray, we…",["skip the prayer","perform tayammum","wait several days"],"Allah allowed tayammum with clean earth (5:6)."],ar:["إذا لم يوجد ماء للصلاة…",["تُترك الصلاة","نتيمّم","ننتظر أياماً"],"شرع الله التيمم بالصعيد الطيب (المائدة: 6)."]},
+  {a:0,fr:["Lequel de ces actes annule les ablutions ?",["Aller aux toilettes","Parler","Manger"],"Uriner ou aller à la selle annule les ablutions."],en:["Which of these breaks ablution?",["Going to the toilet","Talking","Eating"],"Urinating or relieving oneself breaks ablution."],ar:["أيّ هذه ينقض الوضوء؟",["قضاء الحاجة","الكلام","الأكل"],"البول والغائط ينقضان الوضوء."]}
+ ]},
+
+{id:"salat",lv:1,t:{fr:"La prière",en:"Prayer",ar:"الصلاة"},
+ parts:[
+  {h:{fr:"Cinq prières, dix-sept unités",en:"Five prayers, seventeen units",ar:"خمس صلوات وسبع عشرة ركعة"},
+   p:{fr:"Les cinq prières obligatoires sont : Fajr (2 unités, ou rak'as), Dhohr (4), 'Asr (4), Maghrib (3) et 'Ichâ (4), soit 17 rak'as par jour. Allah dit : « La prière est, pour les croyants, une prescription à des heures déterminées » (4:103).",
+      en:"The five obligatory prayers are: Fajr (2 units, or rak'ahs), Dhuhr (4), 'Asr (4), Maghrib (3) and 'Isha (4): 17 rak'ahs a day. Allah says: “Prayer has been decreed upon the believers at fixed times” (4:103).",
+      ar:"الصلوات الخمس: الفجر ركعتان، والظهر أربع، والعصر أربع، والمغرب ثلاث، والعشاء أربع، فهي سبع عشرة ركعة في اليوم. قال تعالى: ﴿إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا﴾ (النساء: 103)."}},
+  {h:{fr:"Les conditions",en:"The conditions",ar:"شروط الصلاة"},
+   p:{fr:"Pour que la prière soit valable : être en état de pureté, que l'heure soit entrée, couvrir son corps comme il convient, se tourner vers la Ka'ba à La Mecque (la qibla) et avoir l'intention de la prière que l'on fait.",
+      en:"For prayer to be valid: being in a state of purity, the time having started, covering the body properly, facing the Ka'bah in Mecca (the qiblah) and having the intention of the prayer being performed.",
+      ar:"لتصحّ الصلاة: الطهارة، ودخول الوقت، وستر العورة، واستقبال القبلة (الكعبة المشرّفة)، والنية للصلاة المؤدّاة."}},
+  {h:{fr:"Les gestes essentiels",en:"The essential steps",ar:"أعمال الصلاة الأساسية"},
+   p:{fr:"On commence par « Allâhou akbar », on récite la Fâtiha dans chaque rak'a (« Pas de prière pour qui ne récite pas la Fâtiha », Bukhari 756), on s'incline (roukoû'), on se prosterne deux fois (soujoûd), on s'assoit pour le tachahhoud, et on termine par le salut « As-salâmou 'alaykoum ».",
+      en:"We begin with “Allahu akbar”, recite Al-Fatihah in every rak'ah (“There is no prayer for one who does not recite Al-Fatihah”, Bukhari 756), bow (ruku'), prostrate twice (sujud), sit for the tashahhud, and end with the greeting “As-salamu 'alaykum”.",
+      ar:"نفتتح بـ«الله أكبر»، ونقرأ الفاتحة في كل ركعة («لا صلاة لمن لم يقرأ بفاتحة الكتاب»، البخاري 756)، ثم الركوع، والسجود مرتين، والجلوس للتشهد، ونختم بالتسليم."}},
+  {h:{fr:"La prière, cœur du foyer",en:"Prayer, the heart of the home",ar:"الصلاة قلب البيت"},
+   p:{fr:"La prière est le premier acte sur lequel le serviteur sera jugé (Abou Daoud 864). Le Prophète ﷺ a dit : « Ordonnez à vos enfants la prière à sept ans » (Abou Daoud 495). Il a aussi invoqué la miséricorde pour l'homme qui se lève la nuit pour prier et réveille son épouse, et pour la femme qui fait de même (Abou Daoud 1308).",
+      en:"Prayer is the first deed for which the servant will be judged (Abu Dawud 864). The Prophet ﷺ said: “Command your children to pray at seven” (Abu Dawud 495). He also asked mercy for the man who rises at night to pray and wakes his wife, and for the woman who does the same (Abu Dawud 1308).",
+      ar:"الصلاة أول ما يُحاسب عليه العبد (أبو داود 864). وقال ﷺ: «مُروا أولادكم بالصلاة وهم أبناء سبع سنين» (أبو داود 495). ودعا بالرحمة لرجل قام من الليل فصلّى وأيقظ امرأته، ولامرأة فعلت ذلك (أبو داود 1308)."}}
+ ],
+ ar:"إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",src:"Coran 4:103",
+ q:[
+  {a:1,fr:["Combien de rak'as compte la prière du Maghrib ?",["Deux","Trois","Quatre"],"Le Maghrib a trois rak'as."],en:["How many rak'ahs does Maghrib have?",["Two","Three","Four"],"Maghrib has three rak'ahs."],ar:["كم ركعة في صلاة المغرب؟",["ركعتان","ثلاث","أربع"],"المغرب ثلاث ركعات."]},
+  {a:2,fr:["Combien de rak'as obligatoires par jour au total ?",["Quinze","Vingt","Dix-sept"],"2 + 4 + 4 + 3 + 4 = 17."],en:["How many obligatory rak'ahs a day in total?",["Fifteen","Twenty","Seventeen"],"2 + 4 + 4 + 3 + 4 = 17."],ar:["كم مجموع الركعات المفروضة في اليوم؟",["خمس عشرة","عشرون","سبع عشرة"],"2 + 4 + 4 + 3 + 4 = 17."]},
+  {a:0,fr:["Quelle sourate récite-t-on dans chaque rak'a ?",["Al-Fâtiha","Al-Ikhlâs","Al-Kawthar"],"« Pas de prière pour qui ne récite pas la Fâtiha » (Bukhari 756)."],en:["Which surah is recited in every rak'ah?",["Al-Fatihah","Al-Ikhlas","Al-Kawthar"],"“There is no prayer for one who does not recite Al-Fatihah” (Bukhari 756)."],ar:["أيّ سورة تُقرأ في كل ركعة؟",["الفاتحة","الإخلاص","الكوثر"],"«لا صلاة لمن لم يقرأ بفاتحة الكتاب» (البخاري 756)."]},
+  {a:1,fr:["Vers où se tourne-t-on pour prier ?",["Vers le soleil levant","Vers la Ka'ba à La Mecque","Vers Médine"],"La qibla est la Ka'ba, à La Mecque (2:144)."],en:["Which direction do we face to pray?",["The rising sun","The Ka'bah in Mecca","Medina"],"The qiblah is the Ka'bah in Mecca (2:144)."],ar:["إلى أين نتوجه في الصلاة؟",["إلى مشرق الشمس","إلى الكعبة في مكة","إلى المدينة"],"القبلة هي الكعبة المشرفة (البقرة: 144)."]},
+  {a:0,fr:["À quel âge le Prophète ﷺ a-t-il dit d'ordonner la prière aux enfants ?",["Sept ans","Quinze ans","Trois ans"],"« Ordonnez à vos enfants la prière à sept ans » (Abou Daoud 495)."],en:["At what age did the Prophet ﷺ say to command children to pray?",["Seven","Fifteen","Three"],"“Command your children to pray at seven” (Abu Dawud 495)."],ar:["في أي سن أمر النبي ﷺ بتعليم الأولاد الصلاة؟",["سبع سنين","خمس عشرة سنة","ثلاث سنين"],"«مروا أولادكم بالصلاة وهم أبناء سبع سنين» (أبو داود 495)."]}
+ ]}
+];
+
+// ---------- École : niveau 2 ----------
+SCHOOL.push(
+{id:"jeune",lv:2,t:{fr:"Le jeûne et la zakat",en:"Fasting and zakat",ar:"الصيام والزكاة"},
+ parts:[
+  {h:{fr:"Le jeûne de Ramadan",en:"The fast of Ramadan",ar:"صيام رمضان"},
+   p:{fr:"Allah dit : « Ô vous qui croyez ! Le jeûne vous a été prescrit comme il a été prescrit à ceux d'avant vous, afin que vous atteigniez la piété » (2:183). On jeûne de l'aube (Fajr) au coucher du soleil (Maghrib) : sans manger, sans boire et sans rapports conjugaux, en gardant aussi sa langue et son cœur.",
+      en:"Allah says: “O you who believe! Fasting is prescribed for you as it was prescribed for those before you, so that you may attain piety” (2:183). We fast from dawn (Fajr) to sunset (Maghrib): without eating, drinking or marital relations, while also guarding the tongue and the heart.",
+      ar:"قال تعالى: ﴿يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ﴾ (البقرة: 183). نصوم من الفجر إلى المغرب، فنمسك عن الأكل والشرب والجماع، ونحفظ اللسان والقلب."}},
+  {h:{fr:"Ceux qui sont dispensés",en:"Those who are exempt",ar:"أصحاب الأعذار"},
+   p:{fr:"Le malade et le voyageur peuvent ne pas jeûner et rattrapent plus tard (2:184). La femme qui a ses règles ou ses lochies ne jeûne pas et rattrape ensuite. La femme enceinte ou qui allaite, si elle craint pour elle ou pour l'enfant, peut aussi rompre. La personne âgée qui ne peut pas jeûner nourrit un pauvre pour chaque jour (fidya).",
+      en:"The sick and the traveller may break the fast and make it up later (2:184). A woman in menstruation or postnatal bleeding does not fast and makes it up afterwards. A pregnant or nursing woman who fears for herself or the child may also break it. An elderly person who cannot fast feeds a poor person for each day (fidyah).",
+      ar:"للمريض والمسافر أن يفطرا ويقضيا بعد ذلك (البقرة: 184). والحائض والنفساء لا تصومان وتقضيان. والحامل والمرضع إن خافتا على نفسيهما أو على الولد أفطرتا. والشيخ الكبير العاجز يُطعم عن كل يوم مسكيناً (الفدية)."}},
+  {h:{fr:"La zakat sur les économies",en:"Zakat on savings",ar:"زكاة المال"},
+   p:{fr:"La zakat est due sur l'épargne qui atteint un minimum (le nisâb, environ la valeur de 85 g d'or) et qui reste une année lunaire. Son taux est de 2,5 %. Elle revient aux catégories citées dans le Coran : les pauvres, les nécessiteux, les endettés, le voyageur en difficulté… (9:60).",
+      en:"Zakat is due on savings that reach a minimum (the nisab, about the value of 85 g of gold) and are held for a lunar year. Its rate is 2.5%. It goes to the categories named in the Quran: the poor, the needy, those in debt, the stranded traveller… (9:60).",
+      ar:"تجب الزكاة في المال الذي يبلغ النصاب (قيمة نحو 85 غراماً من الذهب) ويحول عليه الحول القمري، ومقدارها ربع العشر (2.5٪). وتُصرف في الأصناف المذكورة في القرآن: الفقراء والمساكين والغارمين وابن السبيل… (التوبة: 60)."}},
+  {h:{fr:"La zakat al-fitr et la famille",en:"Zakat al-fitr and the family",ar:"زكاة الفطر والأسرة"},
+   p:{fr:"À la fin de Ramadan, le chef de famille donne la zakat al-fitr pour chaque membre du foyer, petit ou grand : un sâ' (environ quatre poignées doubles) de nourriture locale, avant la prière de l'Aïd (Bukhari 1503). Faites participer les enfants : préparer ensemble le sac de riz pour un voisin leur apprend la générosité.",
+      en:"At the end of Ramadan, the head of the family gives zakat al-fitr for each member of the household, young or old: one sa' (about four double handfuls) of local staple food, before the Eid prayer (Bukhari 1503). Involve the children: preparing a bag of rice for a neighbour together teaches them generosity.",
+      ar:"في آخر رمضان يُخرج ربّ الأسرة زكاة الفطر عن كل فرد، صغيراً كان أو كبيراً: صاعاً من قوت البلد قبل صلاة العيد (البخاري 1503). أشرك أطفالك في ذلك، فتحضير كيس الأرز للجار معاً يعلّمهم الكرم."}}
+ ],
+ ar:"كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ",src:"Coran 2:183",
+ q:[
+  {a:2,fr:["Selon le verset 2:183, le but du jeûne est…",["de maigrir","de se fatiguer","d'atteindre la piété (taqwa)"],"« … afin que vous atteigniez la piété » (2:183)."],en:["According to verse 2:183, the aim of fasting is…",["to lose weight","to get tired","to attain piety (taqwa)"],"“…so that you may attain piety” (2:183)."],ar:["الغاية من الصيام في الآية (2:183)…",["إنقاص الوزن","التعب","التقوى"],"﴿لَعَلَّكُمْ تَتَّقُونَ﴾ (البقرة: 183)."]},
+  {a:0,fr:["On jeûne…",["de l'aube au coucher du soleil","du lever du soleil à midi","de minuit à minuit"],"Le jeûne va de l'aube (Fajr) au coucher du soleil (2:187)."],en:["We fast…",["from dawn to sunset","from sunrise to noon","from midnight to midnight"],"The fast lasts from dawn (Fajr) to sunset (2:187)."],ar:["نصوم…",["من الفجر إلى غروب الشمس","من الشروق إلى الظهر","من منتصف الليل إلى منتصفه"],"الصيام من الفجر إلى الغروب (البقرة: 187)."]},
+  {a:1,fr:["Quel est le taux de la zakat sur l'épargne ?",["10 %","2,5 %","50 %"],"La zakat sur l'argent épargné est de 2,5 % (un quarantième)."],en:["What is the rate of zakat on savings?",["10%","2.5%","50%"],"Zakat on saved money is 2.5% (one fortieth)."],ar:["كم مقدار زكاة المال المدّخر؟",["العُشر (10٪)","ربع العشر (2.5٪)","النصف"],"زكاة النقود ربع العشر."]},
+  {a:1,fr:["Quand donne-t-on la zakat al-fitr ?",["Un mois après l'Aïd","Avant la prière de l'Aïd","Seulement si on est riche"],"Le Prophète ﷺ a ordonné de la donner avant que les gens sortent pour la prière (Bukhari 1503)."],en:["When is zakat al-fitr given?",["A month after Eid","Before the Eid prayer","Only if one is rich"],"The Prophet ﷺ ordered it to be given before people go out to the prayer (Bukhari 1503)."],ar:["متى تُخرج زكاة الفطر؟",["بعد العيد بشهر","قبل صلاة العيد","للأغنياء فقط"],"أمر ﷺ أن تُؤدّى قبل خروج الناس إلى الصلاة (البخاري 1503)."]},
+  {a:2,fr:["Le voyageur qui n'a pas jeûné doit…",["payer une amende en argent","ne rien faire","rattraper les jours plus tard"],"« Quiconque est malade ou en voyage jeûnera un nombre égal d'autres jours » (2:184)."],en:["A traveller who did not fast must…",["pay a cash fine","do nothing","make up the days later"],"“Whoever is ill or on a journey, then an equal number of other days” (2:184)."],ar:["المسافر الذي أفطر عليه…",["غرامة مالية","لا شيء","القضاء في أيام أُخر"],"﴿فَمَن كَانَ مِنكُم مَّرِيضًا أَوْ عَلَىٰ سَفَرٍ فَعِدَّةٌ مِّنْ أَيَّامٍ أُخَرَ﴾ (البقرة: 184)."]}
+ ]},
+
+{id:"prophete",lv:2,t:{fr:"Le Prophète Muhammad ﷺ",en:"The Prophet Muhammad ﷺ",ar:"النبي محمد ﷺ"},
+ parts:[
+  {h:{fr:"Une enfance d'orphelin",en:"An orphan's childhood",ar:"طفولة اليتيم"},
+   p:{fr:"Le Prophète ﷺ est né à La Mecque vers 570, l'« année de l'Éléphant ». Son père 'Abdallah est mort avant sa naissance, sa mère Âmina quand il avait six ans. Il fut élevé par son grand-père 'Abd al-Mouttalib, puis par son oncle Abou Tâlib. Les Mecquois l'appelaient « Al-Amîn », le digne de confiance.",
+      en:"The Prophet ﷺ was born in Mecca around 570, the “Year of the Elephant”. His father 'Abdullah died before his birth, his mother Aminah when he was six. He was raised by his grandfather 'Abd al-Muttalib, then by his uncle Abu Talib. The Meccans called him “Al-Amin”, the trustworthy.",
+      ar:"وُلد النبي ﷺ بمكة نحو سنة 570م، عام الفيل. تُوفي أبوه عبد الله قبل ولادته، وأمه آمنة وهو ابن ست سنين، فكفله جده عبد المطلب ثم عمه أبو طالب. وكان أهل مكة يلقبونه «الأمين»."}},
+  {h:{fr:"Khadîja et la révélation",en:"Khadijah and the revelation",ar:"خديجة ونزول الوحي"},
+   p:{fr:"À 25 ans, il épousa Khadîja, femme commerçante respectée, qui fut sa première épouse et la première à croire en lui. À 40 ans, dans la grotte de Hirâ, Jibril lui apporta les premiers mots du Coran : « Lis, au nom de ton Seigneur qui a créé » (96:1). Khadîja le rassura et le soutint.",
+      en:"At 25 he married Khadijah, a respected businesswoman, who was his first wife and the first to believe in him. At 40, in the cave of Hira, Jibril brought him the first words of the Quran: “Read in the name of your Lord who created” (96:1). Khadijah comforted and supported him.",
+      ar:"تزوّج ﷺ وهو ابن خمس وعشرين سنة خديجةَ، التاجرة الكريمة، فكانت أول زوجاته وأول من آمن به. وفي الأربعين، في غار حراء، نزل عليه جبريل بأول القرآن: ﴿اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ﴾ (العلق: 1)، فطمأنته خديجة وآزرته."}},
+  {h:{fr:"De La Mecque à Médine",en:"From Mecca to Medina",ar:"من مكة إلى المدينة"},
+   p:{fr:"Il appela à l'islam treize ans à La Mecque malgré les persécutions. En 622, il émigra à Médine : c'est l'Hégire, qui marque le début du calendrier musulman. Il y bâtit une communauté fraternelle. Il mourut à Médine en 632 (an 11 de l'Hégire), à l'âge de 63 ans.",
+      en:"He called to Islam for thirteen years in Mecca despite persecution. In 622 he emigrated to Medina: this is the Hijrah, which marks the start of the Muslim calendar. There he built a brotherly community. He died in Medina in 632 (year 11 AH), aged 63.",
+      ar:"دعا إلى الإسلام في مكة ثلاث عشرة سنة رغم الأذى، ثم هاجر إلى المدينة سنة 622م، وبالهجرة بدأ التقويم الهجري. وأقام فيها مجتمع الأخوّة، وتوفي بها سنة 11هـ (632م) عن ثلاث وستين سنة."}},
+  {h:{fr:"Un mari et un père",en:"A husband and a father",ar:"زوج وأب"},
+   p:{fr:"Allah dit : « Tu es certes d'une moralité éminente » (68:4). À la maison, il aidait sa famille dans les tâches (Bukhari 676). Il fit la course avec 'Âïcha (Abou Daoud 2578) et embrassait ses petits-enfants en disant : « Celui qui ne fait pas miséricorde ne reçoit pas miséricorde » (Bukhari 5997).",
+      en:"Allah says: “Indeed, you are of a great moral character” (68:4). At home he helped his family with the chores (Bukhari 676). He raced with 'Aishah (Abu Dawud 2578) and kissed his grandchildren, saying: “Whoever does not show mercy will not be shown mercy” (Bukhari 5997).",
+      ar:"قال تعالى: ﴿وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ﴾ (القلم: 4). كان في البيت في مهنة أهله (البخاري 676)، وسابق عائشة (أبو داود 2578)، وقبّل أحفاده وقال: «من لا يَرحم لا يُرحم» (البخاري 5997)."}}
+ ],
+ ar:"وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",src:"Coran 68:4",
+ q:[
+  {a:1,fr:["Qui fut la première épouse du Prophète ﷺ ?",["'Âïcha","Khadîja","Hafsa"],"Khadîja fut sa première épouse et la première à croire en lui."],en:["Who was the Prophet's ﷺ first wife?",["'Aishah","Khadijah","Hafsah"],"Khadijah was his first wife and the first to believe in him."],ar:["من أول زوجات النبي ﷺ؟",["عائشة","خديجة","حفصة"],"خديجة أول زوجاته وأول من آمن به."]},
+  {a:2,fr:["À quel âge a-t-il reçu la première révélation ?",["25 ans","63 ans","40 ans"],"À 40 ans, dans la grotte de Hirâ."],en:["At what age did he receive the first revelation?",["25","63","40"],"At 40, in the cave of Hira."],ar:["في أي سن نزل عليه الوحي أول مرة؟",["خمس وعشرون","ثلاث وستون","أربعون"],"في الأربعين، في غار حراء."]},
+  {a:0,fr:["Quel fut le premier mot révélé ?",["« Iqra » (Lis)","« Bismillah »","« Al-hamdou lillah »"],"« Lis, au nom de ton Seigneur qui a créé » (96:1)."],en:["What was the first word revealed?",["“Iqra” (Read)","“Bismillah”","“Alhamdulillah”"],"“Read in the name of your Lord who created” (96:1)."],ar:["ما أول كلمة نزلت؟",["﴿اقْرَأْ﴾","بسم الله","الحمد لله"],"﴿اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ﴾ (العلق: 1)."]},
+  {a:1,fr:["Le calendrier musulman commence avec…",["la naissance du Prophète ﷺ","l'Hégire vers Médine","la conquête de La Mecque"],"L'Hégire (622) marque l'an 1 du calendrier musulman."],en:["The Muslim calendar begins with…",["the Prophet's ﷺ birth","the Hijrah to Medina","the conquest of Mecca"],"The Hijrah (622) marks year 1 of the Muslim calendar."],ar:["يبدأ التقويم الإسلامي بـ…",["مولد النبي ﷺ","الهجرة إلى المدينة","فتح مكة"],"الهجرة سنة 622م هي بداية التقويم الهجري."]},
+  {a:2,fr:["À la maison, le Prophète ﷺ…",["laissait tout aux autres","n'entrait jamais dans la cuisine","aidait sa famille dans les tâches"],"'Âïcha a dit qu'il était au service de sa famille (Bukhari 676)."],en:["At home, the Prophet ﷺ…",["left everything to others","never entered the kitchen","helped his family with the chores"],"'Aishah said he was in the service of his family (Bukhari 676)."],ar:["كان النبي ﷺ في بيته…",["يترك كل شيء لغيره","لا يدخل المطبخ","في مهنة أهله"],"قالت عائشة: كان في مهنة أهله (البخاري 676)."]}
+ ]},
+
+{id:"coran",lv:2,t:{fr:"Le Coran et les petites sourates",en:"The Quran and the short surahs",ar:"القرآن وقصار السور"},
+ parts:[
+  {h:{fr:"La Parole d'Allah",en:"The Word of Allah",ar:"كلام الله"},
+   p:{fr:"Le Coran est la Parole d'Allah, révélée au Prophète ﷺ par l'ange Jibril pendant environ 23 ans. Il compte 114 sourates, réparties en 30 parties (jouz'). Il s'ouvre par Al-Fâtiha ; la plus longue sourate est Al-Baqara.",
+      en:"The Quran is the Word of Allah, revealed to the Prophet ﷺ through the angel Jibril over about 23 years. It has 114 surahs, divided into 30 parts (juz'). It opens with Al-Fatihah; the longest surah is Al-Baqarah.",
+      ar:"القرآن كلام الله، نزل به جبريل على النبي ﷺ في نحو ثلاث وعشرين سنة، وفيه 114 سورة مقسّمة إلى ثلاثين جزءاً. يُفتتح بالفاتحة، وأطول سوره البقرة."}},
+  {h:{fr:"Al-Fâtiha, la mère du Livre",en:"Al-Fatihah, the mother of the Book",ar:"الفاتحة أم الكتاب"},
+   p:{fr:"Al-Fâtiha a sept versets. On la récite dans chaque rak'a de chaque prière. Elle contient la louange d'Allah, l'engagement « C'est Toi que nous adorons et c'est Toi dont nous implorons le secours » (1:5) et la demande du droit chemin.",
+      en:"Al-Fatihah has seven verses. It is recited in every rak'ah of every prayer. It contains the praise of Allah, the pledge “You alone we worship and You alone we ask for help” (1:5) and the request for the straight path.",
+      ar:"الفاتحة سبع آيات، تُقرأ في كل ركعة من كل صلاة، وفيها حمد الله، والعهد: ﴿إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ﴾ (الفاتحة: 5)، وسؤال الهداية إلى الصراط المستقيم."}},
+  {h:{fr:"Trois sourates de protection",en:"Three surahs of protection",ar:"ثلاث سور للتحصين"},
+   p:{fr:"Al-Ikhlâs (« Dis : Il est Allah, Unique ») équivaut à un tiers du Coran (Bukhari 5013). Al-Falaq et An-Nâs sont des sourates de protection. Chaque soir, le Prophète ﷺ récitait ces trois sourates dans ses mains jointes, soufflait dedans et les passait sur son corps (Bukhari 5017).",
+      en:"Al-Ikhlas (“Say: He is Allah, the One”) equals a third of the Quran (Bukhari 5013). Al-Falaq and An-Nas are surahs of protection. Every night the Prophet ﷺ recited these three surahs into his cupped hands, blew into them and wiped them over his body (Bukhari 5017).",
+      ar:"سورة الإخلاص تعدل ثلث القرآن (البخاري 5013)، والفلق والناس هما المعوّذتان. وكان النبي ﷺ كل ليلة يجمع كفيه فيقرأ فيهما هذه السور الثلاث وينفث ثم يمسح بهما جسده (البخاري 5017)."}},
+  {h:{fr:"Le Coran à la maison",en:"The Quran at home",ar:"القرآن في البيت"},
+   p:{fr:"Le Prophète ﷺ a dit : « Le meilleur d'entre vous est celui qui apprend le Coran et l'enseigne » (Bukhari 5027). Dix minutes chaque jour en famille suffisent pour commencer : un parent récite un verset, les enfants répètent. Apprenez-leur d'abord les petites sourates et leur sens.",
+      en:"The Prophet ﷺ said: “The best of you is the one who learns the Quran and teaches it” (Bukhari 5027). Ten minutes a day as a family is enough to start: a parent recites a verse, the children repeat. Teach them the short surahs and their meaning first.",
+      ar:"قال النبي ﷺ: «خيركم من تعلّم القرآن وعلّمه» (البخاري 5027). عشر دقائق يومياً مع الأسرة تكفي للبداية: يقرأ أحد الوالدين آية ويردّدها الأطفال. علّمهم قصار السور ومعانيها أولاً."}}
+ ],
+ ar:"خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",src:"Bukhari 5027",
+ q:[
+  {a:2,fr:["Combien de sourates compte le Coran ?",["99","30","114"],"Le Coran compte 114 sourates (et 30 jouz')."],en:["How many surahs are in the Quran?",["99","30","114"],"The Quran has 114 surahs (and 30 juz')."],ar:["كم عدد سور القرآن؟",["99","30","114"],"في القرآن 114 سورة وثلاثون جزءاً."]},
+  {a:0,fr:["Combien de versets compte Al-Fâtiha ?",["Sept","Cinq","Dix"],"Al-Fâtiha compte sept versets."],en:["How many verses does Al-Fatihah have?",["Seven","Five","Ten"],"Al-Fatihah has seven verses."],ar:["كم آية في الفاتحة؟",["سبع","خمس","عشر"],"الفاتحة سبع آيات."]},
+  {a:1,fr:["Quelle sourate équivaut à un tiers du Coran ?",["Al-Baqara","Al-Ikhlâs","Al-Kahf"],"Le Prophète ﷺ l'a dit d'Al-Ikhlâs (Bukhari 5013)."],en:["Which surah equals a third of the Quran?",["Al-Baqarah","Al-Ikhlas","Al-Kahf"],"The Prophet ﷺ said this of Al-Ikhlas (Bukhari 5013)."],ar:["أيّ سورة تعدل ثلث القرآن؟",["البقرة","الإخلاص","الكهف"],"قال ﷺ ذلك في سورة الإخلاص (البخاري 5013)."]},
+  {a:0,fr:["Quelle est la plus longue sourate ?",["Al-Baqara","Yâ-Sîn","Al-Moulk"],"Al-Baqara, la deuxième sourate, est la plus longue."],en:["Which is the longest surah?",["Al-Baqarah","Ya-Sin","Al-Mulk"],"Al-Baqarah, the second surah, is the longest."],ar:["ما أطول سورة؟",["البقرة","يس","الملك"],"البقرة هي أطول سور القرآن."]},
+  {a:2,fr:["Selon le hadith, le meilleur d'entre vous est…",["le plus riche","celui qui jeûne le plus","celui qui apprend le Coran et l'enseigne"],"« Le meilleur d'entre vous est celui qui apprend le Coran et l'enseigne » (Bukhari 5027)."],en:["According to the hadith, the best of you is…",["the richest","the one who fasts most","the one who learns the Quran and teaches it"],"“The best of you is the one who learns the Quran and teaches it” (Bukhari 5027)."],ar:["في الحديث، خيركم…",["أغناكم","أكثركم صياماً","من تعلّم القرآن وعلّمه"],"«خيركم من تعلّم القرآن وعلّمه» (البخاري 5027)."]}
+ ]},
+
+{id:"douas",lv:2,t:{fr:"Les invocations du quotidien",en:"Everyday supplications",ar:"أذكار اليوم والليلة"},
+ parts:[
+  {h:{fr:"L'invocation est une adoration",en:"Supplication is worship",ar:"الدعاء هو العبادة"},
+   p:{fr:"Le Prophète ﷺ a dit : « L'invocation, c'est l'adoration » (Tirmidhi 2969). Allah dit : « Invoquez-Moi, Je vous répondrai » (40:60). Une famille qui invoque ensemble s'attache à Allah dans chaque petit geste de la journée.",
+      en:"The Prophet ﷺ said: “Supplication is worship” (Tirmidhi 2969). Allah says: “Call upon Me, I will answer you” (40:60). A family that supplicates together attaches itself to Allah in every small act of the day.",
+      ar:"قال النبي ﷺ: «الدعاء هو العبادة» (الترمذي 2969)، وقال تعالى: ﴿ادْعُونِي أَسْتَجِبْ لَكُمْ﴾ (غافر: 60). والأسرة التي تدعو معاً تتعلق بالله في كل تفاصيل يومها."}},
+  {h:{fr:"Manger et éternuer",en:"Eating and sneezing",ar:"الطعام والعطاس"},
+   p:{fr:"Avant de manger : « Bismillah », et manger de la main droite (Bukhari 5376). Après : « Al-hamdou lillah ». Celui qui éternue dit « Al-hamdou lillah » ; celui qui l'entend répond « Yarhamouka-llah » (qu'Allah te fasse miséricorde) ; et le premier répond « Yahdîkoumou-llah wa youslihou bâlakoum » (Bukhari 6224).",
+      en:"Before eating: “Bismillah”, and eat with the right hand (Bukhari 5376). After: “Alhamdulillah”. Whoever sneezes says “Alhamdulillah”; whoever hears says “Yarhamuka-llah” (may Allah have mercy on you); and the first replies “Yahdikumu-llah wa yuslihu balakum” (Bukhari 6224).",
+      ar:"قبل الطعام: «بسم الله»، والأكل باليمين (البخاري 5376)، وبعده: «الحمد لله». ومن عطس قال: «الحمد لله»، ويقول له سامعه: «يرحمك الله»، فيردّ: «يهديكم الله ويصلح بالكم» (البخاري 6224)."}},
+  {h:{fr:"Dormir et se réveiller",en:"Sleeping and waking",ar:"النوم والاستيقاظ"},
+   p:{fr:"Avant de dormir : « Bismika-llâhoumma amoûtou wa ahyâ » (C'est en Ton nom, ô Allah, que je meurs et que je vis). Au réveil : « Al-hamdou lillâhi-lladhî ahyânâ ba'da mâ amâtanâ wa ilayhi-n-nouchoûr » (Bukhari 6312). En sortant de chez soi : « Bismillah, tawakkaltou 'ala-llah, wa lâ hawla wa lâ qouwwata illâ billâh » (Abou Daoud 5095).",
+      en:"Before sleeping: “Bismika-llahumma amutu wa ahya” (In Your name, O Allah, I die and I live). On waking: “Alhamdu lillahi-lladhi ahyana ba'da ma amatana wa ilayhi-n-nushur” (Bukhari 6312). On leaving home: “Bismillah, tawakkaltu 'ala-llah, wa la hawla wa la quwwata illa billah” (Abu Dawud 5095).",
+      ar:"عند النوم: «باسمك اللهم أموت وأحيا»، وعند الاستيقاظ: «الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور» (البخاري 6312). وعند الخروج من البيت: «بسم الله، توكلت على الله، ولا حول ولا قوة إلا بالله» (أبو داود 5095)."}},
+  {h:{fr:"L'invocation des familles",en:"The supplication of families",ar:"دعاء الأسرة"},
+   p:{fr:"Le Coran nous apprend cette invocation pour le conjoint et les enfants : « Rabbanâ hab lanâ min azwâjinâ wa dhourriyyâtinâ qourrata a'youn, waj'alnâ lil-mouttaqîna imâmâ » — Seigneur, fais que nos épouses et nos descendants soient la joie de nos yeux, et fais de nous un guide pour les pieux (25:74). Dites-la ensemble, chaque soir.",
+      en:"The Quran teaches us this supplication for the spouse and children: “Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yun, waj'alna lil-muttaqina imama” — Our Lord, grant us from our spouses and offspring the joy of our eyes, and make us leaders of the righteous (25:74). Say it together every evening.",
+      ar:"علّمنا القرآن هذا الدعاء للزوج والذرية: ﴿رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا﴾ (الفرقان: 74). ردّدوه معاً كل مساء."}}
+ ],
+ ar:"رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",src:"Coran 25:74",
+ q:[
+  {a:1,fr:["Que dit-on avant de manger ?",["Allâhou akbar","Bismillah","Âmîn"],"On dit « Bismillah » et on mange de la main droite (Bukhari 5376)."],en:["What do we say before eating?",["Allahu akbar","Bismillah","Amin"],"We say “Bismillah” and eat with the right hand (Bukhari 5376)."],ar:["ماذا نقول قبل الطعام؟",["الله أكبر","بسم الله","آمين"],"نقول «بسم الله» ونأكل باليمين (البخاري 5376)."]},
+  {a:0,fr:["Que dit celui qui éternue ?",["Al-hamdou lillah","Astaghfirou-llah","Bismillah"],"Celui qui éternue loue Allah : « Al-hamdou lillah » (Bukhari 6224)."],en:["What does the one who sneezes say?",["Alhamdulillah","Astaghfirullah","Bismillah"],"The one who sneezes praises Allah: “Alhamdulillah” (Bukhari 6224)."],ar:["ماذا يقول العاطس؟",["الحمد لله","أستغفر الله","بسم الله"],"يقول العاطس: «الحمد لله» (البخاري 6224)."]},
+  {a:2,fr:["Que répond-on à celui qui a éternué et loué Allah ?",["Bârakallâhou fîk","Inchâ-Allah","Yarhamouka-llah"],"On lui répond : « Yarhamouka-llah » (Bukhari 6224)."],en:["What do we reply to someone who sneezed and praised Allah?",["Barakallahu fik","In sha Allah","Yarhamuka-llah"],"We reply: “Yarhamuka-llah” (Bukhari 6224)."],ar:["بماذا نردّ على العاطس الذي حمد الله؟",["بارك الله فيك","إن شاء الله","يرحمك الله"],"نقول له: «يرحمك الله» (البخاري 6224)."]},
+  {a:1,fr:["L'invocation « Rabbanâ hab lanâ min azwâjinâ… » se trouve dans la sourate…",["Al-Baqara","Al-Fourqân","Yâ-Sîn"],"C'est le verset 74 de la sourate Al-Fourqân."],en:["The supplication “Rabbana hab lana min azwajina…” is in surah…",["Al-Baqarah","Al-Furqan","Ya-Sin"],"It is verse 74 of surah Al-Furqan."],ar:["دعاء ﴿رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا…﴾ في سورة…",["البقرة","الفرقان","يس"],"هي الآية 74 من سورة الفرقان."]},
+  {a:0,fr:["Selon le hadith, l'invocation est…",["l'adoration","une habitude des anciens","réservée aux imams"],"« L'invocation, c'est l'adoration » (Tirmidhi 2969)."],en:["According to the hadith, supplication is…",["worship","a habit of the elders","reserved for imams"],"“Supplication is worship” (Tirmidhi 2969)."],ar:["في الحديث، الدعاء…",["هو العبادة","عادة الأقدمين","خاص بالأئمة"],"«الدعاء هو العبادة» (الترمذي 2969)."]}
+ ]}
+);
+
+// ---------- École : niveau 3 ----------
+SCHOOL.push(
+{id:"mariage",lv:3,t:{fr:"Le mariage en islam",en:"Marriage in Islam",ar:"الزواج في الإسلام"},
+ parts:[
+  {h:{fr:"Un signe d'Allah",en:"A sign of Allah",ar:"آية من آيات الله"},
+   p:{fr:"Allah dit : « Parmi Ses signes, Il a créé pour vous des épouses issues de vous-mêmes, afin que vous trouviez auprès d'elles la tranquillité, et Il a mis entre vous affection (mawadda) et miséricorde (rahma) » (30:21). Le mariage est une adoration, une protection et une source de paix.",
+      en:"Allah says: “Among His signs is that He created for you spouses from among yourselves so that you may find tranquillity in them, and He placed between you affection (mawaddah) and mercy (rahmah)” (30:21). Marriage is worship, protection and a source of peace.",
+      ar:"قال تعالى: ﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً﴾ (الروم: 21). فالزواج عبادة وحصانة وسكن."}},
+  {h:{fr:"Bien choisir",en:"Choosing well",ar:"حسن الاختيار"},
+   p:{fr:"Le Prophète ﷺ a dit : « On épouse une femme pour quatre raisons : ses biens, son rang, sa beauté et sa religion. Choisis celle qui a la religion » (Bukhari 5090). Et aux familles : « Si vient à vous quelqu'un dont vous agréez la religion et le caractère, mariez-le » (Tirmidhi 1084).",
+      en:"The Prophet ﷺ said: “A woman is married for four things: her wealth, her lineage, her beauty and her religion. Choose the one with religion” (Bukhari 5090). And to families: “If someone whose religion and character please you comes to you, marry him” (Tirmidhi 1084).",
+      ar:"قال النبي ﷺ: «تُنكح المرأة لأربع: لمالها ولحسبها ولجمالها ولدينها، فاظفر بذات الدين» (البخاري 5090). وقال للأولياء: «إذا جاءكم من ترضون دينه وخلقه فزوّجوه» (الترمذي 1084)."}},
+  {h:{fr:"Les conditions du mariage",en:"The conditions of marriage",ar:"أركان عقد الزواج"},
+   p:{fr:"Dans l'école malikite, suivie en Guinée et en Afrique de l'Ouest, le mariage demande : le consentement des époux (Bukhari 5136), le tuteur (wali) de la femme (« Pas de mariage sans tuteur », Abou Daoud 2085), la dot (mahr) qui appartient à l'épouse (4:4), l'offre et l'acceptation, et deux témoins.",
+      en:"In the Maliki school, followed in Guinea and West Africa, marriage requires: the consent of the spouses (Bukhari 5136), the woman's guardian (wali) (“No marriage without a guardian”, Abu Dawud 2085), the dowry (mahr), which belongs to the wife (4:4), offer and acceptance, and two witnesses.",
+      ar:"في المذهب المالكي المتّبع في غينيا وغرب إفريقيا، يقوم النكاح على: رضا الزوجين (البخاري 5136)، والوليّ («لا نكاح إلا بولي»، أبو داود 2085)، والصداق وهو حق للزوجة (النساء: 4)، والإيجاب والقبول، والشاهدين."}},
+  {h:{fr:"La facilité, pas la ruine",en:"Ease, not ruin",ar:"التيسير لا الإرهاق"},
+   p:{fr:"« Le meilleur mariage est le plus facile » (Abou Daoud 2117). Le Prophète ﷺ a dit à 'Abd ar-Rahmân ibn 'Awf : « Offre un repas de noces (walîma), ne serait-ce qu'avec un mouton » (Bukhari 5167). Une fête simple et une dot raisonnable ouvrent la porte de la baraka.",
+      en:"“The best marriage is the easiest” (Abu Dawud 2117). The Prophet ﷺ told 'Abd ar-Rahman ibn 'Awf: “Give a wedding feast (walimah), even if only with one sheep” (Bukhari 5167). A simple celebration and a reasonable dowry open the door to barakah.",
+      ar:"«خير النكاح أيسره» (أبو داود 2117)، وقال ﷺ لعبد الرحمن بن عوف: «أولِم ولو بشاة» (البخاري 5167). فالعرس البسيط والمهر المعتدل باب للبركة."}}
+ ],
+ ar:"وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً",src:"Coran 30:21",
+ q:[
+  {a:0,fr:["À qui appartient la dot (mahr) ?",["À l'épouse","Au père de l'épouse","À l'imam"],"« Donnez aux épouses leur dot de bon cœur » (4:4) : elle lui appartient."],en:["Who does the dowry (mahr) belong to?",["The wife","The wife's father","The imam"],"“Give women their dowries graciously” (4:4): it belongs to her."],ar:["لمن الصداق (المهر)؟",["للزوجة","لأبيها","للإمام"],"﴿وَآتُوا النِّسَاءَ صَدُقَاتِهِنَّ نِحْلَةً﴾ (النساء: 4)، فهو حقها."]},
+  {a:2,fr:["Selon 30:21, Allah a mis entre les époux…",["la richesse et la gloire","la rivalité","l'affection et la miséricorde"],"« … Il a mis entre vous affection et miséricorde » (30:21)."],en:["According to 30:21, Allah placed between spouses…",["wealth and glory","rivalry","affection and mercy"],"“…He placed between you affection and mercy” (30:21)."],ar:["في (الروم: 21) جعل الله بين الزوجين…",["الغنى والمجد","التنافس","المودة والرحمة"],"﴿وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً﴾."]},
+  {a:1,fr:["Quel critère le Prophète ﷺ conseille-t-il en premier pour choisir son épouse ?",["La beauté","La religion","La richesse"],"« Choisis celle qui a la religion » (Bukhari 5090)."],en:["Which criterion did the Prophet ﷺ advise first when choosing a wife?",["Beauty","Religion","Wealth"],"“Choose the one with religion” (Bukhari 5090)."],ar:["ما المعيار الذي قدّمه النبي ﷺ في اختيار الزوجة؟",["الجمال","الدين","المال"],"«فاظفر بذات الدين» (البخاري 5090)."]},
+  {a:2,fr:["Le consentement de la femme au mariage est…",["inutile si le père décide","demandé seulement aux veuves","nécessaire"],"Le Prophète ﷺ a dit que la femme ne se marie pas sans son accord (Bukhari 5136)."],en:["The woman's consent to marriage is…",["unnecessary if the father decides","asked only of widows","necessary"],"The Prophet ﷺ said a woman is not married without her consent (Bukhari 5136)."],ar:["رضا المرأة بالزواج…",["لا حاجة إليه إن قرّر الأب","يُطلب من الثيّب فقط","شرط لازم"],"قال ﷺ: «لا تُنكح الأيّم حتى تُستأمر، ولا البكر حتى تُستأذن» (البخاري 5136)."]},
+  {a:0,fr:["Selon le hadith, le meilleur mariage est…",["le plus facile","le plus coûteux","celui qui dure trois jours de fête"],"« Le meilleur mariage est le plus facile » (Abou Daoud 2117)."],en:["According to the hadith, the best marriage is…",["the easiest","the most expensive","the one with three days of celebration"],"“The best marriage is the easiest” (Abu Dawud 2117)."],ar:["في الحديث، خير النكاح…",["أيسره","أغلاه","ما دام عرسه ثلاثة أيام"],"«خير النكاح أيسره» (أبو داود 2117)."]}
+ ]},
+
+{id:"droits",lv:3,t:{fr:"Droits et devoirs des époux",en:"Rights and duties of spouses",ar:"حقوق الزوجين وواجباتهما"},
+ parts:[
+  {h:{fr:"L'équilibre",en:"Balance",ar:"التوازن"},
+   p:{fr:"Allah dit : « Elles ont des droits équivalents à leurs obligations, conformément à la bienséance » (2:228). Et aux maris : « Comportez-vous convenablement envers elles » (4:19). Le mariage n'est pas un rapport de force mais une responsabilité partagée devant Allah.",
+      en:"Allah says: “Women have rights similar to their obligations, according to what is fair” (2:228). And to husbands: “Live with them in kindness” (4:19). Marriage is not a power struggle but a shared responsibility before Allah.",
+      ar:"قال تعالى: ﴿وَلَهُنَّ مِثْلُ الَّذِي عَلَيْهِنَّ بِالْمَعْرُوفِ﴾ (البقرة: 228)، وقال: ﴿وَعَاشِرُوهُنَّ بِالْمَعْرُوفِ﴾ (النساء: 19). فالزواج ليس صراع قوة، بل مسؤولية مشتركة أمام الله."}},
+  {h:{fr:"Les droits de l'épouse",en:"The wife's rights",ar:"حقوق الزوجة"},
+   p:{fr:"L'épouse a droit à sa dot, à l'entretien (nourriture, vêtements, logement) selon les moyens du mari (65:7), à un bon traitement, au respect et à la protection. Elle garde ses biens propres. En cas de polygamie, le mari doit être juste entre ses épouses ; s'il craint de ne pas l'être, une seule (4:3).",
+      en:"The wife is entitled to her dowry, to maintenance (food, clothing, housing) according to the husband's means (65:7), to good treatment, respect and protection. She keeps her own property. In polygamy, the husband must be just between his wives; if he fears he cannot, then only one (4:3).",
+      ar:"للزوجة صداقها، والنفقة من طعام وكسوة وسكن بحسب سعة الزوج (الطلاق: 7)، وحسن العشرة والاحترام والحماية، ولها ذمتها المالية المستقلة. وفي التعدد يجب العدل بين الزوجات، فإن خاف ألّا يعدل فواحدة (النساء: 3)."}},
+  {h:{fr:"Les droits du mari et les droits communs",en:"The husband's rights and shared rights",ar:"حقوق الزوج والحقوق المشتركة"},
+   p:{fr:"Le mari a droit au respect, à la confiance et à ce que l'épouse ne fasse pas entrer chez lui quelqu'un qu'il n'accepte pas (Muslim 1218). Ensemble, les époux se doivent fidélité, intimité, discrétion — divulguer les secrets du couple est très grave (Muslim 1437) — et concertation pour les décisions de la famille (2:233).",
+      en:"The husband is entitled to respect, trust, and that his wife not let into his home someone he does not accept (Muslim 1218). Together, spouses owe each other fidelity, intimacy, discretion — revealing the couple's secrets is very serious (Muslim 1437) — and consultation on family decisions (2:233).",
+      ar:"للزوج الاحترام والثقة، وألّا تُدخل الزوجة بيته من يكره (مسلم 1218). ويتبادل الزوجان الوفاء والمودّة وكتمان الأسرار، فإفشاء سرّ الزوجين أمر عظيم (مسلم 1437)، والتشاور في قرارات الأسرة (البقرة: 233)."}},
+  {h:{fr:"Le meilleur d'entre vous",en:"The best of you",ar:"خيركم"},
+   p:{fr:"Le Prophète ﷺ a dit : « Le meilleur d'entre vous est le meilleur envers sa famille, et je suis le meilleur d'entre vous envers ma famille » (Tirmidhi 3895). Même la bouchée que le mari met dans la bouche de sa femme est une aumône récompensée (Bukhari 56).",
+      en:"The Prophet ﷺ said: “The best of you is the best to his family, and I am the best of you to my family” (Tirmidhi 3895). Even the morsel a husband puts in his wife's mouth is a rewarded charity (Bukhari 56).",
+      ar:"قال النبي ﷺ: «خيركم خيركم لأهله، وأنا خيركم لأهلي» (الترمذي 3895)، وحتى اللقمة يضعها الزوج في فم امرأته صدقة يؤجر عليها (البخاري 56)."}}
+ ],
+ ar:"وَعَاشِرُوهُنَّ بِالْمَعْرُوفِ",src:"Coran 4:19",
+ q:[
+  {a:1,fr:["Que commande le verset 4:19 aux maris ?",["Être sévères","Se comporter convenablement envers leurs épouses","Décider seuls de tout"],"« Comportez-vous convenablement envers elles » (4:19)."],en:["What does verse 4:19 command husbands?",["To be strict","To live with their wives in kindness","To decide everything alone"],"“Live with them in kindness” (4:19)."],ar:["بماذا تأمر الآية (النساء: 19) الأزواج؟",["بالشدّة","بمعاشرة الزوجات بالمعروف","بالانفراد بكل قرار"],"﴿وَعَاشِرُوهُنَّ بِالْمَعْرُوفِ﴾ (النساء: 19)."]},
+  {a:0,fr:["L'entretien du foyer (nourriture, logement) est à la charge…",["du mari, selon ses moyens","de l'épouse","des beaux-parents"],"« Que celui qui est aisé dépense selon sa fortune » (65:7)."],en:["Household maintenance (food, housing) is the responsibility…",["of the husband, according to his means","of the wife","of the in-laws"],"“Let the man of means spend according to his means” (65:7)."],ar:["النفقة (الطعام والسكن) واجبة على…",["الزوج بحسب سعته","الزوجة","الأصهار"],"﴿لِيُنفِقْ ذُو سَعَةٍ مِّن سَعَتِهِ﴾ (الطلاق: 7)."]},
+  {a:2,fr:["Selon le Prophète ﷺ, le meilleur d'entre vous est…",["le plus savant","le plus riche","le meilleur envers sa famille"],"« Le meilleur d'entre vous est le meilleur envers sa famille » (Tirmidhi 3895)."],en:["According to the Prophet ﷺ, the best of you is…",["the most learned","the richest","the best to his family"],"“The best of you is the best to his family” (Tirmidhi 3895)."],ar:["قال النبي ﷺ: خيركم…",["أعلمكم","أغناكم","خيركم لأهله"],"«خيركم خيركم لأهله» (الترمذي 3895)."]},
+  {a:1,fr:["Dépenser pour son épouse, c'est…",["une obligation sans récompense","une aumône récompensée","une perte"],"Même la bouchée mise dans la bouche de l'épouse est une aumône (Bukhari 56)."],en:["Spending on one's wife is…",["a duty with no reward","a rewarded charity","a loss"],"Even the morsel put in the wife's mouth is charity (Bukhari 56)."],ar:["الإنفاق على الزوجة…",["واجب بلا أجر","صدقة يؤجر عليها","خسارة"],"حتى اللقمة في فم المرأة صدقة (البخاري 56)."]},
+  {a:0,fr:["Quelle est la condition de la polygamie dans le Coran ?",["La justice entre les épouses","L'accord du village","Avoir plus de 40 ans"],"« Si vous craignez de ne pas être justes, alors une seule » (4:3)."],en:["What is the condition for polygamy in the Quran?",["Justice between the wives","The village's approval","Being over 40"],"“If you fear you will not be just, then only one” (4:3)."],ar:["ما شرط التعدد في القرآن؟",["العدل بين الزوجات","موافقة القرية","تجاوز الأربعين"],"﴿فَإِنْ خِفْتُمْ أَلَّا تَعْدِلُوا فَوَاحِدَةً﴾ (النساء: 3)."]}
+ ]},
+
+{id:"enfants",lv:3,t:{fr:"L'éducation des enfants",en:"Raising children",ar:"تربية الأبناء"},
+ parts:[
+  {h:{fr:"Un dépôt confié par Allah",en:"A trust from Allah",ar:"أمانة من الله"},
+   p:{fr:"Allah dit : « Ô vous qui croyez ! Préservez vos personnes et vos familles d'un Feu… » (66:6). Le Prophète ﷺ a dit : « Chacun de vous est un berger, et chacun est responsable de son troupeau » (Bukhari 893). Le père et la mère sont tous deux responsables de l'éducation.",
+      en:"Allah says: “O you who believe! Protect yourselves and your families from a Fire…” (66:6). The Prophet ﷺ said: “Each of you is a shepherd, and each is responsible for his flock” (Bukhari 893). Father and mother are both responsible for upbringing.",
+      ar:"قال تعالى: ﴿يَا أَيُّهَا الَّذِينَ آمَنُوا قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا﴾ (التحريم: 6)، وقال النبي ﷺ: «كلكم راعٍ وكلكم مسؤول عن رعيته» (البخاري 893). فالأب والأم كلاهما مسؤول عن التربية."}},
+  {h:{fr:"L'accueil du nouveau-né",en:"Welcoming the newborn",ar:"استقبال المولود"},
+   p:{fr:"Le Prophète ﷺ a dit que pour l'enfant on sacrifie l'aqîqa le septième jour, on lui rase la tête et on lui donne un nom (Abou Daoud 2838). Choisissez un beau nom, porteur de sens : l'enfant le portera toute sa vie.",
+      en:"The Prophet ﷺ said that for a child the 'aqiqah is sacrificed on the seventh day, his head is shaved and he is given a name (Abu Dawud 2838). Choose a beautiful, meaningful name: the child will carry it all his life.",
+      ar:"قال النبي ﷺ: «كل غلام رهينة بعقيقته، تُذبح عنه يوم سابعه، ويُحلق، ويُسمّى» (أبو داود 2838). فاختاروا اسماً حسناً ذا معنى، فسيحمله الطفل طوال حياته."}},
+  {h:{fr:"Les conseils de Louqmân",en:"Luqman's advice",ar:"وصايا لقمان"},
+   p:{fr:"Dans la sourate Louqmân (31:13-19), un père sage conseille son fils : n'associe rien à Allah, sois reconnaissant envers tes parents, accomplis la prière, ordonne le bien, sois patient, ne sois pas arrogant, et baisse ta voix. Le Prophète ﷺ ordonnait d'apprendre la prière aux enfants dès sept ans (Abou Daoud 495).",
+      en:"In surah Luqman (31:13-19), a wise father advises his son: associate nothing with Allah, be grateful to your parents, establish prayer, enjoin good, be patient, do not be arrogant, and lower your voice. The Prophet ﷺ ordered that children be taught prayer from seven (Abu Dawud 495).",
+      ar:"في سورة لقمان (13-19) يوصي الأب الحكيم ابنه: لا تشرك بالله، واشكر لوالديك، وأقم الصلاة، وأمر بالمعروف، واصبر، ولا تتكبّر، واغضض من صوتك. وأمر النبي ﷺ بتعليم الأولاد الصلاة من سبع سنين (أبو داود 495)."}},
+  {h:{fr:"Justice et tendresse",en:"Justice and tenderness",ar:"العدل والرحمة"},
+   p:{fr:"« Craignez Allah et soyez justes entre vos enfants » (Bukhari 2587) : pas de préférence entre les garçons et les filles, ni entre les enfants de deux épouses. Le Prophète ﷺ embrassait ses petits-enfants et disait : « Celui qui ne fait pas miséricorde ne reçoit pas miséricorde » (Bukhari 5997).",
+      en:"“Fear Allah and be just between your children” (Bukhari 2587): no preference between boys and girls, nor between the children of two wives. The Prophet ﷺ kissed his grandchildren and said: “Whoever does not show mercy will not be shown mercy” (Bukhari 5997).",
+      ar:"«اتقوا الله واعدلوا بين أولادكم» (البخاري 2587): لا تفضيل بين الذكور والإناث، ولا بين أبناء الزوجتين. وكان ﷺ يقبّل أحفاده ويقول: «من لا يَرحم لا يُرحم» (البخاري 5997)."}}
+ ],
+ ar:"قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا",src:"Coran 66:6",
+ q:[
+  {a:1,fr:["Quel jour fait-on l'aqîqa ?",["Le premier anniversaire","Le septième jour","Le quarantième jour"],"Le septième jour, avec le rasage de la tête et le nom (Abou Daoud 2838)."],en:["On which day is the 'aqiqah done?",["The first birthday","The seventh day","The fortieth day"],"On the seventh day, with shaving the head and naming (Abu Dawud 2838)."],ar:["في أي يوم تُذبح العقيقة؟",["في عيد الميلاد الأول","في اليوم السابع","في اليوم الأربعين"],"يوم السابع، مع حلق الرأس والتسمية (أبو داود 2838)."]},
+  {a:2,fr:["Quel sage du Coran conseille son fils dans une sourate qui porte son nom ?",["Moussa","Ibrâhîm","Louqmân"],"La sourate 31, Louqmân, rapporte ses conseils à son fils."],en:["Which wise man in the Quran advises his son in a surah bearing his name?",["Musa","Ibrahim","Luqman"],"Surah 31, Luqman, reports his advice to his son."],ar:["أيّ حكيم يوصي ابنه في سورة تحمل اسمه؟",["موسى","إبراهيم","لقمان"],"سورة لقمان (31) تذكر وصاياه لابنه."]},
+  {a:0,fr:["Entre ses enfants, le Prophète ﷺ a ordonné…",["la justice","de préférer l'aîné","de préférer les garçons"],"« Soyez justes entre vos enfants » (Bukhari 2587)."],en:["Between one's children, the Prophet ﷺ ordered…",["justice","preferring the eldest","preferring boys"],"“Be just between your children” (Bukhari 2587)."],ar:["أمر النبي ﷺ بين الأولاد بـ…",["العدل","تفضيل الأكبر","تفضيل الذكور"],"«اعدلوا بين أولادكم» (البخاري 2587)."]},
+  {a:1,fr:["« Chacun de vous est un berger » signifie que…",["chacun doit garder des moutons","chacun est responsable de ceux dont il a la charge","seul le père est responsable"],"« … et chacun est responsable de son troupeau » (Bukhari 893)."],en:["“Each of you is a shepherd” means that…",["everyone must keep sheep","everyone is responsible for those in their care","only the father is responsible"],"“…and each is responsible for his flock” (Bukhari 893)."],ar:["معنى «كلكم راعٍ»…",["أن يرعى كلٌّ الغنم","أن كل واحد مسؤول عمّن تحت رعايته","أن الأب وحده مسؤول"],"«وكلكم مسؤول عن رعيته» (البخاري 893)."]},
+  {a:2,fr:["Quand on lui reprocha d'embrasser les enfants, le Prophète ﷺ répondit…",["« C'est réservé aux mères »","« Seulement les jours de fête »","« Celui qui ne fait pas miséricorde ne reçoit pas miséricorde »"],"Rapporté par Bukhari (5997)."],en:["When criticised for kissing children, the Prophet ﷺ replied…",["“That is for mothers only”","“Only on feast days”","“Whoever does not show mercy will not be shown mercy”"],"Reported by Bukhari (5997)."],ar:["لما استُغرب تقبيله الصبيان قال ﷺ…",["«هذا للأمهات»","«في الأعياد فقط»","«من لا يَرحم لا يُرحم»"],"رواه البخاري (5997)."]}
+ ]},
+
+{id:"akhlaq",lv:3,t:{fr:"Le bon caractère et la paix du foyer",en:"Good character and peace at home",ar:"حسن الخلق وسكينة البيت"},
+ parts:[
+  {h:{fr:"Le cœur du message",en:"The heart of the message",ar:"جوهر الرسالة"},
+   p:{fr:"Le Prophète ﷺ a dit : « J'ai été envoyé pour parfaire le bon caractère » (Mouwatta de l'imam Mâlik). Et : « Rien n'est plus lourd dans la balance du croyant, le Jour de la Résurrection, que le bon caractère » (Tirmidhi 2002). Le premier lieu où se montre le caractère, c'est la maison.",
+      en:"The Prophet ﷺ said: “I was sent to perfect good character” (Muwatta of Imam Malik). And: “Nothing is heavier in the believer's scale on the Day of Resurrection than good character” (Tirmidhi 2002). The first place where character shows is the home.",
+      ar:"قال النبي ﷺ: «بُعثت لأتمّم حُسن الأخلاق» (موطأ الإمام مالك)، وقال: «ما من شيء أثقل في ميزان المؤمن يوم القيامة من خلق حسن» (الترمذي 2002). وأول ميدان يظهر فيه الخلق هو البيت."}},
+  {h:{fr:"Maîtriser sa colère",en:"Controlling anger",ar:"ضبط الغضب"},
+   p:{fr:"Un homme demanda un conseil ; le Prophète ﷺ répéta : « Ne te mets pas en colère » (Bukhari 6116). « Le fort n'est pas celui qui terrasse les autres, mais celui qui se maîtrise dans la colère » (Bukhari 6114). Et : « Si l'un de vous se met en colère debout, qu'il s'asseye » (Abou Daoud 4782).",
+      en:"A man asked for advice; the Prophet ﷺ repeated: “Do not get angry” (Bukhari 6116). “The strong one is not the one who overpowers others, but the one who controls himself when angry” (Bukhari 6114). And: “If one of you gets angry while standing, let him sit down” (Abu Dawud 4782).",
+      ar:"استوصى رجل النبي ﷺ فردّد: «لا تغضب» (البخاري 6116)، وقال: «ليس الشديد بالصُّرَعة، إنما الشديد الذي يملك نفسه عند الغضب» (البخاري 6114)، و«إذا غضب أحدكم وهو قائم فليجلس» (أبو داود 4782)."}},
+  {h:{fr:"Le poids des mots",en:"The weight of words",ar:"وزن الكلمة"},
+   p:{fr:"« Que celui qui croit en Allah et au Jour dernier dise du bien ou se taise » (Bukhari 6018). « Ton sourire à ton frère est une aumône » (Tirmidhi 1956). Allah dit : « Repousse le mal par ce qui est meilleur : celui avec qui tu avais une inimitié deviendra comme un ami chaleureux » (41:34).",
+      en:"“Whoever believes in Allah and the Last Day, let him speak good or remain silent” (Bukhari 6018). “Your smile to your brother is charity” (Tirmidhi 1956). Allah says: “Repel evil with what is better, and the one with whom there was enmity will become like a devoted friend” (41:34).",
+      ar:"«من كان يؤمن بالله واليوم الآخر فليقل خيراً أو ليصمت» (البخاري 6018)، و«تبسّمك في وجه أخيك صدقة» (الترمذي 1956). وقال تعالى: ﴿ادْفَعْ بِالَّتِي هِيَ أَحْسَنُ فَإِذَا الَّذِي بَيْنَكَ وَبَيْنَهُ عَدَاوَةٌ كَأَنَّهُ وَلِيٌّ حَمِيمٌ﴾ (فصلت: 34)."}},
+  {h:{fr:"Se réconcilier vite",en:"Reconciling quickly",ar:"المسارعة إلى الصلح"},
+   p:{fr:"« Il n'est pas permis au musulman de bouder son frère plus de trois jours » (Bukhari 6077) : à plus forte raison son conjoint. Allah loue « ceux qui maîtrisent leur colère et pardonnent aux gens » (3:134) et dit à propos des époux : « La réconciliation est meilleure » (4:128).",
+      en:"“It is not permissible for a Muslim to shun his brother for more than three days” (Bukhari 6077): all the more so one's spouse. Allah praises “those who restrain anger and pardon people” (3:134) and says about spouses: “Reconciliation is better” (4:128).",
+      ar:"«لا يحلّ لمسلم أن يهجر أخاه فوق ثلاث ليال» (البخاري 6077)، فكيف بالزوج؟ وقد أثنى الله على ﴿وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ﴾ (آل عمران: 134)، وقال في شأن الزوجين: ﴿وَالصُّلْحُ خَيْرٌ﴾ (النساء: 128)."}}
+ ],
+ ar:"وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ",src:"Coran 3:134",
+ q:[
+  {a:0,fr:["Quel conseil le Prophète ﷺ a-t-il répété à l'homme qui le lui demandait ?",["« Ne te mets pas en colère »","« Voyage beaucoup »","« Mange peu »"],"Il le répéta plusieurs fois (Bukhari 6116)."],en:["What advice did the Prophet ﷺ repeat to the man who asked?",["“Do not get angry”","“Travel a lot”","“Eat little”"],"He repeated it several times (Bukhari 6116)."],ar:["ما الوصية التي كرّرها النبي ﷺ لمن استوصاه؟",["«لا تغضب»","«أكثر من السفر»","«قلّل الطعام»"],"كرّرها مراراً (البخاري 6116)."]},
+  {a:1,fr:["Selon le hadith, le fort est…",["celui qui gagne à la lutte","celui qui se maîtrise dans la colère","celui qui crie le plus fort"],"« … celui qui se maîtrise dans la colère » (Bukhari 6114)."],en:["According to the hadith, the strong one is…",["the one who wins at wrestling","the one who controls himself when angry","the one who shouts loudest"],"“…the one who controls himself when angry” (Bukhari 6114)."],ar:["في الحديث، الشديد هو…",["من يغلب في المصارعة","من يملك نفسه عند الغضب","من يصرخ أعلى"],"«الذي يملك نفسه عند الغضب» (البخاري 6114)."]},
+  {a:2,fr:["« Que celui qui croit en Allah et au Jour dernier dise du bien ou… »",["qu'il parte","qu'il crie","qu'il se taise"],"« … ou se taise » (Bukhari 6018)."],en:["“Whoever believes in Allah and the Last Day, let him speak good or…”",["leave","shout","remain silent"],"“…or remain silent” (Bukhari 6018)."],ar:["«من كان يؤمن بالله واليوم الآخر فليقل خيراً أو…»",["ليرحل","ليصرخ","ليصمت"],"«أو ليصمت» (البخاري 6018)."]},
+  {a:0,fr:["Au maximum, combien de jours peut-on bouder un musulman ?",["Trois","Sept","Quarante"],"« … plus de trois jours » n'est pas permis (Bukhari 6077)."],en:["At most, how many days may one shun a Muslim?",["Three","Seven","Forty"],"Shunning “for more than three days” is not permitted (Bukhari 6077)."],ar:["أقصى مدة يجوز فيها هجر المسلم؟",["ثلاث ليال","سبع","أربعون"],"«فوق ثلاث ليال» لا يحل (البخاري 6077)."]},
+  {a:1,fr:["À propos des époux en désaccord, le Coran dit : « … est meilleur(e) »",["La séparation","La réconciliation","Le silence"],"« La réconciliation est meilleure » (4:128)."],en:["About spouses in disagreement, the Quran says: “… is better”",["Separation","Reconciliation","Silence"],"“Reconciliation is better” (4:128)."],ar:["في شأن الزوجين المتنازعين قال تعالى: ﴿… خَيْرٌ﴾",["الفراق","الصلح","الصمت"],"﴿وَالصُّلْحُ خَيْرٌ﴾ (النساء: 128)."]}
+ ]}
+);
+
+// ---------- École DJAMILLAH HAYAT : leçons, quiz, points, rangs, certificats ----------
+const UI10={
+ fr:{mSchool:"École de l'islam",dSchool:"Leçons, quiz, points et certificats",schIntro:"Apprenez votre religion pas à pas, comme à l'école : lisez la leçon, réussissez le quiz et gagnez des points.",
+  level:"Niveau {n}",lesson:"Leçon {n}",lessonsOk:"{n} leçons réussies sur {t}",locked:"Réussissez la leçon précédente pour ouvrir celle-ci.",isNew:"À découvrir",best:"Meilleur score : {s}/5",
+  points:"points",myRank:"Mon rang",nextRank:"Encore {n} points pour devenir « {r} »",topRank:"Vous avez atteint le plus haut rang. Qu'Allah vous accorde un savoir utile !",
+  listenLesson:"Écouter la leçon",startQuiz:"Passer le quiz · 5 questions",keyText:"Texte à retenir",qOf:"Question {i} sur {n}",next:"Question suivante",seeResult:"Voir mon résultat",
+  good:"Bonne réponse !",bad:"Ce n'est pas la bonne réponse.",resTitle:"Votre résultat",resPass:"Leçon réussie ! La leçon suivante est ouverte.",resFail:"Il faut au moins 4 bonnes réponses sur 5. Relisez la leçon et réessayez : vous allez y arriver.",
+  earned:"Points gagnés",ptsRead:"Leçon lue",ptsAns:"Nouvelles bonnes réponses",ptsPerfect:"Sans faute",ptsLevel:"Niveau terminé",noNew:"Pas de nouveaux points : battez votre meilleur score pour en gagner.",
+  nextLesson:"Leçon suivante",retry:"Refaire le quiz",reread:"Relire la leçon",toSchool:"Retour à l'école",
+  certTitle:"Certificat",certSchool:"École DJAMILLAH HAYAT",certTo:"décerné à",certFor:"pour avoir réussi le niveau {n} : « {t} »",certShare:"Partager mon certificat",certMine:"Mes certificats",certLocked:"Terminez les 4 leçons du niveau pour obtenir le certificat.",certName:"Votre nom sur le certificat",certNew:"Nouveau certificat !",
+  dq:"Question du jour",dqDone:"Revenez demain pour une nouvelle question.",dqStreak:"{d} jours de suite",dqGo:"Aller à l'école",dqPts:"+{n} points",
+  howPts:"Comment gagner des points",hp1:"Lire une leçon : 20 points",hp2:"Chaque nouvelle bonne réponse : 10 points",hp3:"Quiz sans faute : 30 points de bonus",hp4:"Niveau terminé : 100 points et un certificat",hp5:"Question du jour : 15 points, plus un bonus si vous revenez chaque jour",
+  rankUp:"Nouveau rang !"},
+ en:{mSchool:"School of Islam",dSchool:"Lessons, quizzes, points and certificates",schIntro:"Learn your religion step by step, as at school: read the lesson, pass the quiz and earn points.",
+  level:"Level {n}",lesson:"Lesson {n}",lessonsOk:"{n} of {t} lessons passed",locked:"Pass the previous lesson to open this one.",isNew:"To discover",best:"Best score: {s}/5",
+  points:"points",myRank:"My rank",nextRank:"{n} more points to become “{r}”",topRank:"You have reached the highest rank. May Allah grant you beneficial knowledge!",
+  listenLesson:"Listen to the lesson",startQuiz:"Take the quiz · 5 questions",keyText:"Text to remember",qOf:"Question {i} of {n}",next:"Next question",seeResult:"See my result",
+  good:"Correct!",bad:"That is not the right answer.",resTitle:"Your result",resPass:"Lesson passed! The next lesson is open.",resFail:"You need at least 4 correct answers out of 5. Read the lesson again and retry: you will get there.",
+  earned:"Points earned",ptsRead:"Lesson read",ptsAns:"New correct answers",ptsPerfect:"No mistakes",ptsLevel:"Level completed",noNew:"No new points: beat your best score to earn more.",
+  nextLesson:"Next lesson",retry:"Retake the quiz",reread:"Read the lesson again",toSchool:"Back to school",
+  certTitle:"Certificate",certSchool:"DJAMILLAH HAYAT School",certTo:"awarded to",certFor:"for passing level {n}: “{t}”",certShare:"Share my certificate",certMine:"My certificates",certLocked:"Complete the 4 lessons of the level to get the certificate.",certName:"Your name on the certificate",certNew:"New certificate!",
+  dq:"Question of the day",dqDone:"Come back tomorrow for a new question.",dqStreak:"{d} days in a row",dqGo:"Go to school",dqPts:"+{n} points",
+  howPts:"How to earn points",hp1:"Read a lesson: 20 points",hp2:"Each new correct answer: 10 points",hp3:"Perfect quiz: 30 bonus points",hp4:"Level completed: 100 points and a certificate",hp5:"Question of the day: 15 points, plus a bonus if you come back every day",
+  rankUp:"New rank!"},
+ ar:{mSchool:"مدرسة الإسلام",dSchool:"دروس واختبارات ونقاط وشهادات",schIntro:"تعلّم دينك خطوة بخطوة كما في المدرسة: اقرأ الدرس، وانجح في الاختبار، واكسب النقاط.",
+  level:"المستوى {n}",lesson:"الدرس {n}",lessonsOk:"{n} من {t} دروس منجزة",locked:"انجح في الدرس السابق ليُفتح هذا الدرس.",isNew:"جديد",best:"أفضل نتيجة: {s}/5",
+  points:"نقطة",myRank:"رتبتي",nextRank:"بقيت {n} نقطة لتصبح «{r}»",topRank:"بلغت أعلى رتبة. نسأل الله لك علماً نافعاً!",
+  listenLesson:"استمع إلى الدرس",startQuiz:"ابدأ الاختبار · 5 أسئلة",keyText:"نصّ للحفظ",qOf:"السؤال {i} من {n}",next:"السؤال التالي",seeResult:"عرض النتيجة",
+  good:"إجابة صحيحة!",bad:"ليست هذه الإجابة الصحيحة.",resTitle:"نتيجتك",resPass:"نجحت في الدرس! فُتح الدرس التالي.",resFail:"يلزم 4 إجابات صحيحة من 5 على الأقل. أعد قراءة الدرس وحاول مجدداً، ستنجح بإذن الله.",
+  earned:"النقاط المكتسبة",ptsRead:"قراءة الدرس",ptsAns:"إجابات صحيحة جديدة",ptsPerfect:"بلا خطأ",ptsLevel:"إتمام المستوى",noNew:"لا نقاط جديدة: تجاوز أفضل نتيجة لك لتكسب المزيد.",
+  nextLesson:"الدرس التالي",retry:"أعد الاختبار",reread:"أعد قراءة الدرس",toSchool:"العودة إلى المدرسة",
+  certTitle:"شهادة",certSchool:"مدرسة جميلة حياة",certTo:"تُمنح لـ",certFor:"لنجاحه في المستوى {n}: «{t}»",certShare:"شارك شهادتي",certMine:"شهاداتي",certLocked:"أكمل دروس المستوى الأربعة للحصول على الشهادة.",certName:"اسمك على الشهادة",certNew:"شهادة جديدة!",
+  dq:"سؤال اليوم",dqDone:"عُد غداً لسؤال جديد.",dqStreak:"{d} أيام متتالية",dqGo:"اذهب إلى المدرسة",dqPts:"+{n} نقطة",
+  howPts:"كيف تكسب النقاط",hp1:"قراءة درس: 20 نقطة",hp2:"كل إجابة صحيحة جديدة: 10 نقاط",hp3:"اختبار بلا خطأ: 30 نقطة إضافية",hp4:"إتمام مستوى: 100 نقطة وشهادة",hp5:"سؤال اليوم: 15 نقطة، ومكافأة إن عدت كل يوم",
+  rankUp:"رتبة جديدة!"}
+};
+Object.keys(UI10).forEach(l=>Object.assign(UI2[l],UI10[l]));
+const RANKS=[
+ [0,{fr:"Débutant",en:"Beginner",ar:"مبتدئ"}],
+ [100,{fr:"Élève",en:"Pupil",ar:"تلميذ"}],
+ [300,{fr:"Élève assidu",en:"Diligent pupil",ar:"تلميذ مجتهد"}],
+ [600,{fr:"Étudiant du savoir",en:"Student of knowledge",ar:"طالب علم"}],
+ [1000,{fr:"Lauréat",en:"Laureate",ar:"متفوّق"}],
+ [1500,{fr:"Gardien du savoir",en:"Guardian of knowledge",ar:"حافظ العلم"}]
+];
+S.school=S.school||{pts:0,read:{},best:{},certs:{},dlast:"",dstreak:0,dq:null};
+S.sch=S.sch||{v:"home"};
+const SCH=S.school;
+const lessonIdx=id=>SCHOOL.findIndex(l=>l.id===id);
+const passed=id=>(SCH.best[id]||0)>=4;
+const unlocked=i=>i===0||passed(SCHOOL[i-1].id);
+const levelDone=lv=>SCHOOL.filter(l=>l.lv===lv).every(l=>passed(l.id));
+const rankIdx=p=>RANKS.reduce((r,[min],i)=>p>=min?i:r,0);
+const QL=q=>q[S.lang]||q.fr;
+function addPts(n){
+  if(n<=0) return;
+  const before=rankIdx(SCH.pts); SCH.pts+=n;
+  const after=rankIdx(SCH.pts);
+  if(after>before){clearTimeout(addPts._t);addPts._t=setTimeout(()=>{const r=rankIdx(SCH.pts);toast(`<div class="bt">${rankMedal(r,52)}<div><span>${t("rankUp")}</span><b>${L3(RANKS[r][1])}</b></div></div>`,true)},2600)}
+}
+function rankMedal(i,size=64){
+  const stars=Array.from({length:Math.max(1,i)},(_,k)=>k);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="rk${i}${size}" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#F3DFA2"/><stop offset="1" stop-color="#A97A22"/></radialGradient></defs>
+  <circle cx="32" cy="32" r="29" fill="url(#rk${i}${size})"/><circle cx="32" cy="32" r="23" fill="#0B5247"/>
+  <path d="M20 27c4-2 8-2 12 1v14c-4-3-8-3-12-1z M44 27c-4-2-8-2-12 1v14c4-3 8-3 12-1z" fill="#F3DFA2"/>
+  ${stars.slice(0,5).map((k,n,a)=>`<circle cx="${32+(n-(a.length-1)/2)*6}" cy="19" r="2" fill="#F3DFA2"/>`).join("")}</svg>`;
+}
+const ICO_SPK='<svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none"/></svg>';
+
+// ---------- Vues ----------
+function viewSchool(){
+  const v=S.sch.v;
+  if(v==="lesson") return schLesson();
+  if(v==="quiz") return schQuiz();
+  if(v==="result") return schResult();
+  return schHome();
+}
+function rankCard(){
+  const p=SCH.pts, i=rankIdx(p), nx=RANKS[i+1];
+  const pct=nx?Math.round((p-RANKS[i][0])/(nx[0]-RANKS[i][0])*100):100;
+  return `<div class="card sch-rank">${rankMedal(i,70)}<div class="sr-body"><span class="eyebrow">${t("myRank")}</span><b class="sr-name">${L3(RANKS[i][1])}</b>
+   <span class="sr-pts">★ ${p} ${t("points")}</span><div class="progress"><i style="width:${pct}%"></i></div><span class="sr-next">${nx?fmt(t("nextRank"),{n:nx[0]-p,r:L3(nx[1])}):t("topRank")}</span></div></div>`;
+}
+function schHome(){
+  const nPass=SCHOOL.filter(l=>passed(l.id)).length;
+  let num=0;
+  return `<section class="hello"><h1>${t("mSchool")}</h1><p>${t("schIntro")}</p></section>
+  ${rankCard()}
+  ${SCHOOL_LEVELS.map(L=>{const ls=SCHOOL.filter(l=>l.lv===L.n), ok=ls.filter(l=>passed(l.id)).length;
+   return `<div class="card sch-level"><div class="sl-head"><span class="eyebrow">${fmt(t("level"),{n:L.n})}</span><h2>${L3(L.t)}</h2>
+     <div class="progress"><i style="width:${ok/ls.length*100}%"></i></div><span class="sl-count">${fmt(t("lessonsOk"),{n:ok,t:ls.length})}</span></div>
+    ${ls.map(l=>{const i=lessonIdx(l.id), open=unlocked(i), b=SCH.best[l.id]; num++;
+      return `<button class="sch-row ${open?"":"lock"} ${passed(l.id)?"ok":""}" data-lesson="${l.id}" ${open?"":`aria-disabled="true"`}>
+       <span class="sch-num">${passed(l.id)?"✓":open?num:"🔒"}</span><span class="sch-t"><b>${L3(l.t)}</b><span>${!open?t("locked"):b!=null?fmt(t("best"),{s:b})+" "+"★".repeat(b):t("isNew")}</span></span><i aria-hidden="true">›</i></button>`}).join("")}
+    ${SCH.certs[L.n]?`<button class="btn sch-cert-btn" data-cert="${L.n}">🎓 ${t("certShare")}</button>`:`<p class="note" style="margin:0">🎓 ${t("certLocked")}</p>`}
+   </div>`}).join("")}
+  <div class="card"><h3>${t("howPts")}</h3><ul class="sch-how">${["hp1","hp2","hp3","hp4","hp5"].map(k=>`<li>${t(k)}</li>`).join("")}</ul></div>
+  <p class="note" style="text-align:center">${fmt(t("lessonsOk"),{n:nPass,t:SCHOOL.length})}</p>`;
+}
+function schLesson(){
+  const l=SCHOOL[lessonIdx(S.sch.id)]; if(!l){S.sch.v="home";return schHome()}
+  const i=lessonIdx(l.id), nInLv=SCHOOL.filter(x=>x.lv===l.lv).indexOf(l)+1;
+  return `<section class="hello sch-hello"><span class="eyebrow">${fmt(t("level"),{n:l.lv})} · ${fmt(t("lesson"),{n:nInLv})}</span><h1>${L3(l.t)}</h1></section>
+  <div class="card sch-key"><span class="eyebrow">${t("keyText")}</span><p class="ar verse">${l.ar}</p><p class="src">${l.src}</p></div>
+  <button class="listen" id="sch-say">${ICO_SPK}${t("listenLesson")}</button>
+  ${l.parts.map((p,n)=>`<article class="card sch-part"><h3><span class="sp-n">${n+1}</span>${L3(p.h)}</h3><p>${L3(p.p)}</p></article>`).join("")}
+  <button class="btn sch-go" id="sch-quiz">${t("startQuiz")} ›</button>`;
+}
+function schQuiz(){
+  const l=SCHOOL[lessonIdx(S.sch.id)], qi=S.sch.qi||0, q=l.q[qi], [txt,opts,expl]=QL(q), sel=S.sch.sel;
+  return `<section class="hello sch-hello"><span class="eyebrow">${L3(l.t)}</span><h1 class="sch-q-of">${fmt(t("qOf"),{i:qi+1,n:l.q.length})}</h1></section>
+  <div class="progress"><i style="width:${(qi+(sel!=null?1:0))/l.q.length*100}%"></i></div>
+  <div class="card"><p class="sch-q">${txt}</p>
+   <div class="sch-opts">${opts.map((o,k)=>{let c="";if(sel!=null){if(k===q.a)c="right";else if(k===sel)c="wrong";else c="dim"}
+     return `<button class="sch-opt ${c}" data-opt="${k}" ${sel!=null?"disabled":""}><span class="so-l">${(S.lang==="ar"?"أبج":"ABC")[k]}</span><span>${o}</span></button>`}).join("")}</div>
+   ${sel!=null?`<div class="how ${sel===q.a?"ok":"ko"}"><b>${sel===q.a?t("good"):t("bad")}</b>${expl}</div>
+     <button class="btn sch-go" id="sch-next">${qi+1<l.q.length?t("next"):t("seeResult")} ›</button>`:""}
+  </div>`;
+}
+function schResult(){
+  const r=S.sch.res, l=SCHOOL[lessonIdx(S.sch.id)], i=lessonIdx(l.id), nx=SCHOOL[i+1], ok=r.s>=4;
+  const lines=[[t("ptsRead"),r.read],[t("ptsAns"),r.ans],[t("ptsPerfect"),r.perfect],[t("ptsLevel"),r.level]].filter(x=>x[1]>0);
+  return `<section class="hello sch-hello"><span class="eyebrow">${L3(l.t)}</span><h1>${t("resTitle")}</h1></section>
+  <div class="card sch-res ${ok?"pass":""}"><div class="sr-score">${r.s}<small>/5</small></div><div class="sr-stars">${"★".repeat(r.s)}<span>${"★".repeat(5-r.s)}</span></div>
+   <p>${ok?t("resPass"):t("resFail")}</p></div>
+  <div class="card"><span class="eyebrow">${t("earned")}</span>${lines.length?lines.map(([a,b])=>`<div class="sr-line"><span>${a}</span><b>+${b}</b></div>`).join("")+`<div class="sr-line tot"><span>★ ${t("points")}</span><b>${SCH.pts}</b></div>`:`<p class="note" style="margin:0">${t("noNew")}</p>`}</div>
+  ${r.level?`<div class="card sch-newcert"><span class="eyebrow">🎓 ${t("certNew")}</span><h3>${fmt(t("certFor"),{n:l.lv,t:L3(SCHOOL_LEVELS[l.lv-1].t)})}</h3>
+    <label for="cert-name">${t("certName")}<input id="cert-name" value="${esc(S.name||"")}" placeholder="Abdallah"></label><button class="btn" data-cert="${l.lv}">${t("certShare")}</button></div>`:""}
+  <div class="sch-btns">${ok&&nx?`<button class="btn" data-lesson="${nx.id}">${t("nextLesson")} ›</button>`:""}
+   ${!ok?`<button class="btn" data-lesson="${l.id}">${t("reread")}</button>`:""}
+   <button class="btn ghost" id="sch-retry">${t("retry")}</button><button class="btn ghost" id="sch-home">${t("toSchool")}</button></div>`;
+}
+
+// ---------- Question du jour (écran Aujourd'hui) ----------
+const DQ_POOL=SCHOOL.flatMap(l=>l.q.map((q,k)=>({l,q,k})));
+function dqToday(){const d=Math.floor(new Date(iso(today)+"T12:00:00").getTime()/864e5);return DQ_POOL[(d*7)%DQ_POOL.length]}
+function dqHTML(){
+  const {l,q}=dqToday(), [txt,opts,expl]=QL(q), done=SCH.dq&&SCH.dq.d===iso(today), sel=done?SCH.dq.ans:null;
+  return `<div class="card sch-dq"><div class="dq-top"><span class="eyebrow">✦ ${t("dq")}</span>${SCH.dstreak>1?`<span class="dq-streak">🔥 ${fmt(t("dqStreak"),{d:SCH.dstreak})}</span>`:""}</div>
+   <p class="sch-q">${txt}</p>
+   <div class="sch-opts">${opts.map((o,k)=>{let c="";if(done){if(k===q.a)c="right";else if(k===sel)c="wrong";else c="dim"}
+     return `<button class="sch-opt ${c}" data-dq="${k}" ${done?"disabled":""}><span class="so-l">${(S.lang==="ar"?"أبج":"ABC")[k]}</span><span>${o}</span></button>`}).join("")}</div>
+   ${done?`<div class="how ${sel===q.a?"ok":"ko"}"><b>${sel===q.a?t("good"):t("bad")} ${SCH.dq.pts?" · "+fmt(t("dqPts"),{n:SCH.dq.pts}):""}</b>${expl}</div><p class="note" style="margin:0">${t("dqDone")}</p>`:""}
+   <button class="dq-go" data-goschool="1">🎓 ${t("dqGo")} · ★ ${SCH.pts} ›</button></div>`;
+}
+function answerDQ(k){
+  if(SCH.dq&&SCH.dq.d===iso(today)) return;
+  const {q}=dqToday(), ok=k===q.a, y=new Date(today);y.setDate(y.getDate()-1);
+  SCH.dstreak=SCH.dlast===iso(y)?SCH.dstreak+1:1; SCH.dlast=iso(today);
+  const pts=ok?15+Math.min(25,5*(SCH.dstreak-1)):5;
+  SCH.dq={d:iso(today),ans:k,pts}; addPts(pts); save();
+  toast(`${ok?t("good"):t("bad")} · ★ +${pts}`,ok);
+  const sy=scrollY; render(); scrollTo(0,sy);
+}
+
+// ---------- Déroulement ----------
+function openLesson(id){
+  const i=lessonIdx(id); if(i<0||!unlocked(i)){toast(t("locked"));return}
+  S.tab="more";S.sub="school";S.sch={v:"lesson",id};save();render();scrollTo(0,0);
+}
+function startQuiz(){
+  const id=S.sch.id;
+  S.sch={v:"quiz",id,qi:0,sel:null,ans:[],readNew:!SCH.read[id]};
+  if(!SCH.read[id]){SCH.read[id]=iso(today)}
+  save();render();scrollTo(0,0);
+}
+function pickOpt(k){
+  if(S.sch.sel!=null) return;
+  const l=SCHOOL[lessonIdx(S.sch.id)], q=l.q[S.sch.qi];
+  S.sch.sel=k; S.sch.ans.push(k===q.a?1:0); save();
+  const sy=scrollY; render(); scrollTo(0,sy);
+  const h=document.querySelector(".sch-quiz-how,.how"); if(h&&h.scrollIntoView) h.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+function nextQ(){
+  const l=SCHOOL[lessonIdx(S.sch.id)];
+  if(S.sch.qi+1<l.q.length){S.sch.qi++;S.sch.sel=null;save();render();scrollTo(0,0);return}
+  finishQuiz(l);
+}
+function finishQuiz(l){
+  const s=S.sch.ans.reduce((a,b)=>a+b,0), prev=SCH.best[l.id]||0;
+  const r={s,read:S.sch.readNew?20:0,ans:Math.max(0,s-prev)*10,perfect:s===5&&prev<5?30:0,level:0};
+  if(s>prev) SCH.best[l.id]=s;
+  if(!(l.id in SCH.best)) SCH.best[l.id]=s;
+  if(levelDone(l.lv)&&!SCH.certs[l.lv]){SCH.certs[l.lv]=iso(today);r.level=100}
+  addPts(r.read+r.ans+r.perfect+r.level);
+  S.sch={v:"result",id:l.id,res:r}; save(); render(); scrollTo(0,0);
+}
+
+// ---------- Certificat ----------
+async function makeCert(item){
+  const W=1350,H=1080,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  try{await Promise.all(['48px "Amiri"','48px "Marcellus"','700 40px "Nunito Sans"','40px "Nunito Sans"'].map(f=>document.fonts.load(f)))}catch(e){}
+  x.fillStyle="#FBF6EA";x.fillRect(0,0,W,H);
+  x.strokeStyle="rgba(169,122,34,.10)";x.lineWidth=2;
+  for(let yy=60;yy<H;yy+=110)for(let xx=60+(yy/110%2)*55;xx<W;xx+=110){x.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4,r=k%2?12:26;x.lineTo(xx+r*Math.cos(a),yy+r*Math.sin(a))}x.closePath();x.stroke()}
+  x.strokeStyle="#0B5247";x.lineWidth=14;x.strokeRect(34,34,W-68,H-68);
+  x.strokeStyle="#C9A24E";x.lineWidth=4;x.strokeRect(62,62,W-124,H-124);
+  const rtl=S.lang==="ar", F=(w,s,f)=>`${w} ${s}px ${f}`;
+  x.textAlign="center";x.direction=rtl?"rtl":"ltr";
+  const src=logoSrc();
+  if(src){const im=new Image();await new Promise(r=>{im.onload=r;im.onerror=r;im.src=src});try{x.save();x.beginPath();x.roundRect(W/2-65,100,130,130,38);x.clip();x.drawImage(im,W/2-65,100,130,130);x.restore()}catch(e){}}
+  x.fillStyle="#0B5247";x.font=F("",34,'"Marcellus", serif');x.fillText(t("certSchool").toUpperCase(),W/2,285);
+  x.fillStyle="#A97A22";x.font=rtl?F("",96,'"Amiri", serif'):F("",104,'"Marcellus", serif');x.fillText(t("certTitle"),W/2,400);
+  x.fillStyle="#4A5A58";x.font=rtl?F("",40,'"Amiri", serif'):F("",36,'"Nunito Sans", sans-serif');x.fillText(t("certTo"),W/2,475);
+  x.fillStyle="#0B5247";x.font=rtl?F("700",80,'"Amiri", serif'):F("",84,'"Marcellus", serif');x.fillText(item.name||"—",W/2,575);
+  x.strokeStyle="#C9A24E";x.lineWidth=3;x.beginPath();x.moveTo(W/2-300,605);x.lineTo(W/2+300,605);x.stroke();
+  x.fillStyle="#24302F";x.font=rtl?F("",42,'"Amiri", serif'):F("",38,'"Nunito Sans", sans-serif');
+  let y=680;for(const ln of wrapLines(x,fmt(t("certFor"),{n:item.lv,t:L3(SCHOOL_LEVELS[item.lv-1].t)}),980,2)){x.fillText(ln,W/2,y);y+=56}
+  x.fillStyle="#A97A22";x.font=F("700",32,'"Nunito Sans", sans-serif');
+  x.fillText(`★ ${SCH.pts} ${t("points")} · ${L3(RANKS[rankIdx(SCH.pts)][1])}`,W/2,y+30);
+  x.fillStyle="#0B5247";x.font=F("",44,'"Amiri", serif');x.direction="rtl";x.fillText("رَبِّ زِدْنِي عِلْمًا",W/2,H-190);x.direction=rtl?"rtl":"ltr";
+  x.fillStyle="#4A5A58";x.font=F("",28,'"Nunito Sans", sans-serif');
+  const d=new Date(item.date+"T12:00:00").toLocaleDateString(S.lang==="ar"?"ar":S.lang,{day:"numeric",month:"long",year:"numeric"});
+  x.fillText(`DJAMILLAH HAYAT · ${d}`,W/2,H-120);
+  // sceau
+  x.save();x.translate(W-215,H-235);x.fillStyle="#C9A24E";x.beginPath();for(let k=0;k<24;k++){const a=k*Math.PI/12,r=k%2?72:84;x.lineTo(r*Math.cos(a),r*Math.sin(a))}x.closePath();x.fill();
+  x.fillStyle="#0B5247";x.beginPath();x.arc(0,0,60,0,7);x.fill();x.fillStyle="#F3DFA2";x.font=F("",54,'"Marcellus", serif');x.textAlign="center";x.direction="ltr";x.fillText(["","I","II","III"][item.lv]||item.lv,0,20);x.restore();
+  return c.toDataURL("image/png");
+}
+const _makeCard0=makeCard;
+makeCard=async function(item){return item&&item.cert?makeCert(item):_makeCard0(item)};
+function shareCert(lv){
+  const inp=document.getElementById("cert-name"); if(inp&&inp.value.trim()){S.name=inp.value.trim();save()}
+  shareItem({cert:true,lv,name:S.name||"",date:SCH.certs[lv]||iso(today),txt:`${t("certTitle")} – ${t("certSchool")}\n${fmt(t("certFor"),{n:lv,t:L3(SCHOOL_LEVELS[lv-1].t)})}`});
+}
+
+// ---------- Badges de l'école ----------
+BADGES.push(
+ ["sch1",{fr:"Premier cours",en:"First class",ar:"الدرس الأول"},{fr:"Réussir une leçon de l'école",en:"Pass a school lesson",ar:"انجح في درس من المدرسة"},()=>SCHOOL.some(l=>passed(l.id))],
+ ["sch5",{fr:"Sans faute",en:"Flawless",ar:"بلا خطأ"},{fr:"Avoir 5/5 à un quiz",en:"Score 5/5 in a quiz",ar:"احصل على 5/5 في اختبار"},()=>Object.values(SCH.best).some(s=>s===5)],
+ ["schL1",{fr:"Diplômé du niveau 1",en:"Level 1 graduate",ar:"خرّيج المستوى 1"},{fr:"Terminer le niveau 1",en:"Complete level 1",ar:"أكمل المستوى 1"},()=>!!SCH.certs[1]],
+ ["schL2",{fr:"Diplômé du niveau 2",en:"Level 2 graduate",ar:"خرّيج المستوى 2"},{fr:"Terminer le niveau 2",en:"Complete level 2",ar:"أكمل المستوى 2"},()=>!!SCH.certs[2]],
+ ["schL3",{fr:"Diplômé du niveau 3",en:"Level 3 graduate",ar:"خرّيج المستوى 3"},{fr:"Terminer le niveau 3",en:"Complete level 3",ar:"أكمل المستوى 3"},()=>!!SCH.certs[3]],
+ ["dq7",{fr:"Curieux chaque jour",en:"Curious every day",ar:"فضول كل يوم"},{fr:"Répondre 7 jours de suite à la question du jour",en:"Answer the question of the day 7 days in a row",ar:"أجب عن سؤال اليوم ٧ أيام متتالية"},()=>(SCH.dstreak||0)>=7],
+ ["pts500",{fr:"500 points",en:"500 points",ar:"٥٠٠ نقطة"},{fr:"Gagner 500 points à l'école",en:"Earn 500 points at school",ar:"اجمع ٥٠٠ نقطة في المدرسة"},()=>SCH.pts>=500]
+);
+Object.assign(BADGE_ICON,{sch1:"✎",sch5:"5",schL1:"N1",schL2:"N2",schL3:"N3",dq7:"?",pts500:"500"});
+Object.assign(MOTIF,{school:`<path d="M17 31c8-4.5 16-4.5 23 1v26c-7-5-15-5-23-1z" fill="${IC.cream}"/><path d="M63 31c-8-4.5-16-4.5-23 1v26c7-5 15-5 23-1z" fill="${IC.cream}" opacity=".82"/><path d="M40 32v26" stroke="${IC.gold}" stroke-width="2.2"/><path d="M40 13l2.4 5 5.4.6-4 3.7 1.1 5.3-4.9-2.8-4.9 2.8 1.1-5.3-4-3.7 5.4-.6z" fill="${IC.gold}"/>`});
+
+// ---------- Événements ----------
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-lesson],[data-opt],[data-dq],[data-goschool],[data-cert],#sch-quiz,#sch-next,#sch-retry,#sch-home,#sch-say");
+  if(!el) return;
+  const d=el.dataset;
+  if(d.lesson){openLesson(d.lesson);return}
+  if(d.opt!==undefined){pickOpt(+d.opt);return}
+  if(d.dq!==undefined){answerDQ(+d.dq);return}
+  if(d.goschool){S.tab="more";S.sub="school";S.sch={v:"home"};save();render();scrollTo(0,0);return}
+  if(d.cert){shareCert(+d.cert);return}
+  if(el.id==="sch-quiz"){startQuiz();return}
+  if(el.id==="sch-next"){nextQ();return}
+  if(el.id==="sch-retry"){startQuiz();return}
+  if(el.id==="sch-home"){S.sch={v:"home"};save();render();scrollTo(0,0);return}
+  if(el.id==="sch-say"){const l=SCHOOL[lessonIdx(S.sch.id)];speakSeq([[l.ar,"ar-SA"],[L3(l.t)+". "+l.parts.map(p=>L3(p.h)+". "+L3(p.p)).join(" "),VOICE[S.lang]]]);return}
+});
+// Bouton « Retour » : dans une leçon, revenir au sommaire de l'école
+document.addEventListener("click",e=>{
+  if(S.sub!=="school"||!S.sch||S.sch.v==="home") return;
+  if(!(e.target.closest&&e.target.closest("#back"))) return;
+  e.stopPropagation();e.preventDefault();
+  S.sch={v:"home"};save();render();scrollTo(0,0);
+},true);
+function schoolBack(){if(S.sub==="school"&&S.sch&&S.sch.v!=="home"){S.sch={v:"home"};save();render();scrollTo(0,0);return true}return false}
+
+document.head.insertAdjacentHTML("beforeend",`<style>
+.sch-rank{flex-direction:row;align-items:center;gap:14px;background:linear-gradient(135deg,var(--surface),var(--soft))}
+.sch-rank svg{flex:none}.sr-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.sr-name{font-family:var(--f-display);font-size:22px;color:var(--accent)}.sr-pts{font-weight:800;color:var(--gold)}
+.sr-next{font-size:12.5px;color:var(--muted)}
+.sch-level h2{font-size:21px;margin:2px 0 6px}.sl-count{font-size:12.5px;color:var(--muted)}
+.sl-head{display:flex;flex-direction:column;gap:2px;margin-bottom:4px}
+.sch-row{width:100%;display:flex;align-items:center;gap:12px;border:none;border-top:1px solid var(--line);background:none;padding:12px 0;text-align:start;color:var(--ink);font:inherit}
+.sch-row .sch-num{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--accent);font-weight:800}
+.sch-row.ok .sch-num{background:var(--accent);color:var(--accent-ink)}
+.sch-row.lock{opacity:.55}.sch-row .sch-t{flex:1;min-width:0}.sch-row .sch-t b{display:block;font-size:15px}
+.sch-row .sch-t span{font-size:12.5px;color:var(--muted)}.sch-row.ok .sch-t span{color:var(--gold);font-weight:700}
+.sch-row i{font-style:normal;font-size:22px;color:var(--muted)}
+.sch-cert-btn{background:var(--gold);color:#fff;margin-top:6px}
+.sch-how{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.sch-key{text-align:center;border-color:var(--gold)}.sch-key .verse{font-size:24px;margin:4px 0}
+.sch-part h3{display:flex;align-items:center;gap:10px;font-size:17px}
+.sp-n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-family:var(--f-body)}
+.sch-part p{line-height:1.65}
+.sch-go{width:100%;padding:15px;font-size:16px}
+.sch-q{font-size:17px;font-weight:700;line-height:1.45;margin:0}
+.sch-opts{display:flex;flex-direction:column;gap:8px}
+.sch-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;font:inherit;font-size:15px}
+.sch-opt .so-l{flex:none;width:28px;height:28px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:13px}
+.sch-opt.right{border-color:#2E9E6B;background:rgba(46,158,107,.12)}.sch-opt.right .so-l{background:#2E9E6B;color:#fff}
+.sch-opt.wrong{border-color:#C0473F;background:rgba(192,71,63,.10)}.sch-opt.wrong .so-l{background:#C0473F;color:#fff}
+.sch-opt.dim{opacity:.55}.sch-opt:disabled{cursor:default}
+.how.ok b{color:#2E9E6B}.how.ko b{color:#C0473F}
+.sch-q-of{font-size:22px}
+.sch-res{align-items:center;text-align:center}.sr-score{font-family:var(--f-display);font-size:64px;line-height:1;color:var(--accent)}.sr-score small{font-size:26px;color:var(--muted)}
+.sr-stars{font-size:28px;color:var(--gold);letter-spacing:4px}.sr-stars span{color:var(--line)}
+.sch-res.pass{border-color:var(--gold);background:linear-gradient(180deg,var(--surface),var(--soft))}
+.sr-line{display:flex;justify-content:space-between;font-size:15px;padding:4px 0}.sr-line b{color:var(--gold)}
+.sr-line.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px;font-weight:800}
+.sch-newcert{border-color:var(--gold)}.sch-newcert h3{font-size:17px}
+.sch-btns{display:flex;flex-direction:column;gap:8px}
+.sch-dq{border-color:var(--gold)}.dq-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.sch-dq .eyebrow{color:var(--gold)}.dq-streak{font-size:12.5px;font-weight:800;color:var(--gold)}
+.dq-go{align-self:flex-start;border:none;background:none;color:var(--accent);font-weight:800;padding:2px 0;font-size:14px}
+</style>`);
+// Question du jour sur l'écran Aujourd'hui
+const _renderSch=render;
+render=function(){
+  _renderSch();
+  if(!S.gender||S.tab!=="today"||S.sub) return;
+  const h=document.querySelector(".screen .hello"); if(h&&!document.querySelector(".sch-dq")) h.insertAdjacentHTML("afterend",dqHTML());
+};
 
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
