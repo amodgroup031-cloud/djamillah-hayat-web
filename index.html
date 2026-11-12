@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.21";
+const APP_VERSION = "1.0.22";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -3469,30 +3469,6 @@ const QORDER=[1,...Array.from({length:37},(_,i)=>114-i),67,36];
 const RECITERS=[["muallim","rMuallim","Husary_Muallim_128kbps"],["husary","rHusary","Husary_128kbps"],["alafasy","rAlafasy","Alafasy_128kbps"],["minshawi","rMinshawi","Minshawy_Murattal_128kbps"]];
 
 // ---------- Le professeur de lecture (Qâ'ida) ----------
-const LETTERS=[["ا","ألف","alif"],["ب","باء","bâ"],["ت","تاء","tâ"],["ث","ثاء","thâ"],["ج","جيم","jîm"],["ح","حاء","hâ"],["خ","خاء","khâ"],["د","دال","dâl"],["ذ","ذال","dhâl"],["ر","راء","râ"],["ز","زاي","zây"],["س","سين","sîn"],["ش","شين","chîn"],["ص","صاد","sâd"],["ض","ضاد","dâd"],["ط","طاء","tâ"],["ظ","ظاء","zhâ"],["ع","عين","'ayn"],["غ","غين","ghayn"],["ف","فاء","fâ"],["ق","قاف","qâf"],["ك","كاف","kâf"],["ل","لام","lâm"],["م","ميم","mîm"],["ن","نون","noûn"],["ه","هاء","hâ"],["و","واو","wâw"],["ي","ياء","yâ"]];
-const NOJOIN="ادذرزو";
-const CONS=LETTERS.slice(1).map(x=>x[0]);
-const forms=l=>NOJOIN.includes(l)?[l,l,"ـ"+l,"ـ"+l]:[l,l+"ـ","ـ"+l+"ـ","ـ"+l];
-const QWORDS=[["اللَّه",{fr:"Allah",en:"Allah"}],["رَبِّ",{fr:"Seigneur",en:"Lord"}],["الْحَمْدُ",{fr:"la louange",en:"praise"}],["الرَّحْمَٰنِ",{fr:"le Tout Miséricordieux",en:"the Most Merciful"}],["مَالِكِ",{fr:"Maître",en:"Master"}],["يَوْمِ",{fr:"jour",en:"day"}],["الدِّينِ",{fr:"la Rétribution",en:"Judgement"}],["نَعْبُدُ",{fr:"nous adorons",en:"we worship"}],["نَسْتَعِينُ",{fr:"nous demandons l'aide",en:"we seek help"}],["صِرَاطَ",{fr:"chemin",en:"path"}],["قُلْ",{fr:"dis",en:"say"}],["أَحَدٌ",{fr:"Unique",en:"One"}],["الصَّمَدُ",{fr:"l'Absolu",en:"the Eternal"}],["النَّاسِ",{fr:"les hommes",en:"mankind"}],["الْفَلَقِ",{fr:"l'aube",en:"daybreak"}],["الْكَوْثَرَ",{fr:"l'abondance",en:"abundance"}]];
-const QAIDA=[
- {id:"q1",t:{fr:"Les 28 lettres",en:"The 28 letters",ar:"الحروف الثمانية والعشرون"},x:{fr:"L'arabe s'écrit et se lit de droite à gauche. Il a 28 lettres. Écoutez le nom de chaque lettre et répétez-le à voix haute.",en:"Arabic is written and read from right to left. It has 28 letters. Listen to the name of each letter and repeat it aloud.",ar:"تُكتب العربية وتُقرأ من اليمين إلى اليسار، وحروفها ثمانية وعشرون. استمع إلى اسم كل حرف وردّده بصوت مسموع."},
-  items:()=>LETTERS.map(([l,n,tr])=>({show:l,say:n,sub:tr}))},
- {id:"q2",t:{fr:"Les formes des lettres",en:"Letter shapes",ar:"أشكال الحروف"},x:{fr:"Une lettre change de forme selon sa place : seule, au début, au milieu ou à la fin du mot. Six lettres (ا د ذ ر ز و) ne s'attachent jamais à la lettre qui suit.",en:"A letter changes shape according to its place: alone, at the start, middle or end of a word. Six letters (ا د ذ ر ز و) never join the following letter.",ar:"يتغيّر شكل الحرف بحسب موضعه: منفرداً، أو في أول الكلمة أو وسطها أو آخرها. وستة حروف (ا د ذ ر ز و) لا تتصل بما بعدها."},
-  items:()=>LETTERS.map(([l,n,tr])=>({show:forms(l).join("  "),say:n,sub:tr,q:l})),quizFrom:()=>LETTERS.map(([l,n])=>({show:l,say:n}))},
- {id:"q3",t:{fr:"Les voyelles courtes",en:"Short vowels",ar:"الحركات"},x:{fr:"La fatha (◌َ) se lit « a », la kasra (◌ِ) se lit « i », la damma (◌ُ) se lit « ou ». Exemple : بَ « ba », بِ « bi », بُ « bou ».",en:"Fathah (◌َ) reads “a”, kasrah (◌ِ) reads “i”, dammah (◌ُ) reads “u”. Example: بَ “ba”, بِ “bi”, بُ “bu”.",ar:"الفتحة (◌َ) والكسرة (◌ِ) والضمة (◌ُ). مثال: بَ بِ بُ."},
-  items:()=>CONS.flatMap(l=>[l+"َ",l+"ِ",l+"ُ"].map(s=>({show:s,say:s}))),grp:3},
- {id:"q4",t:{fr:"Les voyelles longues (madd)",en:"Long vowels (madd)",ar:"حروف المدّ"},x:{fr:"Quand une voyelle est suivie de ا, ي ou و, on l'allonge de deux temps : بَا « bâ », بِي « bî », بُو « boû ».",en:"When a vowel is followed by ا, ي or و, it is lengthened by two counts: بَا “baa”, بِي “bii”, بُو “buu”.",ar:"إذا جاء بعد الحركة ألف أو ياء أو واو مُدّت حركتين: بَا بِي بُو."},
-  items:()=>CONS.flatMap(l=>[l+"َا",l+"ِي",l+"ُو"].map(s=>({show:s,say:s}))),grp:3},
- {id:"q5",t:{fr:"Le soukoun",en:"Sukun",ar:"السكون"},x:{fr:"Le soukoun (◌ْ) signifie que la lettre n'a pas de voyelle : on la colle à la lettre d'avant. Exemple : أَبْ « ab », أِبْ « ib », أُبْ « oub ».",en:"Sukun (◌ْ) means the letter has no vowel: it is joined to the letter before. Example: أَبْ “ab”, إِبْ “ib”, أُبْ “ub”.",ar:"السكون (◌ْ) يعني أن الحرف بلا حركة فيُنطق متصلاً بما قبله: أَبْ إِبْ أُبْ."},
-  items:()=>CONS.flatMap(l=>["أَ"+l+"ْ","إِ"+l+"ْ","أُ"+l+"ْ"].map(s=>({show:s,say:s}))),grp:3},
- {id:"q6",t:{fr:"Le tanwîn",en:"Tanwin",ar:"التنوين"},x:{fr:"Deux voyelles sur une lettre ajoutent un son « n » : بًا « ban », بٍ « bin », بٌ « boun ».",en:"Two vowel marks on a letter add an “n” sound: بًا “ban”, بٍ “bin”, بٌ “bun”.",ar:"تنوين الفتح والكسر والضم يضيف نوناً ساكنة في النطق: بًا بٍ بٌ."},
-  items:()=>CONS.filter(l=>l!=="ة").flatMap(l=>[l+"ًا",l+"ٍ",l+"ٌ"].map(s=>({show:s,say:s}))),grp:3},
- {id:"q7",t:{fr:"La chadda",en:"Shaddah",ar:"الشدّة"},x:{fr:"La chadda (◌ّ) double la lettre : on la prononce deux fois, une avec soukoun et une avec voyelle. Exemple : رَبِّ « rab-bi ».",en:"Shaddah (◌ّ) doubles the letter: it is pronounced twice, once with sukun and once with a vowel. Example: رَبِّ “rab-bi”.",ar:"الشدّة (◌ّ) تعني حرفين: الأول ساكن والثاني متحرك. مثال: رَبِّ."},
-  items:()=>["رَبِّ","إِنَّ","ثُمَّ","أُمِّ","حَقٌّ","مُحَمَّدٌ","الْجَنَّةَ","كُلُّ","الشَّمْسُ","النَّاسِ","اللَّهُ","يَدَّ"].map(s=>({show:s,say:s}))},
- {id:"q8",t:{fr:"Lire des mots du Coran",en:"Reading Quranic words",ar:"قراءة كلمات من القرآن"},x:{fr:"Vous pouvez maintenant lire des mots de la Fâtiha et des petites sourates. Lisez d'abord seul, puis touchez pour vérifier.",en:"You can now read words from Al-Fatihah and the short surahs. Read on your own first, then tap to check.",ar:"تستطيع الآن قراءة كلمات من الفاتحة وقصار السور. اقرأ بنفسك أولاً ثم المس لتتحقق."},
-  items:()=>QWORDS.map(([w,m])=>({show:w,say:w,sub:S.lang==="ar"?"":L3(m)}))}
-];
-
 // ---------- État ----------
 S.quran=S.quran||{mem:{},qdone:{},rec:"muallim",rep:1,pause:false,hide:0,tr:true};
 S.qr=S.qr||{v:"home"};
@@ -3533,7 +3509,7 @@ function viewQuran(){
 function quranHome(){
   const qd=QAIDA.filter(l=>QR.qdone[l.id]>=4).length, ms=QORDER.filter(n=>memCount(n)>=QSURAH[n][3]).length;
   return `<section class="hello"><h1>${t("mQuran")}</h1><p>${t("qrIntro")}</p></section>
-  <button class="qr-big" data-qr="qaida"><span class="qr-ic ar">ا ب ت</span><span><b>${t("qaida")}</b><small>${t("qaidaSub")}</small><i class="progress"><i style="width:${qd/QAIDA.length*100}%"></i></i><em>${qd}/${QAIDA.length}</em></span></button>
+  <button class="qr-big" data-qr="qaida"><span class="qr-ic ar">ا ب ت</span><span><b>${typeof arW==="function"?arW(t("qaida")):t("qaida")}</b><small>${t("qaidaSub")}</small><i class="progress"><i style="width:${qd/QAIDA.length*100}%"></i></i><em>${qd}/${QAIDA.length}</em></span></button>
   <button class="qr-big" data-qr="memo"><span class="qr-ic ar">۩</span><span><b>${t("memo")}</b><small>${t("memoSub")}</small><i class="progress"><i style="width:${ms/QORDER.length*100}%"></i></i><em>${ms}/${QORDER.length}</em></span></button>
   <div class="card"><h3>${t("howMemo")}</h3><ol class="sch-how">${["hm1","hm2","hm3","hm4","hm5"].map(k=>`<li>${t(k)}</li>`).join("")}</ol></div>
   <div class="card sch-key"><p class="ar verse">خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ</p><p class="src">Bukhari 5027</p></div>`;
@@ -3714,7 +3690,7 @@ function quranBack(){
 BADGES.push(
  ["qr1",{fr:"Première sourate",en:"First surah",ar:"أول سورة"},{fr:"Mémoriser une sourate entière",en:"Memorise a whole surah",ar:"احفظ سورة كاملة"},()=>(QR.doneS||[]).length>=1],
  ["qr10",{fr:"Dix sourates",en:"Ten surahs",ar:"عشر سور"},{fr:"Mémoriser 10 sourates",en:"Memorise 10 surahs",ar:"احفظ عشر سور"},()=>(QR.doneS||[]).length>=10],
- ["qaida",{fr:"Je sais lire",en:"I can read",ar:"أعرف القراءة"},{fr:"Réussir les 8 leçons du professeur de lecture",en:"Pass the 8 reading teacher lessons",ar:"انجح في دروس معلّم القراءة الثمانية"},()=>QAIDA.every(l=>QR.qdone[l.id]>=4)]
+ ["qaida",{fr:"Je sais lire",en:"I can read",ar:"أعرف القراءة"},{fr:"Réussir les 20 leçons du professeur de lecture",en:"Pass the 20 reading teacher lessons",ar:"انجح في دروس معلّم القراءة العشرين"},()=>QAIDA.every(l=>QR.qdone[l.id]>=4)]
 );
 Object.assign(BADGE_ICON,{qr1:"١",qr10:"١٠",qaida:"أ"});
 Object.assign(MOTIF,{quran:`<path d="M16 50l24-10 24 10-24 12z" fill="${IC.gold}"/><path d="M22 28c6-3 12-3 18 1v20c-6-4-12-4-18-1z" fill="${IC.cream}"/><path d="M58 28c-6-3-12-3-18 1v20c6-4 12-4 18-1z" fill="${IC.cream}" opacity=".85"/><path d="M40 29v20" stroke="${IC.gold}" stroke-width="2"/>`});
@@ -3745,6 +3721,161 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .qr-acts{display:flex;gap:6px;flex-wrap:wrap}.qr-acts button{flex:1;min-width:0;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:8px 6px;font:inherit;font-size:13px;font-weight:700}
 .qr-acts button.on{background:#2E9E6B;border-color:#2E9E6B;color:#fff}
 .qr-mark{font-family:var(--f-verse);font-size:22px;margin:0;line-height:2}.qr-mark .ok{color:#2E9E6B}.qr-mark .ko{color:#C0473F;text-decoration:underline}
+</style>`);
+
+// ---------- معلّم القراءة : programme complet de lecture (contenu AMOD GROUP) ----------
+// La voix : uniquement de vrais enregistrements. Exemples du Coran récités par Al-Husary (Mou'allim) ;
+// enregistrements de l'oustaz ajoutés dans lecture/<leçon>/<n>.mp3 et déclarés dans LECON_AUDIO.
+const LECON_AUDIO={};   // ex. {L01:{voice:"Oustaz …",n:28}}
+const LETTERS=[["ا","ألف","alif"],["ب","باء","bâ"],["ت","تاء","tâ"],["ث","ثاء","thâ"],["ج","جيم","djîm"],["ح","حاء","ḥâ"],["خ","خاء","khâ"],["د","دال","dâl"],["ذ","ذال","dhâl"],["ر","راء","râ"],["ز","زاي","zây"],["س","سين","sîn"],["ش","شين","chîn"],["ص","صاد","ṣâd"],["ض","ضاد","ḍâd"],["ط","طاء","ṭâ"],["ظ","ظاء","ẓâ"],["ع","عين","'ayn"],["غ","غين","ghayn"],["ف","فاء","fâ"],["ق","قاف","qâf"],["ك","كاف","kâf"],["ل","لام","lâm"],["م","ميم","mîm"],["ن","نون","noûn"],["ه","هاء","hâ"],["و","واو","wâw"],["ي","ياء","yâ"]];
+const NOJOIN="ادذرزو";
+const CONS=LETTERS.slice(1).map(x=>x[0]);
+const CT={"ب":"b","ت":"t","ث":"th","ج":"dj","ح":"ḥ","خ":"kh","د":"d","ذ":"dh","ر":"r","ز":"z","س":"s","ش":"ch","ص":"ṣ","ض":"ḍ","ط":"ṭ","ظ":"ẓ","ع":"'","غ":"gh","ف":"f","ق":"q","ك":"k","ل":"l","م":"m","ن":"n","ه":"h","و":"w","ي":"y"};
+const forms=l=>NOJOIN.includes(l)?[l,l,"ـ"+l,"ـ"+l]:[l,l+"ـ","ـ"+l+"ـ","ـ"+l];
+const trl=s=>S.lang==="en"?s.replace(/oû/g,"ū").replace(/ou/g,"u").replace(/ch/g,"sh").replace(/dj/g,"j").replace(/â/g,"ā").replace(/î/g,"ī"):s;
+const syl=(vs,tr)=>CONS.flatMap(l=>vs.map((v,i)=>({show:v.replace("C",l),tr:tr[i].replace("C",CT[l])})));
+const W=(list)=>list.map(([w,tr])=>({show:w,tr}));
+const QAIDA=[
+ {id:"L01",t:{fr:"L'alphabet arabe",en:"The Arabic alphabet",ar:"الحروف الهجائية"},quiz:"name",ex:[1,2],
+  x:{fr:"L'arabe se lit de droite à gauche et compte 28 lettres. Apprenez le nom de chaque lettre, dans l'ordre, avec votre professeur.",en:"Arabic is read from right to left and has 28 letters. Learn the name of each letter, in order, with your teacher.",ar:"تُقرأ العربية من اليمين إلى اليسار، وحروفها ثمانية وعشرون. تعلّم اسم كل حرف بالترتيب مع معلّمك."},
+  items:()=>LETTERS.map(([l,n,tr])=>({show:l,tr,name:n}))},
+ {id:"L02",t:{fr:"Les formes des lettres",en:"Letter shapes",ar:"أشكال الحروف"},quiz:"name",ex:[112,1],wide:1,
+  x:{fr:"Chaque lettre change de forme selon sa place : seule, au début, au milieu ou à la fin du mot. Six lettres (ا د ذ ر ز و) ne s'attachent jamais à la lettre suivante.",en:"Each letter changes shape according to its place: alone, at the start, middle or end of a word. Six letters (ا د ذ ر ز و) never join the next letter.",ar:"يتغيّر شكل الحرف بحسب موضعه: منفرداً أو في أول الكلمة أو وسطها أو آخرها. وستة حروف (ا د ذ ر ز و) لا تتصل بما بعدها."},
+  items:()=>LETTERS.map(([l,n,tr])=>({show:forms(l).join("  "),tr,name:n,q:l}))},
+ {id:"L03",t:{fr:"Les lettres qui se ressemblent",en:"Letters that look alike",ar:"الحروف المتشابهة"},quiz:"name",ex:[113,2],
+  x:{fr:"Beaucoup de lettres ont la même forme : seuls les points les distinguent. Regardez bien le nombre de points et leur place, au-dessus ou en dessous.",en:"Many letters share the same shape: only the dots tell them apart. Look carefully at the number of dots and whether they are above or below.",ar:"حروف كثيرة لها الشكل نفسه ولا يفرّق بينها إلا النقط. انتبه إلى عدد النقط ومكانها فوق الحرف أو تحته."},
+  items:()=>["ب ت ث","ج ح خ","د ذ","ر ز","س ش","ص ض","ط ظ","ع غ","ف ق"].flatMap(g=>g.split(" ")).map(l=>{const x=LETTERS.find(y=>y[0]===l);return {show:l,tr:x[2],name:x[1]}}),grp:0},
+ {id:"L04",t:{fr:"La fatha ( ◌َ )",en:"Fathah ( ◌َ )",ar:"الفتحة ( ◌َ )"},quiz:"read",ex:[113,2],
+  x:{fr:"La fatha est un petit trait au-dessus de la lettre. Elle se lit « a ». Exemple : بَ = ba. Lisez ensuite les mots : toutes leurs lettres portent une fatha.",en:"The fathah is a small stroke above the letter. It reads “a”. Example: بَ = ba. Then read the words: all their letters carry a fathah.",ar:"الفتحة شَرطة صغيرة فوق الحرف، وتُنطق «ـَ». مثال: بَ. ثم اقرأ الكلمات، فكل حروفها مفتوحة."},
+  items:()=>syl(["Cَ"],["Ca"]),words:W([["كَتَبَ","kataba"],["ذَهَبَ","dhahaba"],["جَلَسَ","djalasa"],["فَتَحَ","fataḥa"],["أَكَلَ","akala"],["خَلَقَ","khalaqa"],["نَصَرَ","naṣara"],["رَجَعَ","radja'a"]])},
+ {id:"L05",t:{fr:"La kasra ( ◌ِ )",en:"Kasrah ( ◌ِ )",ar:"الكسرة ( ◌ِ )"},quiz:"read",ex:[1,4],
+  x:{fr:"La kasra est un petit trait sous la lettre. Elle se lit « i ». Exemple : بِ = bi.",en:"The kasrah is a small stroke below the letter. It reads “i”. Example: بِ = bi.",ar:"الكسرة شَرطة صغيرة تحت الحرف، وتُنطق «ـِ». مثال: بِ."},
+  items:()=>syl(["Cِ"],["Ci"]),words:W([["سَمِعَ","sami'a"],["عَلِمَ","'alima"],["شَرِبَ","chariba"],["فَرِحَ","fariḥa"],["رَكِبَ","rakiba"],["حَفِظَ","ḥafiẓa"]])},
+ {id:"L06",t:{fr:"La damma ( ◌ُ )",en:"Dammah ( ◌ُ )",ar:"الضمة ( ◌ُ )"},quiz:"read",ex:[112,2],
+  x:{fr:"La damma est un petit wâw au-dessus de la lettre. Elle se lit « ou ». Exemple : بُ = bou.",en:"The dammah is a small wāw above the letter. It reads “u”. Example: بُ = bu.",ar:"الضمة واو صغيرة فوق الحرف، وتُنطق «ـُ». مثال: بُ."},
+  items:()=>syl(["Cُ"],["Cou"]),words:W([["كُتِبَ","koutiba"],["خُلِقَ","khouliqa"],["جُعِلَ","djou'ila"],["فُتِحَ","foutiḥa"],["نُصِرَ","nouṣira"],["كَبُرَ","kaboura"]])},
+ {id:"L07",t:{fr:"Les trois voyelles ensemble",en:"The three vowels together",ar:"الحركات الثلاث"},quiz:"read",ex:[103,1],grp:3,
+  x:{fr:"Lisez chaque lettre avec ses trois voyelles : ba, bi, bou. C'est l'exercice le plus important : répétez-le chaque jour.",en:"Read each letter with its three vowels: ba, bi, bu. It is the most important exercise: repeat it every day.",ar:"اقرأ كل حرف بحركاته الثلاث: بَ بِ بُ. هذا أهم تمرين، فكرّره كل يوم."},
+  items:()=>syl(["Cَ","Cِ","Cُ"],["Ca","Ci","Cou"]),words:W([["بَعُدَ","ba'ouda"],["قَرُبَ","qarouba"],["حَسُنَ","ḥasouna"],["صَغُرَ","ṣaghoura"],["عَلِمَ","'alima"],["سُئِلَ","sou'ila"]])},
+ {id:"L08",t:{fr:"Le prolongement avec alif ( ـَا )",en:"Lengthening with alif ( ـَا )",ar:"المدّ بالألف ( ـَا )"},quiz:"read",ex:[1,4],
+  x:{fr:"Une fatha suivie d'un alif se prolonge de deux temps : « â ». Exemple : بَا = bâ.",en:"A fathah followed by an alif is lengthened by two counts: “ā”. Example: بَا = bā.",ar:"الفتحة التي بعدها ألف تُمدّ حركتين. مثال: بَا."},
+  items:()=>syl(["Cَا"],["Câ"]),words:W([["قَالَ","qâla"],["نَامَ","nâma"],["كَانَ","kâna"],["جَاءَ","djâ'a"],["سَارَ","sâra"],["مَالِكِ","mâliki"]])},
+ {id:"L09",t:{fr:"Le prolongement avec yâ ( ـِي )",en:"Lengthening with yā ( ـِي )",ar:"المدّ بالياء ( ـِي )"},quiz:"read",ex:[1,3],
+  x:{fr:"Une kasra suivie d'un yâ sans voyelle se prolonge : « î ». Exemple : بِي = bî.",en:"A kasrah followed by a vowelless yā is lengthened: “ī”. Example: بِي = bī.",ar:"الكسرة التي بعدها ياء ساكنة تُمدّ حركتين. مثال: بِي."},
+  items:()=>syl(["Cِي"],["Cî"]),words:W([["قِيلَ","qîla"],["دِينِ","dîni"],["كَرِيمِ","karîmi"],["رَحِيمِ","raḥîmi"],["عَلِيمِ","'alîmi"],["فِيهِ","fîhi"]])},
+ {id:"L10",t:{fr:"Le prolongement avec wâw ( ـُو )",en:"Lengthening with wāw ( ـُو )",ar:"المدّ بالواو ( ـُو )"},quiz:"read",ex:[109,2],
+  x:{fr:"Une damma suivie d'un wâw sans voyelle se prolonge : « oû ». Exemple : بُو = boû.",en:"A dammah followed by a vowelless wāw is lengthened: “ū”. Example: بُو = bū.",ar:"الضمة التي بعدها واو ساكنة تُمدّ حركتين. مثال: بُو."},
+  items:()=>syl(["Cُو"],["Coû"]),words:W([["يَقُولُ","yaqoûlou"],["نُوحُ","noûḥou"],["يَكُونُ","yakoûnou"],["نُورُ","noûrou"],["يَعُودُ","ya'oûdou"],["تَعْبُدُونَ","ta'boudoûna"]])},
+ {id:"L11",t:{fr:"Le soukoun ( ◌ْ )",en:"Sukun ( ◌ْ )",ar:"السكون ( ◌ْ )"},quiz:"read",ex:[112,1],grp:3,
+  x:{fr:"Le soukoun est un petit rond au-dessus de la lettre : elle n'a pas de voyelle et se colle à la lettre d'avant. Exemple : أَبْ = ab, قُلْ = qoul.",en:"The sukun is a small circle above the letter: it has no vowel and joins the letter before. Example: أَبْ = ab, قُلْ = qul.",ar:"السكون دائرة صغيرة فوق الحرف، فلا حركة له ويُنطق متصلاً بما قبله. مثال: أَبْ، قُلْ."},
+  items:()=>syl(["أَCْ","إِCْ","أُCْ"],["aC","iC","ouC"]),words:W([["مِنْ","min"],["عَنْ","'an"],["لَمْ","lam"],["قُلْ","qoul"],["قَدْ","qad"],["هَلْ","hal"],["يَوْمِ","yawmi"],["نَعْبُدُ","na'boudou"]])},
+ {id:"L12",t:{fr:"Le tanwîn avec fatha ( ◌ً )",en:"Tanwin with fathah ( ◌ً )",ar:"تنوين الفتح ( ◌ً )"},quiz:"read",ex:[110,2],
+  x:{fr:"Deux fathas se lisent « an ». On écrit souvent un alif après, qui ne se prononce pas. Exemple : بًا = ban.",en:"Two fathahs read “an”. An alif is often written after it, which is not pronounced. Example: بًا = ban.",ar:"الفتحتان تُنطقان نوناً ساكنة بعد الفتح، ويُكتب بعدهما غالباً ألف لا يُنطق. مثال: بًا."},
+  items:()=>syl(["Cًا"],["Can"]),words:W([["كِتَابًا","kitâban"],["عِلْمًا","'ilman"],["نُورًا","noûran"],["قَوْلًا","qawlan"],["أَفْوَاجًا","afwâdjan"]])},
+ {id:"L13",t:{fr:"Le tanwîn avec kasra ( ◌ٍ )",en:"Tanwin with kasrah ( ◌ٍ )",ar:"تنوين الكسر ( ◌ٍ )"},quiz:"read",ex:[104,1],
+  x:{fr:"Deux kasras se lisent « in ». Exemple : بٍ = bin.",en:"Two kasrahs read “in”. Example: بٍ = bin.",ar:"الكسرتان تُنطقان نوناً ساكنة بعد الكسر. مثال: بٍ."},
+  items:()=>syl(["Cٍ"],["Cin"]),words:W([["كِتَابٍ","kitâbin"],["رَسُولٍ","rasoûlin"],["يَوْمٍ","yawmin"],["نَارٍ","nârin"],["هُمَزَةٍ","houmazatin"]])},
+ {id:"L14",t:{fr:"Le tanwîn avec damma ( ◌ٌ )",en:"Tanwin with dammah ( ◌ٌ )",ar:"تنوين الضم ( ◌ٌ )"},quiz:"read",ex:[112,4],
+  x:{fr:"Deux dammas se lisent « oun ». Exemple : بٌ = boun.",en:"Two dammahs read “un”. Example: بٌ = bun.",ar:"الضمتان تُنطقان نوناً ساكنة بعد الضم. مثال: بٌ."},
+  items:()=>syl(["Cٌ"],["Coun"]),words:W([["كِتَابٌ","kitâboun"],["رَسُولٌ","rasoûloun"],["عِلْمٌ","'ilmoun"],["نُورٌ","noûroun"],["أَحَدٌ","aḥadoun"]])},
+ {id:"L15",t:{fr:"La chadda ( ◌ّ )",en:"Shaddah ( ◌ّ )",ar:"الشدّة ( ◌ّ )"},quiz:"read",ex:[108,1],
+  x:{fr:"La chadda double la lettre : on la prononce deux fois, la première sans voyelle, la seconde avec sa voyelle. Exemple : رَبِّ = rab-bi.",en:"The shaddah doubles the letter: it is pronounced twice, first without a vowel, then with its vowel. Example: رَبِّ = rab-bi.",ar:"الشدّة تعني حرفين: الأول ساكن والثاني متحرك. مثال: رَبِّ = رَبْ بِ."},
+  items:()=>W([["رَبِّ","rabbi"],["إِنَّ","inna"],["ثُمَّ","thoumma"],["أُمِّ","oummi"],["كُلُّ","koullou"],["مُحَمَّدٌ","mouḥammadoun"],["إِنَّا","innâ"],["الْجَنَّةَ","al-djannata"]])},
+ {id:"L16",t:{fr:"Le lâm solaire (اللام الشمسية)",en:"The sun lām (اللام الشمسية)",ar:"اللام الشمسية"},quiz:"read",ex:[114,1],
+  x:{fr:"Devant les 14 lettres solaires (ت ث د ذ ر ز س ش ص ض ط ظ ل ن), le lâm de « al » ne se prononce pas : la lettre suivante porte une chadda. Exemple : النَّاس = an-nâs.",en:"Before the 14 sun letters (ت ث د ذ ر ز س ش ص ض ط ظ ل ن), the lām of “al” is silent: the next letter carries a shaddah. Example: النَّاس = an-nās.",ar:"قبل الحروف الشمسية الأربعة عشر (ت ث د ذ ر ز س ش ص ض ط ظ ل ن) لا تُنطق اللام، ويُشدَّد الحرف الذي بعدها. مثال: النَّاس."},
+  items:()=>W([["الشَّمْسُ","ach-chamsou"],["النَّاسُ","an-nâsou"],["الرَّحْمَٰنُ","ar-raḥmânou"],["الصَّمَدُ","aṣ-ṣamadou"],["الدِّينُ","ad-dînou"],["التَّوْبَةُ","at-tawbatou"],["الذِّكْرُ","adh-dhikrou"],["السَّلَامُ","as-salâmou"]])},
+ {id:"L17",t:{fr:"Le lâm lunaire (اللام القمرية)",en:"The moon lām (اللام القمرية)",ar:"اللام القمرية"},quiz:"read",ex:[113,1],
+  x:{fr:"Devant les 14 lettres lunaires (أ ب ج ح خ ع غ ف ق ك م و ه ي), le lâm de « al » se prononce avec un soukoun. Exemple : الْقَمَر = al-qamar.",en:"Before the 14 moon letters (أ ب ج ح خ ع غ ف ق ك م و ه ي), the lām of “al” is pronounced with a sukun. Example: الْقَمَر = al-qamar.",ar:"قبل الحروف القمرية الأربعة عشر (أ ب ج ح خ ع غ ف ق ك م و ه ي) تُنطق اللام ساكنة. مثال: الْقَمَر."},
+  items:()=>W([["الْقَمَرُ","al-qamarou"],["الْكِتَابُ","al-kitâbou"],["الْحَمْدُ","al-ḥamdou"],["الْفَلَقُ","al-falaqou"],["الْعِلْمُ","al-'ilmou"],["الْبَيْتُ","al-baytou"],["الْمَسْجِدُ","al-masdjidou"],["الْيَوْمُ","al-yawmou"]])},
+ {id:"L18",t:{fr:"Le nom d'Allah et l'alif suscrit",en:"The name of Allah and the dagger alif",ar:"لفظ الجلالة والألف الخنجرية"},quiz:"read",ex:[1,1],
+  x:{fr:"Le nom « Allah » se lit avec un lâm doublé et un « â » long. Le petit alif posé sur une lettre (ـٰ) se prolonge comme un alif : الرَّحْمَٰن = ar-raḥmân, هَٰذَا = hâdhâ.",en:"The name “Allah” is read with a doubled lām and a long “ā”. The small alif placed on a letter (ـٰ) is lengthened like an alif: الرَّحْمَٰن = ar-raḥmān, هَٰذَا = hādhā.",ar:"يُقرأ لفظ الجلالة بلام مشدّدة ومدّ. والألف الصغيرة فوق الحرف (ـٰ) تُمدّ كالألف: الرَّحْمَٰن، هَٰذَا."},
+  items:()=>W([["اللَّهُ","allâhou"],["بِسْمِ اللَّهِ","bismi-llâhi"],["لِلَّهِ","lillâhi"],["الرَّحْمَٰنِ","ar-raḥmâni"],["هَٰذَا","hâdhâ"],["ذَٰلِكَ","dhâlika"]])},
+ {id:"L19",t:{fr:"Lire des phrases",en:"Reading sentences",ar:"قراءة الجمل"},quiz:"read",ex:[112,1],
+  x:{fr:"Vous savez maintenant lire des phrases complètes. Lisez lentement, mot par mot, puis toute la phrase d'un seul souffle.",en:"You can now read complete sentences. Read slowly, word by word, then the whole sentence in one breath.",ar:"تستطيع الآن قراءة جمل كاملة. اقرأ ببطء كلمةً كلمة، ثم الجملة كلها بنفَس واحد."},
+  items:()=>W([["بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ","bismi-llâhi-r-raḥmâni-r-raḥîm"],["الْحَمْدُ لِلَّهِ","al-ḥamdou lillâh"],["سُبْحَانَ اللَّهِ","soubḥâna-llâh"],["لَا إِلَٰهَ إِلَّا اللَّهُ","lâ ilâha illa-llâh"],["اللَّهُ أَكْبَرُ","allâhou akbar"],["أَسْتَغْفِرُ اللَّهَ","astaghfirou-llâh"]]),wide:1},
+ {id:"L20",t:{fr:"Lire le Coran : Al-Fâtiha",en:"Reading the Quran: Al-Fatihah",ar:"قراءة القرآن: الفاتحة"},quiz:"none",ex:[1,1],surah:1,
+  x:{fr:"Dernière étape : lisez la Fâtiha verset par verset. Écoutez d'abord Al-Husary (Mou'allim), puis lisez seul, puis récitez-la à votre professeur.",en:"Final step: read Al-Fatihah verse by verse. First listen to Al-Husary (Mu'allim), then read alone, then recite it to your teacher.",ar:"الخطوة الأخيرة: اقرأ الفاتحة آيةً آية. استمع أولاً إلى الحصري (المعلّم)، ثم اقرأ وحدك، ثم سمِّعها لمعلّمك."},
+  items:()=>[]}
+];
+
+// ---------- Textes ----------
+Object.keys(UI12).forEach(l=>Object.assign(UI2[l],{
+ fr:{qaida:"معلّم القراءة · Le professeur de lecture",qaidaSub:"Programme complet en 20 leçons, des lettres jusqu'à la lecture du Coran",exQ:"Exemple du Coran · Al-Husary (Mou'allim)",lxWords:"Lire des mots",voiceSoon:"🎙 La voix de l'oustaz pour ces cases sera ajoutée bientôt. Écoutez l'exemple du Coran ci-dessous.",voiceBy:"🔊 Voix : {v}",practice:"S'entraîner · 5 questions",lxQName:"Quel est le nom de cette lettre ?",lxQRead:"Comment se lit ceci ?",lxDone:"Leçon terminée",lxFinish:"J'ai lu toute la sourate",lxGo:"Passer à la suite"},
+ en:{qaida:"معلّم القراءة · The reading teacher",qaidaSub:"Complete 20-lesson programme, from letters to reading the Quran",exQ:"Quranic example · Al-Husary (Mu'allim)",lxWords:"Read words",voiceSoon:"🎙 The teacher's voice for these tiles will be added soon. Listen to the Quranic example below.",voiceBy:"🔊 Voice: {v}",practice:"Practise · 5 questions",lxQName:"What is the name of this letter?",lxQRead:"How is this read?",lxDone:"Lesson completed",lxFinish:"I have read the whole surah",lxGo:"Continue"},
+ ar:{qaida:"معلّم القراءة",qaidaSub:"برنامج كامل في عشرين درساً من الحروف إلى قراءة القرآن",exQ:"مثال من القرآن · الحصري (المعلّم)",lxWords:"قراءة الكلمات",voiceSoon:"🎙 سيُضاف صوت الأستاذ لهذه الخانات قريباً. استمع إلى المثال القرآني أدناه.",voiceBy:"🔊 الصوت: {v}",practice:"تدرّب · 5 أسئلة",lxQName:"ما اسم هذا الحرف؟",lxQRead:"كيف يُقرأ هذا؟",lxDone:"أنهيت الدرس",lxFinish:"قرأت السورة كاملة",lxGo:"تابع"}
+}[l]));
+
+// ---------- Vues du professeur ----------
+function qaidaLesson(){
+  const l=QAIDA.find(x=>x.id===S.qr.ql), i=QAIDA.indexOf(l), it=l.items(), au=LECON_AUDIO[l.id];
+  const tile=(x,k,pre)=>`<button class="qa-tile ${au?"":"mute"}" data-lx="${pre}${k}"><span class="ar">${x.show}</span><small>${trl(x.tr)}${x.name?" · <span class='ar'>"+x.name+"</span>":""}</small></button>`;
+  const exv=l.ex, d=QCACHE[exv[0]]; if(!d) loadSurah(exv[0]).then(()=>{if(S.qr.v==="qlesson"){const sy=scrollY;render();scrollTo(0,sy)}}).catch(()=>{});
+  const surahBlock=l.surah&&QCACHE[l.surah]?QCACHE[l.surah].ar.map((v,k)=>`<div class="card lx-ex"><div class="qr-line"><p class="ar qr-txt">${v}</p><span class="qr-num">${String(k+1).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x])}</span></div><button class="btn ghost" data-lex="${l.surah}:${k+1}">▶ ${t("playV")}</button></div>`).join(""):"";
+  return `<section class="hello"><span class="eyebrow">${arW(t("qaida").split(" · ")[0])} · ${fmt(t("lessonN"),{n:i+1})}</span><h1>${arW(L3(l.t))}</h1></section>
+  <div class="card"><p style="margin:0;line-height:1.65">${arW(L3(l.x))}</p>${it.length?`<p class="note" style="margin:0">${au?fmt(t("voiceBy"),{v:au.voice}):t("voiceSoon")}</p>`:""}</div>
+  ${it.length?`<div class="qa-grid ${l.grp===3?"g3":""} ${l.wide?"wide":""} ${l.id>="L15"?"words":""}">${it.map((x,k)=>tile(x,k,"i")).join("")}</div>`:""}
+  ${l.words?`<h3 class="lx-h">${t("lxWords")}</h3><div class="qa-grid words">${l.words.map((x,k)=>tile(x,k,"w")).join("")}</div>`:""}
+  ${!l.surah?`<div class="card lx-ex"><span class="eyebrow">▶ ${t("exQ")}</span>${d?`<div class="qr-line"><p class="ar qr-txt">${d.ar[exv[1]-1]}</p><span class="qr-num">${String(exv[1]).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x])}</span></div>`:`<p class="note">${t("loading")}</p>`}<p class="src">${QSURAH[exv[0]][1]} · ${exv[0]}:${exv[1]}</p><button class="btn" data-lex="${exv[0]}:${exv[1]}">▶ ${t("playV")}</button></div>`:surahBlock}
+  ${l.quiz!=="none"?`<button class="btn sch-go" id="qa-quiz">${t("practice")} ›</button>`:`<button class="btn sch-go" id="lx-finish">✓ ${t("lxFinish")}</button>`}`;
+}
+function qaidaQuiz(){
+  const z=S.qr.quiz, r=z.rounds[z.i], sel=z.sel, l=QAIDA.find(x=>x.id===S.qr.ql);
+  return `<section class="hello"><span class="eyebrow">${arW(L3(l.t))}</span><h1 class="sch-q-of">${fmt(t("qOf"),{i:z.i+1,n:5})}</h1></section>
+  <div class="progress"><i style="width:${(z.i+(sel!=null?1:0))/5*100}%"></i></div>
+  <div class="card" style="align-items:center;text-align:center"><p class="sch-q" style="font-weight:600">${l.quiz==="name"?t("lxQName"):t("lxQRead")}</p>
+   <div class="lx-prompt ar">${r.prompt}</div>
+   <div class="sch-opts" style="width:100%">${r.opts.map((o,k)=>{let c="";if(sel!=null){if(k===r.a)c="right";else if(k===sel)c="wrong";else c="dim"}return `<button class="sch-opt ${c}" data-qa="${k}" ${sel!=null?"disabled":""}><span class="so-l">${(S.lang==="ar"?"أبج":"ABC")[k]}</span><span>${o}</span></button>`}).join("")}</div>
+   ${sel!=null?`<p class="tw-msg ${sel===r.a?"ok":""}">${sel===r.a?t("qGood"):t("qBad").split(".")[0]+"."}</p><button class="btn sch-go" id="qa-next">${z.i<4?t("next"):t("seeResult")} ›</button>`:""}
+  </div>`;
+}
+function startQaidaQuiz(){
+  const l=QAIDA.find(x=>x.id===S.qr.ql), pool=[...l.items(),...(l.words||[])], rounds=[], used=new Set();
+  const lab=x=>l.quiz==="name"?`${x.name} · ${trl(x.tr)}`:trl(x.tr);
+  const shuffle=a=>a.map(v=>[Math.random(),v]).sort((p,q)=>p[0]-q[0]).map(v=>v[1]);
+  for(let i=0;i<5;i++){
+    let x; do{x=pool[Math.floor(Math.random()*pool.length)]}while(used.has(x)&&used.size<pool.length);used.add(x);
+    const kind=(l.words||[]).includes(x)?l.words:l.items(), grpOf=y=>["ب ت ث","ج ح خ","د ذ","ر ز","س ش","ص ض","ط ظ","ع غ","ف ق"].find(g=>g.split(" ").includes(y.show));
+    let cand=kind.filter(y=>lab(y)!==lab(x));if(l.id==="L03"){const g=grpOf(x);const same=cand.filter(y=>grpOf(y)===g);cand=[...shuffle(same),...shuffle(cand.filter(y=>grpOf(y)!==g))]}else cand=shuffle(cand);
+    const others=cand.filter((y,k,a)=>a.findIndex(z=>lab(z)===lab(y))===k).slice(0,2);
+    const opts=shuffle([x,...others]);
+    rounds.push({prompt:x.q||x.show,opts:opts.map(lab),a:opts.indexOf(x)});
+  }
+  S.qr={...S.qr,v:"qquiz",quiz:{rounds,i:0,sel:null,s:0}};save();render();scrollTo(0,0);
+}
+function sayAr(){}
+const arW=s=>String(s).replace(/([\u0600-\u06FF\u0750-\u077F][\u0600-\u06FF\u0750-\u077F\s◌]*[\u0600-\u06FF\u0750-\u077F])/g,'<span class="ar-in">$1</span>');
+function qaidaHome(){
+  return `<section class="hello"><span class="eyebrow">${t("mQuran")}</span><h1>${arW(t("qaida"))}</h1><p>${t("qaidaSub")}</p></section>
+  <div class="card">${QAIDA.map((l,i)=>{const ok=QR.qdone[l.id]>=4;return `<button class="sch-row ${ok?"ok":""}" data-ql="${l.id}"><span class="sch-num">${ok?"✓":i+1}</span><span class="sch-t"><b>${arW(L3(l.t))}</b><span>${ok?t("done")+" · "+"★".repeat(QR.qdone[l.id]):fmt(t("lessonN"),{n:i+1})}</span></span><i aria-hidden="true">›</i></button>`}).join("")}</div>`;
+}  // plus de voix de synthèse : seulement de vrais enregistrements
+
+// Lecture des vrais enregistrements
+const LX={a:null};
+function lxPlay(src,fb,el){
+  try{if(typeof audioEl!=="undefined"&&!audioEl.paused)audioEl.pause()}catch(e){}
+  if(typeof qStop==="function")qStop();
+  const a=LX.a||(LX.a=new Audio());a.pause();a.src=src;
+  a.onerror=()=>{if(fb){const f=fb;fb=null;a.src=f;a.play().catch(()=>{})}};
+  a.play().catch(()=>{if(fb){a.src=fb;fb=null;a.play().catch(()=>{})}});
+  if(el){document.querySelectorAll(".lx-on").forEach(e=>e.classList.remove("lx-on"));el.classList.add("lx-on");a.onended=()=>el.classList.remove("lx-on")}
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-lx],[data-lex],#lx-finish");
+  if(!el||S.sub!=="quran") return;
+  if(el.dataset.lex){const [s,a]=el.dataset.lex.split(":").map(Number);const d=QCACHE[s];
+    lxPlay(`https://everyayah.com/data/Husary_Muallim_128kbps/${pad3(s)}${pad3(a)}.mp3`,d?`https://cdn.islamic.network/quran/audio/128/ar.husary/${d.g[a-1]}.mp3`:null,el.closest(".lx-ex"));return}
+  if(el.dataset.lx){const l=QAIDA.find(x=>x.id===S.qr.ql),au=LECON_AUDIO[l.id];
+    if(!au){toast(t("voiceSoon").replace("🎙 ",""));return}
+    const k=el.dataset.lx;lxPlay(`lecture/${l.id}/${k}.mp3`,null,el);return}
+  if(el.id==="lx-finish"){const id=S.qr.ql,prev=QR.qdone[id]||0;QR.qdone[id]=5;if(prev<4&&typeof addPts==="function")addPts(20);save();toast(t("lxDone"),true);qrGo({v:"qaida"});return}
+});
+document.head.insertAdjacentHTML("beforeend",`<style>
+.qa-tile small{display:block;line-height:1.3;text-align:center}.qa-tile small .ar{font-size:13px;line-height:1.2}
+.qa-tile.mute{opacity:.95}.qa-tile.lx-on,.lx-ex.lx-on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,78,.25)}
+.lx-h{margin:4px 2px 0;font-size:18px}
+.lx-prompt{font-family:var(--f-verse);font-size:56px;color:var(--accent);line-height:1.6;padding:4px 18px;border:2px solid var(--gold);border-radius:20px;min-width:120px}
+.lx-ex{gap:8px}
+.ar-in{font-family:var(--f-ar);letter-spacing:0!important;text-transform:none!important;font-weight:inherit}
 </style>`);
 
 scheduleNotifications();
