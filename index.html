@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.22";
+const APP_VERSION = "1.0.23";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -3800,9 +3800,9 @@ const QAIDA=[
 
 // ---------- Textes ----------
 Object.keys(UI12).forEach(l=>Object.assign(UI2[l],{
- fr:{qaida:"معلّم القراءة · Le professeur de lecture",qaidaSub:"Programme complet en 20 leçons, des lettres jusqu'à la lecture du Coran",exQ:"Exemple du Coran · Al-Husary (Mou'allim)",lxWords:"Lire des mots",voiceSoon:"🎙 La voix de l'oustaz pour ces cases sera ajoutée bientôt. Écoutez l'exemple du Coran ci-dessous.",voiceBy:"🔊 Voix : {v}",practice:"S'entraîner · 5 questions",lxQName:"Quel est le nom de cette lettre ?",lxQRead:"Comment se lit ceci ?",lxDone:"Leçon terminée",lxFinish:"J'ai lu toute la sourate",lxGo:"Passer à la suite"},
- en:{qaida:"معلّم القراءة · The reading teacher",qaidaSub:"Complete 20-lesson programme, from letters to reading the Quran",exQ:"Quranic example · Al-Husary (Mu'allim)",lxWords:"Read words",voiceSoon:"🎙 The teacher's voice for these tiles will be added soon. Listen to the Quranic example below.",voiceBy:"🔊 Voice: {v}",practice:"Practise · 5 questions",lxQName:"What is the name of this letter?",lxQRead:"How is this read?",lxDone:"Lesson completed",lxFinish:"I have read the whole surah",lxGo:"Continue"},
- ar:{qaida:"معلّم القراءة",qaidaSub:"برنامج كامل في عشرين درساً من الحروف إلى قراءة القرآن",exQ:"مثال من القرآن · الحصري (المعلّم)",lxWords:"قراءة الكلمات",voiceSoon:"🎙 سيُضاف صوت الأستاذ لهذه الخانات قريباً. استمع إلى المثال القرآني أدناه.",voiceBy:"🔊 الصوت: {v}",practice:"تدرّب · 5 أسئلة",lxQName:"ما اسم هذا الحرف؟",lxQRead:"كيف يُقرأ هذا؟",lxDone:"أنهيت الدرس",lxFinish:"قرأت السورة كاملة",lxGo:"تابع"}
+ fr:{qaida:"معلّم القراءة · Le professeur de lecture",qaidaSub:"Programme complet en 20 leçons, des lettres jusqu'à la lecture du Coran",exQ:"Exemple du Coran · Al-Husary (Mou'allim)",lxWords:"Lire des mots",voiceSoon:"🔊 Touchez une case pour l'entendre (voix du téléphone, en attendant la voix de l'oustaz). Pour une récitation parfaite, écoutez l'exemple du Coran ci-dessous.",voiceBy:"🔊 Voix : {v}",practice:"S'entraîner · 5 questions",lxQName:"Quel est le nom de cette lettre ?",lxQRead:"Comment se lit ceci ?",lxDone:"Leçon terminée",lxFinish:"J'ai lu toute la sourate",lxGo:"Passer à la suite"},
+ en:{qaida:"معلّم القراءة · The reading teacher",qaidaSub:"Complete 20-lesson programme, from letters to reading the Quran",exQ:"Quranic example · Al-Husary (Mu'allim)",lxWords:"Read words",voiceSoon:"🔊 Tap a tile to hear it (phone voice, until the teacher's voice is added). For a perfect recitation, listen to the Quranic example below.",voiceBy:"🔊 Voice: {v}",practice:"Practise · 5 questions",lxQName:"What is the name of this letter?",lxQRead:"How is this read?",lxDone:"Lesson completed",lxFinish:"I have read the whole surah",lxGo:"Continue"},
+ ar:{qaida:"معلّم القراءة",qaidaSub:"برنامج كامل في عشرين درساً من الحروف إلى قراءة القرآن",exQ:"مثال من القرآن · الحصري (المعلّم)",lxWords:"قراءة الكلمات",voiceSoon:"🔊 المس خانةً لتسمعها (صوت الهاتف إلى أن يُضاف صوت الأستاذ). وللتلاوة المتقنة استمع إلى المثال القرآني أدناه.",voiceBy:"🔊 الصوت: {v}",practice:"تدرّب · 5 أسئلة",lxQName:"ما اسم هذا الحرف؟",lxQRead:"كيف يُقرأ هذا؟",lxDone:"أنهيت الدرس",lxFinish:"قرأت السورة كاملة",lxGo:"تابع"}
 }[l]));
 
 // ---------- Vues du professeur ----------
@@ -3823,7 +3823,7 @@ function qaidaQuiz(){
   return `<section class="hello"><span class="eyebrow">${arW(L3(l.t))}</span><h1 class="sch-q-of">${fmt(t("qOf"),{i:z.i+1,n:5})}</h1></section>
   <div class="progress"><i style="width:${(z.i+(sel!=null?1:0))/5*100}%"></i></div>
   <div class="card" style="align-items:center;text-align:center"><p class="sch-q" style="font-weight:600">${l.quiz==="name"?t("lxQName"):t("lxQRead")}</p>
-   <div class="lx-prompt ar">${r.prompt}</div>
+   <div class="lx-prompt ar">${r.prompt}</div>${sel!=null?`<button class="btn ghost" id="lx-hear" style="padding:8px 16px">🔊 ${t("replay")}</button>`:""}
    <div class="sch-opts" style="width:100%">${r.opts.map((o,k)=>{let c="";if(sel!=null){if(k===r.a)c="right";else if(k===sel)c="wrong";else c="dim"}return `<button class="sch-opt ${c}" data-qa="${k}" ${sel!=null?"disabled":""}><span class="so-l">${(S.lang==="ar"?"أبج":"ABC")[k]}</span><span>${o}</span></button>`}).join("")}</div>
    ${sel!=null?`<p class="tw-msg ${sel===r.a?"ok":""}">${sel===r.a?t("qGood"):t("qBad").split(".")[0]+"."}</p><button class="btn sch-go" id="qa-next">${z.i<4?t("next"):t("seeResult")} ›</button>`:""}
   </div>`;
@@ -3838,11 +3838,11 @@ function startQaidaQuiz(){
     let cand=kind.filter(y=>lab(y)!==lab(x));if(l.id==="L03"){const g=grpOf(x);const same=cand.filter(y=>grpOf(y)===g);cand=[...shuffle(same),...shuffle(cand.filter(y=>grpOf(y)!==g))]}else cand=shuffle(cand);
     const others=cand.filter((y,k,a)=>a.findIndex(z=>lab(z)===lab(y))===k).slice(0,2);
     const opts=shuffle([x,...others]);
-    rounds.push({prompt:x.q||x.show,opts:opts.map(lab),a:opts.indexOf(x)});
+    rounds.push({say:x.name||x.show,prompt:x.q||x.show,opts:opts.map(lab),a:opts.indexOf(x)});
   }
   S.qr={...S.qr,v:"qquiz",quiz:{rounds,i:0,sel:null,s:0}};save();render();scrollTo(0,0);
 }
-function sayAr(){}
+function sayAr(x){if(x)speakSeq([[x,"ar-SA"]])}
 const arW=s=>String(s).replace(/([\u0600-\u06FF\u0750-\u077F][\u0600-\u06FF\u0750-\u077F\s◌]*[\u0600-\u06FF\u0750-\u077F])/g,'<span class="ar-in">$1</span>');
 function qaidaHome(){
   return `<section class="hello"><span class="eyebrow">${t("mQuran")}</span><h1>${arW(t("qaida"))}</h1><p>${t("qaidaSub")}</p></section>
@@ -3860,13 +3860,14 @@ function lxPlay(src,fb,el){
   if(el){document.querySelectorAll(".lx-on").forEach(e=>e.classList.remove("lx-on"));el.classList.add("lx-on");a.onended=()=>el.classList.remove("lx-on")}
 }
 document.addEventListener("click",e=>{
-  const el=e.target.closest&&e.target.closest("[data-lx],[data-lex],#lx-finish");
+  const el=e.target.closest&&e.target.closest("[data-lx],[data-lex],#lx-finish,#lx-hear");
   if(!el||S.sub!=="quran") return;
   if(el.dataset.lex){const [s,a]=el.dataset.lex.split(":").map(Number);const d=QCACHE[s];
     lxPlay(`https://everyayah.com/data/Husary_Muallim_128kbps/${pad3(s)}${pad3(a)}.mp3`,d?`https://cdn.islamic.network/quran/audio/128/ar.husary/${d.g[a-1]}.mp3`:null,el.closest(".lx-ex"));return}
   if(el.dataset.lx){const l=QAIDA.find(x=>x.id===S.qr.ql),au=LECON_AUDIO[l.id];
-    if(!au){toast(t("voiceSoon").replace("🎙 ",""));return}
+    if(!au){const k=el.dataset.lx,it=k[0]==="w"?l.words[+k.slice(1)]:l.items()[+k.slice(1)];sayAr(it.name||it.show);el.classList.add("lx-on");setTimeout(()=>el.classList.remove("lx-on"),700);return}
     const k=el.dataset.lx;lxPlay(`lecture/${l.id}/${k}.mp3`,null,el);return}
+  if(el.id==="lx-hear"){const z=S.qr.quiz;sayAr(z.rounds[z.i].say);return}
   if(el.id==="lx-finish"){const id=S.qr.ql,prev=QR.qdone[id]||0;QR.qdone[id]=5;if(prev<4&&typeof addPts==="function")addPts(20);save();toast(t("lxDone"),true);qrGo({v:"qaida"});return}
 });
 document.head.insertAdjacentHTML("beforeend",`<style>
