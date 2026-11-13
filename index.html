@@ -654,7 +654,7 @@ function bindWelcome(){
 }
 
 function viewToday(){
-  const list=getTips(), i=((dayIndex()%list.length)+list.length)%list.length, tip=list[i];
+  const list=getTips(), i=dayPick(list.length,"tip"+S.gender,S.dayOffset), tip=list[i];
   const kid=getKids()[((dayIndex()%3)+3)%3];
   const d=new Date(today); d.setDate(d.getDate()+S.dayOffset);
   const dateStr=d.toLocaleDateString(S.lang==="ar"?"ar":S.lang,{weekday:"long",day:"numeric",month:"long"});
@@ -672,7 +672,7 @@ function viewToday(){
   <article class="card"><span class="tag modern">${t("modern")}</span><p>${tip.modern}</p></article>
   <article class="card"><span class="tag">${LC()?LC().parent[S.gender]:(S.gender==="husband"?"Le père":"La mère")}</span>
    <p class="ar verse" style="font-size:20px">${kid.ar}</p><p class="src">${kid.src}</p><p>${kid.txt}</p></article>
-  ${proverbHTML(proverbOfDay())}${(()=>{const all=[...getSpirit("couple"),...getSpirit("kids")];const sp=all[((dayIndex()%all.length)+all.length)%all.length];return `<article class="card"><span class="tag spirit">${t("spiritToday")}</span><p class="ar verse" style="font-size:20px">${sp.ar}</p><p class="src">${sp.src}</p><p>${sp.txt}</p><div class="how"><b>${t("howTo")}</b>${sp.how}</div><button class="btn ghost" data-goto="spirit">${t("spTitle")}</button></article>`})()}
+  ${proverbHTML(proverbOfDay())}${(()=>{const all=[...getSpirit("couple"),...getSpirit("kids")];const sp=all[dayPick(all.length,"spirit")];return `<article class="card"><span class="tag spirit">${t("spiritToday")}</span><p class="ar verse" style="font-size:20px">${sp.ar}</p><p class="src">${sp.src}</p><p>${sp.txt}</p><div class="how"><b>${t("howTo")}</b>${sp.how}</div><button class="btn ghost" data-goto="spirit">${t("spTitle")}</button></article>`})()}
   ${soon?`<button class="card" data-goto="family" style="text-align:start;cursor:pointer"><span class="eyebrow">${t("famTitle")}</span><span>${esc(soon.name)} · ${soon.n===0?t("today"):soon.n+" "+t("days")}</span></button>`:""}
   `;
 }
@@ -1012,9 +1012,9 @@ function upcomingHTML(){
 }
 
 // ---------- Vues de l'onglet Plus ----------
-const MORE=[["school","mSchool","dSchool"],["quran","mQuran","dQuran"],["tawba","mTawba","dTawba"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
+const MORE=[["school","mSchool","dSchool"],["quran","mQuran","dQuran"],["plan","mPlan","dPlan"],["tawba","mTawba","dTawba"],["qibla","mQibla","dQibla"],["calendar","mCal","dCal"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={school:viewSchool,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={school:viewSchool,plan:viewPlan,qibla:viewQibla,calendar:viewCal,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1491,7 +1491,7 @@ function bindBlock3(){
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.23";
+const APP_VERSION = "1.0.24";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -1654,11 +1654,13 @@ async function doSchedule(){
     const at=(isoDate,before,hour=9)=>{const d=new Date(isoDate+"T00:00:00");d.setDate(d.getDate()-before);d.setHours(hour,0,0,0);return d};
     const nextOcc=b=>{const d=new Date(b+"T00:00:00");let n=new Date(today.getFullYear(),d.getMonth(),d.getDate());if(n<today)n.setFullYear(n.getFullYear()+1);return iso(n)};
     if(R.morning!==false){const [h,m]=(R.time||"07:00").split(":").map(Number);
-      list.push({id:1,title:"DJAMILLAH HAYAT",body:t("todayIs"),schedule:{on:{hour:h,minute:m},allowWhileIdle:true}})}
+      if(typeof morningNotifs==="function") morningNotifs(list,h,m);
+      else list.push({id:1,title:"DJAMILLAH HAYAT",body:t("todayIs"),schedule:{on:{hour:h,minute:m},allowWhileIdle:true}})}
     if(R.birthday!==false) S.family.forEach((f,i)=>{const d=at(nextOcc(f.birth),3);if(d>now)list.push({id:100+i,title:fmt(t("birthdayOf"),{n:f.name}),body:fmt(t("inDays"),{n:3})+" · "+t("giftIdeas")+" "+f.name,schedule:{at:d,allowWhileIdle:true}})});
     if(R.wedding!==false&&S.wedding){const d=at(nextOcc(S.wedding),7);if(d>now)list.push({id:300,title:t("weddingEv"),body:fmt(t("inDays"),{n:7})+" · "+t("weddingIdeas"),schedule:{at:d,allowWhileIdle:true}})}
     if(R.feast!==false) FEASTS.forEach((f,i)=>{const d=at(f.date,7);if(d>now)list.push({id:400+i,title:L3(f.name),body:fmt(t("inDays"),{n:7})+" · "+t("feastTips"),schedule:{at:d,allowWhileIdle:true}})});
     if(typeof tawbaNotif==="function"){const n=tawbaNotif();if(n)list.push(n)}
+    if(typeof ibadaNotifs==="function") ibadaNotifs(list);
     if(list.length) await LN.schedule({notifications:list.map(n=>({...n,smallIcon:"ic_stat_icon",iconColor:"#0D6657"}))});
   }catch(e){}
 }
@@ -1677,6 +1679,7 @@ if(NATIVE){
     if(typeof schoolBack==="function"&&schoolBack()) return;
     if(typeof tawbaBack==="function"&&tawbaBack()) return;
     if(typeof quranBack==="function"&&quranBack()) return;
+    if(typeof planBack==="function"&&planBack()) return;
     if(S.sub){S.sub=null;save();render();window.scrollTo(0,0)}
     else if(S.gender&&S.tab!=="today"){S.tab="today";save();render();window.scrollTo(0,0)}
     else PL.App.exitApp();
@@ -3270,7 +3273,7 @@ function viewTawba(){
 }
 function condCard(){return `<div class="card tw-cond"><h3>${t("twCond")}</h3><ol>${["twC1","twC2","twC3","twC4"].map(k=>`<li>${t(k)}</li>`).join("")}</ol><p class="note" style="margin:0">${t("twCondSrc")}</p></div>`}
 function twHome(){
-  const hp=TAWBA_HOPE[dayIdx()%TAWBA_HOPE.length];
+  const hp=TAWBA_HOPE[dayPick(TAWBA_HOPE.length,"twhome")];
   return `<section class="hello"><h1>${t("mTawba")}</h1><p>${t("twIntro")}</p></section>
   <div class="card tw-v hope"><span class="eyebrow">✦ ${t("twHopeDay")}</span><p class="ar verse">${hp.ar}</p><p class="src">${hp.src}</p>${S.lang!=="ar"?`<p class="tw-tr">${L3(hp)}</p>`:""}</div>
   <div class="card"><h3>${t("twMine")}</h3>
@@ -3285,7 +3288,7 @@ function twPickView(){
 }
 function twCombat(c){
   const n=twClean(c), td=c.days[iso(today)], s=twSin(c), [ok,gk]=twGrade(c);
-  const w=s?s.w:TAWBA_FEAR[dayIdx()%TAWBA_FEAR.length], h=s?s.h:TAWBA_HOPE[dayIdx()%TAWBA_HOPE.length];
+  const wl=s?[s.w,...TAWBA_FEAR]:TAWBA_FEAR, hl=s?[s.h,...TAWBA_HOPE]:TAWBA_HOPE, w=wl[dayPick(wl.length,"tww"+c.id)], h=hl[dayPick(hl.length,"twh"+c.id)];
   const steps=s?L3(s.steps):[t("twC1"),t("twC2"),t("twC3"),t("twC4")];
   return `<section class="hello tw-hello"><span class="eyebrow">${t("mTawba")}</span><h1>${esc(twName(c))}</h1>
    <button class="tw-eye" data-tw-hide="${c.id}">${c.hide?"👁 "+t("twShow"):"🙈 "+t("twHide")}</button></section>
@@ -3306,7 +3309,7 @@ function twCombat(c){
   <button class="tw-remove" data-tw-remove="${c.id}">${S.tw.sure===c.id?t("twRemoveSure"):t("twRemove")}</button>`;
 }
 function twSOS(c){
-  const f=TAWBA_FEAR[3], h=TAWBA_HOPE[dayIdx()%TAWBA_HOPE.length];
+  const f=S.tw.f!=null?TAWBA_FEAR[S.tw.f]:TAWBA_FEAR[3], h=S.tw.h!=null?TAWBA_HOPE[S.tw.h]:TAWBA_HOPE[0];
   return `<section class="hello tw-hello"><span class="eyebrow">🆘 ${esc(twName(c))}</span><h1>${t("twSOSTitle")}</h1><p>${t("twSOSWait")}</p></section>
   <div class="card tw-timer"><svg viewBox="0 0 120 120" width="150" height="150"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--soft)" stroke-width="10"/><circle id="tw-ring" cx="60" cy="60" r="52" fill="none" stroke="var(--gold)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0" transform="rotate(-90 60 60)"/></svg><b id="tw-time">10:00</b></div>
   <div class="card"><ol class="tw-sos-steps">${["twS1","twS2","twS3","twS4","twS5","twS6"].map(k=>`<li>${t(k)}</li>`).join("")}</ol></div>
@@ -3315,7 +3318,7 @@ function twSOS(c){
   <button class="btn sch-go" data-tw-passed="${c.id}">✓ ${t("twPassed")}</button>`;
 }
 function twFall(c){
-  const h1=TAWBA_HOPE[2], h2=TAWBA_HOPE[5];
+  const i1=S.tw.h!=null?S.tw.h:2, h1=TAWBA_HOPE[i1], h2=TAWBA_HOPE[(i1+1+(S.tw.h2||0))%TAWBA_HOPE.length];
   return `<section class="hello tw-hello"><h1>${t("twFallTitle")}</h1><p>${t("twFallSub")}</p></section>
   ${versePair(h1,"hope")}
   <div class="card tw-fall"><ol>
@@ -3326,7 +3329,7 @@ function twFall(c){
 }
 
 // ---------- Actions ----------
-function twGo(v,cid){S.tab="more";S.sub="tawba";S.tw={v,cid};save();render();scrollTo(0,0)}
+function twGo(v,cid){S.tab="more";S.sub="tawba";const r=n=>Math.floor(Math.random()*n);S.tw={v,cid,f:r(TAWBA_FEAR.length),h:r(TAWBA_HOPE.length),h2:r(TAWBA_HOPE.length-1)};save();render();scrollTo(0,0)}
 function twCreate(sin,title){
   const c={id:"c"+Date.now(),sin,title:title||"",start:iso(today),last:iso(today),best:0,falls:0,days:{},steps:{},notes:[],hide:false};
   TW.combats.push(c);save();twGo("combat",c.id);
@@ -3877,6 +3880,436 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .lx-prompt{font-family:var(--f-verse);font-size:56px;color:var(--accent);line-height:1.6;padding:4px 18px;border:2px solid var(--gold);border-radius:20px;min-width:120px}
 .lx-ex{gap:8px}
 .ar-in{font-family:var(--f-ar);letter-spacing:0!important;text-transform:none!important;font-weight:inherit}
+</style>`);
+
+// ---------- Rappel de la mort, plans spirituels, examen : contenus ----------
+// Chaque rappel : verset ou hadith, texte qui fait réfléchir, action concrète ; l'espoir est rappelé à la fin.
+const DEATH=[
+ {ar:"كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ",src:"Coran 3:185",fr:"« Toute âme goûtera la mort. » Si c'était aujourd'hui, seriez-vous prêt à rencontrer Allah ?",en:"“Every soul shall taste death.” If it were today, would you be ready to meet Allah?",ar2:"لو كان اليوم آخر أيامك، هل أنت مستعد للقاء الله؟",a:{fr:"Priez chaque prière comme si c'était la dernière.",en:"Pray each prayer as if it were your last.",ar:"صلِّ كل صلاة كأنها آخر صلاة."}},
+ {ar:"قُلْ إِنَّ الْمَوْتَ الَّذِي تَفِرُّونَ مِنْهُ فَإِنَّهُ مُلَاقِيكُمْ",src:"Coran 62:8",fr:"« La mort que vous fuyez va certes vous rencontrer. » On peut tout repousser, sauf elle.",en:"“The death from which you flee will surely meet you.” Everything can be postponed, except death.",ar2:"كل شيء يمكن تأجيله إلا الموت.",a:{fr:"Ne remettez pas à demain votre repentir.",en:"Do not put off your repentance until tomorrow.",ar:"لا تؤجّل توبتك إلى الغد."}},
+ {ar:"أَيْنَمَا تَكُونُوا يُدْرِككُّمُ الْمَوْتُ وَلَوْ كُنتُمْ فِي بُرُوجٍ مُّشَيَّدَةٍ",src:"Coran 4:78",fr:"« Où que vous soyez, la mort vous atteindra, même dans des tours fortifiées. » Ni l'argent ni la jeunesse ne protègent.",en:"“Wherever you are, death will overtake you, even in lofty towers.” Neither money nor youth protect you.",ar2:"لا المال ولا الشباب يحميان من الموت.",a:{fr:"Rendez aujourd'hui une dette ou un objet que vous devez.",en:"Today, repay a debt or return something you owe.",ar:"ردّ اليوم ديناً أو أمانة عليك."}},
+ {ar:"وَمَا تَدْرِي نَفْسٌ بِأَيِّ أَرْضٍ تَمُوتُ",src:"Coran 31:34",fr:"« Personne ne sait dans quelle terre il mourra. » Ni le jour, ni le lieu, ni la manière.",en:"“No soul knows in what land it will die.” Not the day, nor the place, nor the way.",ar2:"لا أحد يعلم يوم موته ولا مكانه ولا كيفيته.",a:{fr:"Réconciliez-vous avec quelqu'un avec qui vous êtes fâché.",en:"Make peace with someone you have fallen out with.",ar:"صالح من بينك وبينه خصام."}},
+ {ar:"وَجَاءَتْ سَكْرَةُ الْمَوْتِ بِالْحَقِّ ۖ ذَٰلِكَ مَا كُنتَ مِنْهُ تَحِيدُ",src:"Coran 50:19",fr:"« L'agonie de la mort fait apparaître la vérité : voilà ce dont tu t'écartais. » Ce moment viendra pour chacun de nous.",en:"“The stupor of death will bring the truth: this is what you were trying to avoid.” That moment will come for each of us.",ar2:"هذه اللحظة آتية لكل واحد منا.",a:{fr:"Dites ce soir 100 fois « Astaghfirou-llah ».",en:"Tonight, say “Astaghfirullah” 100 times.",ar:"قل الليلة «أستغفر الله» مائة مرة."}},
+ {ar:"حَتَّىٰ إِذَا جَاءَ أَحَدَهُمُ الْمَوْتُ قَالَ رَبِّ ارْجِعُونِ، لَعَلِّي أَعْمَلُ صَالِحًا فِيمَا تَرَكْتُ",src:"Coran 23:99-100",fr:"Au moment de la mort, l'homme supplie : « Seigneur, fais-moi revenir, afin que je fasse le bien que j'ai délaissé. » Vous, vous êtes encore vivant : faites-le aujourd'hui.",en:"At death, man begs: “My Lord, send me back, so that I may do the good I neglected.” You are still alive: do it today.",ar2:"أنت ما زلت حياً، فاعمل الصالح اليوم.",a:{fr:"Faites aujourd'hui une bonne action que vous repoussez depuis longtemps.",en:"Today, do a good deed you have long been putting off.",ar:"اعمل اليوم حسنة طالما أجّلتها."}},
+ {ar:"وَأَنفِقُوا مِن مَّا رَزَقْنَاكُم مِّن قَبْلِ أَن يَأْتِيَ أَحَدَكُمُ الْمَوْتُ",src:"Coran 63:10",fr:"« Dépensez de ce que Nous vous avons attribué, avant que la mort ne vienne à l'un de vous. » Ce que vous gardez restera ; ce que vous donnez vous suivra.",en:"“Spend from what We have provided you before death comes to one of you.” What you keep stays behind; what you give goes with you.",ar2:"ما تمسكه يبقى، وما تنفقه يتبعك.",a:{fr:"Donnez une aumône aujourd'hui, même petite.",en:"Give some charity today, even a little.",ar:"تصدّق اليوم ولو بالقليل."}},
+ {ar:"أَكْثِرُوا ذِكْرَ هَاذِمِ اللَّذَّاتِ",src:"Tirmidhi 2307",fr:"Le Prophète ﷺ a dit : « Rappelez-vous souvent le destructeur des plaisirs », c'est-à-dire la mort. Ce rappel guérit l'orgueil et l'oubli.",en:"The Prophet ﷺ said: “Remember often the destroyer of pleasures”, meaning death. This reminder cures pride and heedlessness.",ar2:"ذكر الموت دواء للكِبر والغفلة.",a:{fr:"Pensez une minute à votre tombe, puis priez deux rak'as.",en:"Think of your grave for one minute, then pray two rak'ahs.",ar:"تفكّر دقيقة في قبرك ثم صلِّ ركعتين."}},
+ {ar:"كُنْ فِي الدُّنْيَا كَأَنَّكَ غَرِيبٌ أَوْ عَابِرُ سَبِيلٍ",src:"Bukhari 6416",fr:"« Sois dans ce monde comme un étranger ou un voyageur de passage. » Ibn 'Omar ajoutait : « Le soir, n'attends pas le matin ; le matin, n'attends pas le soir. »",en:"“Be in this world as a stranger or a traveller.” Ibn 'Umar added: “In the evening, do not wait for the morning; in the morning, do not wait for the evening.”",ar2:"وكان ابن عمر يقول: «إذا أمسيت فلا تنتظر الصباح، وإذا أصبحت فلا تنتظر المساء».",a:{fr:"Ne vous couchez pas ce soir fâché contre votre conjoint.",en:"Do not go to bed tonight angry with your spouse.",ar:"لا تنم الليلة وأنت غاضب من زوجك."}},
+ {ar:"يَتْبَعُ الْمَيِّتَ ثَلَاثَةٌ، فَيَرْجِعُ اثْنَانِ وَيَبْقَى مَعَهُ وَاحِدٌ",src:"Bukhari 6514",fr:"« Trois suivent le mort : sa famille, ses biens et ses œuvres. Deux reviennent, un seul reste avec lui : ses œuvres. » Que laissez-vous partir avec vous ?",en:"“Three follow the dead: his family, his wealth and his deeds. Two return and one stays with him: his deeds.” What will go with you?",ar2:"يرجع أهله وماله ويبقى عمله. فماذا سيرافقك؟",a:{fr:"Lisez aujourd'hui une page de Coran de plus.",en:"Read one more page of the Quran today.",ar:"اقرأ اليوم صفحة زائدة من القرآن."}},
+ {ar:"مَا حَقُّ امْرِئٍ مُسْلِمٍ لَهُ شَيْءٌ يُوصِي فِيهِ يَبِيتُ لَيْلَتَيْنِ إِلَّا وَوَصِيَّتُهُ مَكْتُوبَةٌ عِنْدَهُ",src:"Bukhari 2738",fr:"« Le musulman qui a quelque chose à léguer ne doit pas passer deux nuits sans que son testament soit écrit. » Votre famille saura-t-elle ce que vous devez et ce qu'on vous doit ?",en:"“A Muslim who has something to bequeath should not spend two nights without his will written down.” Will your family know what you owe and what is owed to you?",ar2:"هل يعرف أهلك ما عليك وما لك؟",a:{fr:"Écrivez vos dettes et créances sur une feuille et rangez-la en lieu sûr.",en:"Write your debts and loans on a sheet and keep it somewhere safe.",ar:"اكتب ديونك وما لك على الناس واحفظ الورقة في مكان آمن."}},
+ {ar:"إِنَّ الْقَبْرَ أَوَّلُ مَنَازِلِ الْآخِرَةِ",src:"Tirmidhi 2308",fr:"« La tombe est la première étape de l'au-delà : celui qui en est sauvé, ce qui suit est plus facile. » Préparez votre tombe par la prière et la bonté.",en:"“The grave is the first stage of the Hereafter: whoever is saved from it, what follows is easier.” Prepare your grave with prayer and kindness.",ar2:"فمن نجا منه فما بعده أيسر.",a:{fr:"Récitez ce soir la sourate Al-Moulk.",en:"Recite surah Al-Mulk tonight.",ar:"اقرأ الليلة سورة الملك."}},
+ {ar:"الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا",src:"Coran 67:2",fr:"« Celui qui a créé la mort et la vie afin de vous éprouver : lequel de vous est le meilleur en œuvre. » La vie est un examen, et il a une fin.",en:"“He who created death and life to test you, which of you is best in deeds.” Life is a test, and it has an end.",ar2:"الحياة امتحان، وله نهاية.",a:{fr:"Améliorez aujourd'hui une seule chose dans votre comportement.",en:"Improve one thing in your behaviour today.",ar:"حسّن اليوم أمراً واحداً في سلوكك."}},
+ {ar:"فَإِذَا جَاءَ أَجَلُهُمْ لَا يَسْتَأْخِرُونَ سَاعَةً وَلَا يَسْتَقْدِمُونَ",src:"Coran 16:61",fr:"« Quand leur terme arrive, ils ne peuvent le retarder d'une heure ni l'avancer. » Votre heure est déjà écrite.",en:"“When their term comes, they cannot delay it by an hour, nor bring it forward.” Your hour is already written.",ar2:"أجلك مكتوب لا يتقدّم ولا يتأخّر.",a:{fr:"Appelez vos parents ou rendez-leur visite.",en:"Call your parents or visit them.",ar:"اتصل بوالديك أو زُرهما."}},
+ {ar:"إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلَاثَةٍ",src:"Muslim 1631",fr:"« À sa mort, les œuvres de l'homme s'arrêtent, sauf trois : une aumône continue, une science utile, un enfant pieux qui prie pour lui. » Préparez ce qui continuera après vous.",en:"“When a person dies, his deeds end except three: an ongoing charity, beneficial knowledge, a righteous child who prays for him.” Prepare what will continue after you.",ar2:"صدقة جارية، أو علم يُنتفع به، أو ولد صالح يدعو له.",a:{fr:"Apprenez une sourate ou une invocation à vos enfants.",en:"Teach your children a surah or a supplication.",ar:"علّم أولادك سورة أو دعاء."}},
+ {ar:"زُورُوا الْقُبُورَ فَإِنَّهَا تُذَكِّرُكُمُ الْمَوْتَ",src:"Muslim 976",fr:"« Visitez les tombes, car elles vous rappellent la mort. » Ceux qui y reposent avaient aussi des projets pour demain.",en:"“Visit the graves, for they remind you of death.” Those resting there also had plans for tomorrow.",ar2:"من في القبور كانت لهم أيضاً خطط للغد.",a:{fr:"Invoquez pour vos morts : « Allâhoumma-ghfir lahoum wa-rhamhoum ».",en:"Pray for your deceased: “Allahumma-ghfir lahum wa-rhamhum”.",ar:"ادعُ لموتاك: «اللهم اغفر لهم وارحمهم»."}},
+ {ar:"وَاتَّقُوا يَوْمًا تُرْجَعُونَ فِيهِ إِلَى اللَّهِ",src:"Coran 2:281",fr:"« Craignez le jour où vous serez ramenés vers Allah, puis chaque âme sera pleinement rétribuée. » Rien ne sera oublié.",en:"“Fear a day when you will be returned to Allah, then every soul will be paid in full.” Nothing will be forgotten.",ar2:"لا شيء يُنسى.",a:{fr:"Demandez pardon à quelqu'un à qui vous avez fait du tort.",en:"Ask forgiveness from someone you have wronged.",ar:"اطلب العفو ممن ظلمته."}},
+ {ar:"الْكَيِّسُ مَنْ دَانَ نَفْسَهُ وَعَمِلَ لِمَا بَعْدَ الْمَوْتِ",src:"Tirmidhi 2459",fr:"« L'intelligent est celui qui se demande des comptes et œuvre pour ce qui vient après la mort. » Faites ce soir le bilan de votre journée.",en:"“The wise one is he who holds himself accountable and works for what comes after death.” Tonight, review your day.",ar2:"حاسب نفسك الليلة على يومك.",a:{fr:"Avant de dormir, repensez à votre journée et demandez pardon.",en:"Before sleeping, think back over your day and ask forgiveness.",ar:"قبل النوم راجع يومك واستغفر."}},
+ {ar:"وَلَا تَمُوتُنَّ إِلَّا وَأَنتُم مُّسْلِمُونَ",src:"Coran 3:102",fr:"« Ne mourez qu'en étant musulmans. » On meurt comme on a vécu : vivez aujourd'hui comme vous voudriez mourir.",en:"“Do not die except as Muslims.” We die as we have lived: live today as you would like to die.",ar2:"يموت المرء على ما عاش عليه.",a:{fr:"Demandez à Allah une bonne fin : « Allâhoumma-khtim lanâ bi-l-khayr ».",en:"Ask Allah for a good ending: “Allahumma-khtim lana bil-khayr”.",ar:"اسأل الله حسن الخاتمة: «اللهم اختم لنا بخير»."}},
+ {ar:"مَنْ أَحَبَّ لِقَاءَ اللَّهِ أَحَبَّ اللَّهُ لِقَاءَهُ",src:"Bukhari 6507",fr:"« Celui qui aime rencontrer Allah, Allah aime le rencontrer. » Le croyant qui s'est préparé n'a pas peur de ce rendez-vous.",en:"“Whoever loves to meet Allah, Allah loves to meet him.” The believer who has prepared does not fear this meeting.",ar2:"المؤمن الذي استعدّ لا يخاف هذا اللقاء.",a:{fr:"Faites vos adhkâr du soir avec attention.",en:"Say your evening adhkar attentively.",ar:"اقرأ أذكار المساء بحضور قلب."}}
+];
+const DEATH_HOPE={fr:"Allah pardonne à qui revient vers Lui : il n'est jamais trop tard tant que vous vivez.",en:"Allah forgives whoever returns to Him: it is never too late while you live.",ar:"الله يغفر لمن رجع إليه، ولم يفت الأوان ما دمت حياً."};
+const PREPARE=[
+ {fr:"Prier les cinq prières à l'heure",en:"Pray the five prayers on time",ar:"أداء الصلوات الخمس في وقتها"},
+ {fr:"Écrire mon testament (wasiyya) et mes dettes",en:"Write my will (wasiyyah) and my debts",ar:"كتابة وصيتي وديوني"},
+ {fr:"Rembourser mes dettes ou fixer un plan pour le faire",en:"Repay my debts or set a plan to do so",ar:"قضاء ديوني أو وضع خطة لذلك"},
+ {fr:"Demander pardon à ceux à qui j'ai fait du tort",en:"Ask forgiveness from those I have wronged",ar:"طلب العفو ممن ظلمتهم"},
+ {fr:"Me réconcilier avec ma famille",en:"Make peace with my family",ar:"صلة الرحم والصلح مع أهلي"},
+ {fr:"Laisser une aumône continue (puits, mosquée, Coran…)",en:"Leave an ongoing charity (well, mosque, Quran…)",ar:"ترك صدقة جارية (بئر، مسجد، مصحف…)"},
+ {fr:"Apprendre la prière à mes enfants",en:"Teach my children to pray",ar:"تعليم أولادي الصلاة"},
+ {fr:"Me repentir sincèrement de mes péchés",en:"Sincerely repent of my sins",ar:"التوبة الصادقة من ذنوبي"}
+];
+
+// ---------- Plans spirituels ----------
+// kind : day (tous les jours), daoud (un jour sur deux), mt (lundi et jeudi), white (13-14-15 du mois hégirien), week (une fois par semaine), count (compteur), pages (lecture)
+const PLANS=[
+ {id:"khatma",kind:"pages",ic:"۩",t:{fr:"Lire tout le Coran (khatma)",en:"Read the whole Quran (khatmah)",ar:"ختم القرآن"},d:{fr:"Choisissez en combien de jours terminer le Coran : l'application calcule vos pages du jour et suit votre avancée.",en:"Choose how many days to complete the Quran: the app calculates your daily pages and follows your progress.",ar:"اختر عدد الأيام لختم القرآن، فيحسب التطبيق وِردك اليومي ويتابع تقدّمك."},opts:[3,7,10,15,30,60],def:30,src:"Bukhari 5052 : le Prophète ﷺ conseilla à 'Abdallah ibn 'Amr de terminer le Coran en un mois, puis lui permit jusqu'à sept jours."},
+ {id:"daoud",kind:"daoud",ic:"☾",t:{fr:"Jeûne de Daoud",en:"Fast of Dawud",ar:"صيام داود"},d:{fr:"Jeûner un jour sur deux, comme le prophète Daoud : « le jeûne le plus aimé d'Allah » (Bukhari 1131). L'application vous dit chaque jour si c'est un jour de jeûne et évite les jours interdits (Aïd et jours de Tachrîq).",en:"Fast every other day, like the prophet Dawud: “the fast most beloved to Allah” (Bukhari 1131). The app tells you each day whether it is a fasting day and avoids forbidden days (Eid and the days of Tashriq).",ar:"صيام يوم وإفطار يوم، «أحب الصيام إلى الله صيام داود» (البخاري 1131). يخبرك التطبيق كل يوم هل هو يوم صيام، ويتجنّب أيام العيد والتشريق."}},
+ {id:"lunjeu",kind:"mt",ic:"☾",t:{fr:"Jeûne du lundi et du jeudi",en:"Monday and Thursday fasting",ar:"صيام الاثنين والخميس"},d:{fr:"Le Prophète ﷺ jeûnait le lundi et le jeudi : « les œuvres sont présentées ces jours-là, et j'aime que les miennes le soient pendant que je jeûne » (Tirmidhi 747).",en:"The Prophet ﷺ fasted on Mondays and Thursdays: “deeds are presented on those days, and I love that mine be presented while I am fasting” (Tirmidhi 747).",ar:"كان النبي ﷺ يصوم الاثنين والخميس: «تُعرض الأعمال يوم الاثنين والخميس، فأحب أن يُعرض عملي وأنا صائم» (الترمذي 747)."}},
+ {id:"blancs",kind:"white",ic:"☾",t:{fr:"Les trois jours blancs",en:"The three white days",ar:"الأيام البيض"},d:{fr:"Jeûner les 13, 14 et 15 de chaque mois hégirien : c'est comme jeûner toute l'année (Bukhari 1979). L'application vous prévient la veille.",en:"Fast the 13th, 14th and 15th of each Hijri month: it is like fasting the whole year (Bukhari 1979). The app reminds you the day before.",ar:"صيام الثالث عشر والرابع عشر والخامس عشر من كل شهر هجري، فهو كصيام الدهر (البخاري 1979)."}},
+ {id:"prieres",kind:"day",ic:"🕌",count:5,t:{fr:"Les cinq prières à l'heure",en:"The five prayers on time",ar:"الصلوات الخمس في وقتها"},d:{fr:"Cochez chaque prière accomplie à son heure. « L'acte le plus aimé d'Allah est la prière à son heure » (Bukhari 527).",en:"Tick each prayer performed on time. “The deed most beloved to Allah is prayer at its time” (Bukhari 527).",ar:"علّم كل صلاة أدّيتها في وقتها. «أحب الأعمال إلى الله الصلاة على وقتها» (البخاري 527)."},sub:[{fr:"Fajr",en:"Fajr",ar:"الفجر"},{fr:"Dhohr",en:"Dhuhr",ar:"الظهر"},{fr:"'Asr",en:"'Asr",ar:"العصر"},{fr:"Maghrib",en:"Maghrib",ar:"المغرب"},{fr:"'Ichâ",en:"'Isha",ar:"العشاء"}]},
+ {id:"qiyam",kind:"day",ic:"✦",t:{fr:"La prière de la nuit (qiyâm)",en:"Night prayer (qiyam)",ar:"قيام الليل"},d:{fr:"Au moins deux rak'as avant l'aube, même courtes. « La meilleure prière après les prières obligatoires est la prière de la nuit » (Muslim 1163).",en:"At least two rak'ahs before dawn, even short ones. “The best prayer after the obligatory prayers is the night prayer” (Muslim 1163).",ar:"ركعتان على الأقل قبل الفجر ولو قصيرتين. «أفضل الصلاة بعد الفريضة صلاة الليل» (مسلم 1163)."}},
+ {id:"adhkar",kind:"day",ic:"✦",count:2,t:{fr:"Les adhkâr du matin et du soir",en:"Morning and evening adhkar",ar:"أذكار الصباح والمساء"},d:{fr:"Âyat al-Koursî, les trois Qoul trois fois, et la meilleure invocation du pardon : une protection pour toute la journée.",en:"Ayat al-Kursi, the three Quls three times, and the best supplication for forgiveness: a protection for the whole day.",ar:"آية الكرسي، والمعوذات ثلاثاً، وسيد الاستغفار: حصن لليوم كله."},sub:[{fr:"Matin",en:"Morning",ar:"الصباح"},{fr:"Soir",en:"Evening",ar:"المساء"}]},
+ {id:"duha",kind:"day",ic:"☀",t:{fr:"La prière du Douhâ",en:"Duha prayer",ar:"صلاة الضحى"},d:{fr:"Deux rak'as le matin, après le lever du soleil : elles valent l'aumône de chaque articulation du corps (Muslim 720).",en:"Two rak'ahs in the morning after sunrise: they equal the charity due on every joint of the body (Muslim 720).",ar:"ركعتان في الضحى تجزئان عن صدقة كل مفصل (مسلم 720)."}},
+ {id:"istighfar",kind:"count",ic:"۞",goal:100,t:{fr:"100 « Astaghfirou-llah » par jour",en:"100 “Astaghfirullah” a day",ar:"مائة استغفار في اليوم"},d:{fr:"Le Prophète ﷺ demandait pardon à Allah plus de cent fois par jour (Muslim 2702). Touchez le compteur à chaque fois.",en:"The Prophet ﷺ asked Allah's forgiveness more than a hundred times a day (Muslim 2702). Tap the counter each time.",ar:"كان النبي ﷺ يستغفر الله في اليوم أكثر من مائة مرة (مسلم 2702). المس العدّاد في كل مرة."}},
+ {id:"sadaqa",kind:"week",ic:"♡",t:{fr:"Une aumône chaque semaine",en:"Charity every week",ar:"صدقة كل أسبوع"},d:{fr:"« L'aumône ne diminue en rien les biens » (Muslim 2588). Donnez chaque semaine, même peu, de préférence le vendredi.",en:"“Charity does not decrease wealth” (Muslim 2588). Give every week, even a little, preferably on Friday.",ar:"«ما نقصت صدقة من مال» (مسلم 2588). تصدّق كل أسبوع ولو بالقليل، ويُستحب يوم الجمعة."}},
+ {id:"kahf",kind:"week",ic:"۩",fri:1,t:{fr:"Sourate Al-Kahf le vendredi",en:"Surah Al-Kahf on Friday",ar:"سورة الكهف يوم الجمعة"},d:{fr:"« Celui qui lit Al-Kahf le vendredi, une lumière l'éclaire jusqu'au vendredi suivant » (rapporté par Al-Hâkim, authentifié par Al-Albânî).",en:"“Whoever reads Al-Kahf on Friday, a light will shine for him until the next Friday” (reported by Al-Hakim, authenticated by Al-Albani).",ar:"«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين» (الحاكم، وصححه الألباني)."}}
+];
+
+// ---------- Examen de la semaine (bilan devant Allah) ----------
+const EXAM=[
+ {fr:"Avez-vous prié les cinq prières à l'heure ?",en:"Did you pray the five prayers on time?",ar:"هل صلّيت الصلوات الخمس في وقتها؟",tip:{fr:"Mettez une alarme à chaque adhân et commencez par ne jamais manquer Fajr.",en:"Set an alarm at each adhan and start by never missing Fajr.",ar:"اضبط منبهاً عند كل أذان، وابدأ بألّا تفوتك صلاة الفجر."}},
+ {fr:"Avez-vous lu le Coran chaque jour ?",en:"Did you read the Quran every day?",ar:"هل قرأت القرآن كل يوم؟",tip:{fr:"Fixez une heure fixe, même dix minutes, après Fajr ou 'Ichâ.",en:"Set a fixed time, even ten minutes, after Fajr or 'Isha.",ar:"حدّد وقتاً ثابتاً ولو عشر دقائق بعد الفجر أو العشاء."}},
+ {fr:"Avez-vous dit vos adhkâr du matin et du soir ?",en:"Did you say your morning and evening adhkar?",ar:"هل قرأت أذكار الصباح والمساء؟",tip:{fr:"Dites-les juste après Fajr et après 'Asr, avant de toucher votre téléphone.",en:"Say them right after Fajr and after 'Asr, before touching your phone.",ar:"اقرأها بعد الفجر وبعد العصر مباشرة قبل أن تلمس هاتفك."}},
+ {fr:"Avez-vous été doux et patient avec votre conjoint ?",en:"Were you gentle and patient with your spouse?",ar:"هل كنت ليّناً صبوراً مع زوجك؟",tip:{fr:"« Le meilleur d'entre vous est le meilleur envers sa famille » (Tirmidhi 3895). Un mot gentil par jour.",en:"“The best of you is the best to his family” (Tirmidhi 3895). One kind word a day.",ar:"«خيركم خيركم لأهله» (الترمذي 3895). كلمة طيبة كل يوم."}},
+ {fr:"Avez-vous passé du temps de qualité avec vos enfants ?",en:"Did you spend quality time with your children?",ar:"هل قضيت وقتاً نافعاً مع أولادك؟",tip:{fr:"Un quart d'heure par jour sans téléphone : écouter, jouer, raconter une histoire du Prophète ﷺ.",en:"A quarter of an hour a day without a phone: listen, play, tell a story of the Prophet ﷺ.",ar:"ربع ساعة يومياً دون هاتف: استمع والعب واحكِ قصة من السيرة."}},
+ {fr:"Avez-vous évité le mensonge et la médisance ?",en:"Did you avoid lying and backbiting?",ar:"هل اجتنبت الكذب والغيبة؟",tip:{fr:"Avant de parler d'un absent, demandez-vous : le dirais-je devant lui ?",en:"Before speaking about someone absent, ask yourself: would I say it in front of him?",ar:"قبل أن تتحدث عن غائب، اسأل نفسك: هل أقوله أمامه؟"}},
+ {fr:"Avez-vous gardé votre regard et votre pudeur ?",en:"Did you guard your gaze and your modesty?",ar:"هل غضضت بصرك وحفظت حياءك؟",tip:{fr:"Rangez le téléphone la nuit et baissez le regard dès la première seconde.",en:"Put the phone away at night and lower your gaze from the first second.",ar:"أبعد الهاتف ليلاً، واغضض بصرك من اللحظة الأولى."}},
+ {fr:"Avez-vous donné une aumône ou aidé quelqu'un ?",en:"Did you give charity or help someone?",ar:"هل تصدّقت أو أعنت أحداً؟",tip:{fr:"Prévoyez une petite somme fixe chaque vendredi.",en:"Set aside a small fixed amount every Friday.",ar:"خصّص مبلغاً صغيراً ثابتاً كل جمعة."}},
+ {fr:"Avez-vous pris des nouvelles de vos parents et de votre famille ?",en:"Did you check on your parents and family?",ar:"هل وصلت والديك وأقاربك؟",tip:{fr:"Un appel à vos parents chaque jour, une visite chaque semaine si possible.",en:"A call to your parents every day, a visit every week if possible.",ar:"اتصال بوالديك كل يوم، وزيارة كل أسبوع إن أمكن."}},
+ {fr:"Avez-vous demandé pardon à Allah et vous êtes-vous repenti ?",en:"Did you ask Allah's forgiveness and repent?",ar:"هل استغفرت الله وتبت إليه؟",tip:{fr:"100 « Astaghfirou-llah » par jour, comme le Prophète ﷺ (Muslim 2702).",en:"100 “Astaghfirullah” a day, like the Prophet ﷺ (Muslim 2702).",ar:"مائة استغفار في اليوم كما كان النبي ﷺ يفعل (مسلم 2702)."}}
+];
+
+// ---------- Variété, plan spirituel, examen, qibla, calendrier, rappel de la mort ----------
+const UI13={
+ fr:{mPlan:"Mon plan spirituel",dPlan:"Khatma, jeûne de Daoud, prières… noté et examiné",mQibla:"Qibla",dQibla:"La boussole vers La Mecque",mCal:"Calendrier",dCal:"Hégirien et grégorien ensemble, avec les fêtes",
+  plIntro:"Choisissez vos objectifs d'adoration. Chaque jour, cochez ce que vous avez fait : l'application vous note sur 20, vous fait passer un examen chaque semaine et vous rappelle vos engagements.",
+  plToday:"Aujourd'hui",plNone:"Aucun plan pour l'instant. Ajoutez votre premier objectif ci-dessous.",plAdd:"Ajouter un objectif",plRemove:"Retirer",plDays:"Terminer en combien de jours ?",plDaysN:"{n} jours",plStart:"Commencer",
+  plWird:"Wird du jour : {n} pages",plPages:"Pages lues aujourd'hui",plDone:"Fait",plProg:"Page {p} sur 604 · juz' {j}",plFinish:"Fin prévue : {d}",plKhatma:"Khatma terminée ! Qu'Allah l'accepte. Une nouvelle khatma commence.",plKhatmas:"{n} khatma(s) terminée(s)",
+  plFastDay:"Aujourd'hui : jour de jeûne",plNoFast:"Aujourd'hui : pas de jeûne",plForbid:"Jour de fête : le jeûne est interdit aujourd'hui.",plFasted:"J'ai jeûné",plCouldnt:"Je n'ai pas pu",plNext:"Prochain jeûne : {d}",plWeekDone:"Fait cette semaine ✓",plFriOnly:"À faire le vendredi",plCount:"{n} / {g}",
+  bulletin:"Mon bulletin",noteWeek:"Note de la semaine",noteExam:"Note de l'examen",noteNA:"Pas encore de note : cochez vos objectifs chaque jour.",
+  m18:"Excellent, mâchâ'Allah !",m16:"Très bien",m14:"Bien",m12:"Assez bien",m10:"Passable",m0:"Insuffisant : ne vous découragez pas, reprenez dès aujourd'hui.",
+  exam:"Examen de la semaine",examGo:"Passer l'examen",examRedo:"Repasser l'examen",examIntro:"Répondez avec sincérité : personne d'autre ne voit vos réponses. « Demandez-vous des comptes avant qu'on vous en demande » ('Omar ibn al-Khattâb).",examLast:"Dernier examen : {s}/20 le {d}",
+  a3:"Toujours",a2:"Souvent",a1:"Parfois",a0:"Jamais",examRes:"Résultat de l'examen",examWeak:"À améliorer cette semaine",examSee:"Voir mon résultat",examDoneT:"Examen terminé",
+  prepare:"Me préparer à la mort",prepSub:"Ce que le croyant met en ordre avant de rencontrer Allah",deathT:"Souviens-toi de la mort",deathAct:"À faire aujourd'hui",deathNotif:"Rappel de la mort chaque jour (notification)",deathTime:"Heure du rappel",planNotif:"Rappel de mon plan chaque soir",
+  fastTomorrow:"Demain : jour de jeûne ({p}). Préparez le souhour.",planTonight:"Votre plan du jour : {l}",
+  qbIntro:"Posez le téléphone à plat, loin des objets métalliques, puis tournez-vous jusqu'à ce que la Ka'ba soit tout en haut.",qbStart:"Activer la boussole",qbFace:"Vous êtes face à la Qibla",qbTurn:"Tournez de {d}° vers la {s}",qbLeft:"gauche",qbRight:"droite",qbDir:"La Mecque est à {d}° du nord ({c}), à {k} km",qbLoc:"Position",qbGps:"Utiliser ma position",qbNoSensor:"Pas de boussole sur cet appareil : utilisez le degré indiqué avec une boussole ou le soleil.",qbCalib:"Si la direction semble fausse, faites un 8 dans l'air avec le téléphone pour calibrer la boussole.",qbCity:"Ville",
+  calAdj:"Ajuster la date hégirienne",calAdjN:"{n} jour(s)",calAdjHelp:"Selon l'observation de la lune en Guinée, la date peut différer d'un jour. Réglez-la comme votre mosquée.",calEvents:"Ce mois-ci",calToday:"Aujourd'hui",calWhite:"Jour blanc (jeûne recommandé)",calFast:"Jeûne de mon plan",
+  ev_newyear:"Nouvel an hégirien",ev_ashura:"Achoura (jeûne recommandé)",ev_tasua:"Tâsoû'â (jeûne recommandé)",ev_ramadan:"Début du Ramadan",ev_laylat:"Nuits impaires : cherchez Laylat al-Qadr",ev_fitr:"Aïd al-Fitr",ev_arafat:"Jour de 'Arafat (jeûne recommandé)",ev_adha:"Aïd al-Adha (Tabaski)",ev_tashriq:"Jours de Tachrîq",ev_shawwal:"6 jours de Chawwâl (jeûne recommandé)",ev_dhul:"10 premiers jours de Dhoul-Hijja"},
+ en:{mPlan:"My spiritual plan",dPlan:"Khatmah, fast of Dawud, prayers… graded and examined",mQibla:"Qibla",dQibla:"The compass towards Mecca",mCal:"Calendar",dCal:"Hijri and Gregorian together, with the feasts",
+  plIntro:"Choose your worship goals. Each day, tick what you did: the app grades you out of 20, gives you an exam every week and reminds you of your commitments.",
+  plToday:"Today",plNone:"No plan yet. Add your first goal below.",plAdd:"Add a goal",plRemove:"Remove",plDays:"Finish in how many days?",plDaysN:"{n} days",plStart:"Start",
+  plWird:"Today's portion: {n} pages",plPages:"Pages read today",plDone:"Done",plProg:"Page {p} of 604 · juz' {j}",plFinish:"Expected finish: {d}",plKhatma:"Khatmah completed! May Allah accept it. A new khatmah begins.",plKhatmas:"{n} khatmah(s) completed",
+  plFastDay:"Today: fasting day",plNoFast:"Today: no fast",plForbid:"Feast day: fasting is forbidden today.",plFasted:"I fasted",plCouldnt:"I couldn't",plNext:"Next fast: {d}",plWeekDone:"Done this week ✓",plFriOnly:"To do on Friday",plCount:"{n} / {g}",
+  bulletin:"My report card",noteWeek:"This week's grade",noteExam:"Exam grade",noteNA:"No grade yet: tick your goals every day.",
+  m18:"Excellent, masha'Allah!",m16:"Very good",m14:"Good",m12:"Fairly good",m10:"Pass",m0:"Insufficient: don't lose heart, start again today.",
+  exam:"Weekly exam",examGo:"Take the exam",examRedo:"Retake the exam",examIntro:"Answer sincerely: no one else sees your answers. “Hold yourselves accountable before you are held accountable” ('Umar ibn al-Khattab).",examLast:"Last exam: {s}/20 on {d}",
+  a3:"Always",a2:"Often",a1:"Sometimes",a0:"Never",examRes:"Exam result",examWeak:"To improve this week",examSee:"See my result",examDoneT:"Exam completed",
+  prepare:"Preparing for death",prepSub:"What the believer puts in order before meeting Allah",deathT:"Remember death",deathAct:"To do today",deathNotif:"Daily reminder of death (notification)",deathTime:"Reminder time",planNotif:"Evening reminder of my plan",
+  fastTomorrow:"Tomorrow: fasting day ({p}). Prepare your suhoor.",planTonight:"Your plan for today: {l}",
+  qbIntro:"Lay the phone flat, away from metal objects, then turn until the Ka'bah is at the very top.",qbStart:"Enable the compass",qbFace:"You are facing the Qibla",qbTurn:"Turn {d}° to the {s}",qbLeft:"left",qbRight:"right",qbDir:"Mecca is {d}° from north ({c}), {k} km away",qbLoc:"Location",qbGps:"Use my location",qbNoSensor:"No compass on this device: use the indicated degree with a compass or the sun.",qbCalib:"If the direction seems wrong, draw a figure 8 in the air with the phone to calibrate the compass.",qbCity:"City",
+  calAdj:"Adjust the Hijri date",calAdjN:"{n} day(s)",calAdjHelp:"Depending on moon sighting, the date may differ by a day. Set it like your mosque.",calEvents:"This month",calToday:"Today",calWhite:"White day (recommended fast)",calFast:"Fast from my plan",
+  ev_newyear:"Islamic New Year",ev_ashura:"'Ashura (recommended fast)",ev_tasua:"Tasu'a (recommended fast)",ev_ramadan:"Start of Ramadan",ev_laylat:"Odd nights: seek Laylat al-Qadr",ev_fitr:"Eid al-Fitr",ev_arafat:"Day of 'Arafah (recommended fast)",ev_adha:"Eid al-Adha",ev_tashriq:"Days of Tashriq",ev_shawwal:"6 days of Shawwal (recommended fast)",ev_dhul:"First 10 days of Dhul-Hijjah"},
+ ar:{mPlan:"خطتي الإيمانية",dPlan:"ختم القرآن وصيام داود والصلوات… مع التقييم والاختبار",mQibla:"القبلة",dQibla:"البوصلة نحو مكة",mCal:"التقويم",dCal:"الهجري والميلادي معاً مع المناسبات",
+  plIntro:"اختر أهدافك في العبادة، وعلّم كل يوم ما أنجزته؛ فيقيّمك التطبيق من عشرين، ويختبرك كل أسبوع، ويذكّرك بالتزاماتك.",
+  plToday:"اليوم",plNone:"لا توجد خطة بعد. أضف هدفك الأول أدناه.",plAdd:"أضف هدفاً",plRemove:"إزالة",plDays:"اختم في كم يوماً؟",plDaysN:"{n} يوماً",plStart:"ابدأ",
+  plWird:"وِرد اليوم: {n} صفحات",plPages:"الصفحات المقروءة اليوم",plDone:"تم",plProg:"الصفحة {p} من 604 · الجزء {j}",plFinish:"الختم المتوقع: {d}",plKhatma:"تمّت الختمة! تقبّلها الله. تبدأ ختمة جديدة.",plKhatmas:"{n} ختمة منجزة",
+  plFastDay:"اليوم: يوم صيام",plNoFast:"اليوم: يوم إفطار",plForbid:"يوم عيد: يحرم الصيام اليوم.",plFasted:"صمت",plCouldnt:"لم أستطع",plNext:"الصيام القادم: {d}",plWeekDone:"أُنجز هذا الأسبوع ✓",plFriOnly:"يوم الجمعة",plCount:"{n} / {g}",
+  bulletin:"كشف درجاتي",noteWeek:"درجة الأسبوع",noteExam:"درجة الاختبار",noteNA:"لا درجة بعد: علّم أهدافك كل يوم.",
+  m18:"ممتاز، ما شاء الله!",m16:"جيد جداً",m14:"جيد",m12:"مقبول بامتياز",m10:"مقبول",m0:"غير كافٍ: لا تيأس وابدأ من اليوم.",
+  exam:"اختبار الأسبوع",examGo:"ابدأ الاختبار",examRedo:"أعد الاختبار",examIntro:"أجب بصدق، فلا يرى إجاباتك أحد. «حاسبوا أنفسكم قبل أن تُحاسبوا» (عمر بن الخطاب).",examLast:"آخر اختبار: {s}/20 في {d}",
+  a3:"دائماً",a2:"غالباً",a1:"أحياناً",a0:"أبداً",examRes:"نتيجة الاختبار",examWeak:"ما ينبغي تحسينه هذا الأسبوع",examSee:"عرض النتيجة",examDoneT:"انتهى الاختبار",
+  prepare:"الاستعداد للموت",prepSub:"ما يرتّبه المؤمن قبل لقاء الله",deathT:"تذكّر الموت",deathAct:"عمل اليوم",deathNotif:"تذكير يومي بالموت (إشعار)",deathTime:"وقت التذكير",planNotif:"تذكير مسائي بخطتي",
+  fastTomorrow:"غداً يوم صيام ({p}). استعدّ للسحور.",planTonight:"خطتك اليوم: {l}",
+  qbIntro:"ضع الهاتف مسطحاً بعيداً عن المعادن، ثم استدر حتى تصبح الكعبة في الأعلى.",qbStart:"تشغيل البوصلة",qbFace:"أنت متّجه إلى القبلة",qbTurn:"استدر {d}° إلى {s}",qbLeft:"اليسار",qbRight:"اليمين",qbDir:"مكة على {d}° من الشمال ({c})، على بعد {k} كم",qbLoc:"الموقع",qbGps:"استخدم موقعي",qbNoSensor:"لا توجد بوصلة في هذا الجهاز: استعمل الدرجة المبيّنة مع بوصلة أو الشمس.",qbCalib:"إن بدا الاتجاه خاطئاً، حرّك الهاتف في الهواء على شكل رقم 8 لمعايرة البوصلة.",qbCity:"المدينة",
+  calAdj:"ضبط التاريخ الهجري",calAdjN:"{n} يوم",calAdjHelp:"قد يختلف التاريخ يوماً بحسب رؤية الهلال. اضبطه كمسجدك.",calEvents:"في هذا الشهر",calToday:"اليوم",calWhite:"يوم أبيض (صيام مستحب)",calFast:"صيام من خطتي",
+  ev_newyear:"رأس السنة الهجرية",ev_ashura:"عاشوراء (صيام مستحب)",ev_tasua:"تاسوعاء (صيام مستحب)",ev_ramadan:"بداية رمضان",ev_laylat:"الليالي الوتر: التمس ليلة القدر",ev_fitr:"عيد الفطر",ev_arafat:"يوم عرفة (صيام مستحب)",ev_adha:"عيد الأضحى",ev_tashriq:"أيام التشريق",ev_shawwal:"ست من شوال (صيام مستحب)",ev_dhul:"العشر الأوائل من ذي الحجة"}
+};
+Object.keys(UI13).forEach(l=>Object.assign(UI2[l],UI13[l]));
+
+// ---------- 1. Variété : un choix différent chaque jour, sans ordre prévisible ----------
+const dayNum=(off=0)=>{const d=new Date(today);d.setDate(d.getDate()+off);return Math.floor(new Date(d.getFullYear(),d.getMonth(),d.getDate(),12).getTime()/864e5)};
+function seeded(seed){let s=seed>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+function hashStr(x){let h=2166136261;for(const c of String(x)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function dayPick(n,salt,off){
+  if(n<=1) return 0;
+  const dn=dayNum(off||0), cycle=Math.floor(dn/n), r=seeded(hashStr(salt+":"+cycle)), p=[...Array(n).keys()];
+  for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1));[p[i],p[j]]=[p[j],p[i]]}
+  return p[((dn%n)+n)%n];
+}
+const rndPick=a=>a[Math.floor(Math.random()*a.length)];
+if(typeof PROVERBS!=="undefined") proverbOfDay=function(){return PROVERBS[dayPick(PROVERBS.length,"proverb")]};
+
+// ---------- Dates hégiriennes (avec réglage) ----------
+S.hadj=S.hadj||0;
+function hParts(d){
+  const x=new Date(d);x.setDate(x.getDate()+(S.hadj||0));
+  try{const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{day:"numeric",month:"numeric",year:"numeric"}).formatToParts(x);
+    const g=k=>+((p.find(z=>z.type===k)||{}).value||"0").replace(/\D/g,"");return {d:g("day"),m:g("month"),y:g("year")}}catch(e){return {d:0,m:0,y:0}}
+}
+const H_MONTHS={fr:["Mouharram","Safar","Rabî' al-awwal","Rabî' ath-thânî","Joumâdâ al-oûlâ","Joumâdâ ath-thâniya","Rajab","Cha'bân","Ramadan","Chawwâl","Dhoul-Qa'da","Dhoul-Hijja"],en:["Muharram","Safar","Rabi' al-Awwal","Rabi' al-Thani","Jumada al-Ula","Jumada al-Thaniyah","Rajab","Sha'ban","Ramadan","Shawwal","Dhul-Qa'dah","Dhul-Hijjah"],ar:["محرّم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوّال","ذو القعدة","ذو الحجة"]};
+const hMonth=m=>(H_MONTHS[S.lang]||H_MONTHS.fr)[m-1]||"";
+const arNum=n=>S.lang==="ar"?String(n).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x]):String(n);
+hijriStr=function(d){const h=hParts(d);return h.y?`${arNum(h.d)} ${hMonth(h.m)} ${arNum(h.y)}`:""};
+function forbiddenFast(d){const h=hParts(d);return (h.m===10&&h.d===1)||(h.m===12&&h.d>=10&&h.d<=13)}
+function hEvent(d){
+  const h=hParts(d);
+  if(h.m===1&&h.d===1) return "ev_newyear"; if(h.m===1&&h.d===9) return "ev_tasua"; if(h.m===1&&h.d===10) return "ev_ashura";
+  if(h.m===9&&h.d===1) return "ev_ramadan"; if(h.m===9&&h.d>=21&&h.d%2===1) return "ev_laylat";
+  if(h.m===10&&h.d===1) return "ev_fitr"; if(h.m===12&&h.d===9) return "ev_arafat"; if(h.m===12&&h.d===10) return "ev_adha"; if(h.m===12&&h.d>=11&&h.d<=13) return "ev_tashriq";
+  return "";
+}
+
+// ---------- 2. Plan spirituel ----------
+S.plan=S.plan||{list:[],log:{},exams:[],prep:{},time:"20:30",notif:true};
+S.death=S.death||{on:true,time:"20:00"};
+S.pl=S.pl||{v:"home"};
+const PL_=S.plan;
+const planDef=id=>PLANS.find(p=>p.id===id);
+const isoOff=(n,base)=>{const d=new Date(base||today);d.setDate(d.getDate()+n);return iso(d)};
+function plLog(id,day){PL_.log[id]=PL_.log[id]||{};return PL_.log[id][day||iso(today)]}
+function plSet(id,v,day){PL_.log[id]=PL_.log[id]||{};PL_.log[id][day||iso(today)]=v;save()}
+function isFastDay(p,dIso){
+  const d=new Date(dIso+"T12:00:00"), def=planDef(p.id);
+  if(forbiddenFast(d)) return false;
+  if(def.kind==="daoud") return dayDiffD(p.start,dIso)%2===0;
+  if(def.kind==="mt") return d.getDay()===1||d.getDay()===4;
+  if(def.kind==="white"){const h=hParts(d);return h.d>=13&&h.d<=15}
+  return false;
+}
+const dayDiffD=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+function nextFast(p){for(let i=1;i<60;i++){const s=isoOff(i);if(isFastDay(p,s))return s}return ""}
+const fmtD=s=>new Date(s+"T12:00:00").toLocaleDateString(S.lang==="ar"?"ar":S.lang,{weekday:"long",day:"numeric",month:"long"});
+function khatmaState(p){
+  const tot=Object.values(PL_.log.khatma||{}).reduce((a,b)=>a+(+b||0),0)-(p.base||0);
+  const per=Math.ceil(604/p.days), pos=Math.min(604,Math.max(0,tot));
+  return {per,pos,juz:Math.min(30,Math.floor(pos/20.13)+1)};
+}
+// Taux de réussite d'un plan sur les 7 derniers jours
+function planScore(p){
+  const def=planDef(p.id); let exp=0,done=0;
+  for(let i=0;i<7;i++){
+    const s=isoOff(-i); if(s<p.start) continue; const v=plLog(p.id,s);
+    if(def.kind==="day"){const n=def.count||1;exp+=n;done+=Array.isArray(v)?v.filter(Boolean).length:(v?1:0)}
+    else if(def.kind==="count"){exp+=1;done+=Math.min(1,(+v||0)/def.goal)}
+    else if(def.kind==="pages"){exp+=1;done+=Math.min(1,(+v||0)/khatmaState(p).per)}
+    else if(["daoud","mt","white"].includes(def.kind)){if(isFastDay(p,s)&&!(i===0&&v==null)){exp+=1;done+=v==="ok"?1:0}}
+  }
+  if(def.kind==="week"){const wk=[...Array(7).keys()].map(i=>plLog(p.id,isoOff(-i))).some(Boolean);const started=dayDiffD(p.start,iso(today))>=6||wk;if(started){exp=1;done=wk?1:0}}
+  return exp?done/exp:null;
+}
+function weekNote(){const sc=PL_.list.map(planScore).filter(x=>x!=null);return sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length*40)/2:null}
+const mention=n=>n==null?"":n>=18?t("m18"):n>=16?t("m16"):n>=14?t("m14"):n>=12?t("m12"):n>=10?t("m10"):t("m0");
+const noteColor=n=>n==null?"var(--muted)":n>=14?"#2E9E6B":n>=10?"var(--gold)":"#C0473F";
+
+function viewPlan(){
+  if(S.pl.v==="exam") return examView();
+  if(S.pl.v==="examres") return examResult();
+  const wn=weekNote(), ex=PL_.exams[PL_.exams.length-1];
+  const avail=PLANS.filter(p=>!PL_.list.some(x=>x.id===p.id));
+  return `<section class="hello"><h1>${t("mPlan")}</h1><p>${t("plIntro")}</p></section>
+  <div class="card pl-bul"><span class="eyebrow">${t("bulletin")}</span>
+   <div class="pl-notes"><div class="pl-note"><b style="color:${noteColor(wn)}">${wn==null?"—":String(wn).replace(".",",")}<small>/20</small></b><span>${t("noteWeek")}</span></div>
+    <div class="pl-note"><b style="color:${noteColor(ex&&ex.s)}">${ex?String(ex.s).replace(".",","):"—"}<small>/20</small></b><span>${t("noteExam")}</span></div></div>
+   <p class="pl-ment">${wn==null?t("noteNA"):mention(wn)}</p>
+   ${PL_.list.map(p=>{const s=planScore(p);return s==null?"":`<div class="pl-bar"><span>${L3(planDef(p.id).t)}</span><i class="progress"><i style="width:${Math.round(s*100)}%"></i></i><em>${Math.round(s*100)} %</em></div>`}).join("")}
+   <button class="btn" id="pl-exam">📝 ${ex&&dayDiffD(ex.d,iso(today))<7?t("examRedo"):t("examGo")}</button>
+   ${ex?`<p class="note" style="margin:0;text-align:center">${fmt(t("examLast"),{s:String(ex.s).replace(".",","),d:fmtD(ex.d)})}</p>`:""}</div>
+  <h3 class="lx-h">${t("plToday")} · ${fmtD(iso(today))}</h3>
+  ${PL_.list.length?PL_.list.map(planCard).join(""):`<p class="note">${t("plNone")}</p>`}
+  ${avail.length?`<div class="card"><h3>＋ ${t("plAdd")}</h3>${avail.map(p=>`<details class="pl-add"><summary><span class="pl-ic">${p.ic}</span><b>${L3(p.t)}</b></summary><p>${L3(p.d)}</p>
+    ${p.kind==="pages"?`<span class="eyebrow">${t("plDays")}</span><div class="qr-chips">${p.opts.map(n=>`<button class="qr-chip" data-pladd="${p.id}" data-days="${n}">${fmt(t("plDaysN"),{n})}</button>`).join("")}</div><p class="note" style="margin:0">${p.src}</p>`:`<button class="btn" data-pladd="${p.id}">${t("plStart")}</button>`}</details>`).join("")}</div>`:""}
+  ${deathCard(true)}
+  <div class="card"><h3>🕊 ${t("prepare")}</h3><p class="note" style="margin:0">${t("prepSub")}</p>
+   ${PREPARE.map((x,k)=>`<label class="tw-step"><input type="checkbox" data-prep="${k}" ${PL_.prep[k]?"checked":""}><span>${L3(x)}</span></label>`).join("")}</div>
+  <div class="card"><label class="tw-step"><input type="checkbox" id="death-on" ${S.death.on?"checked":""}><span>${t("deathNotif")}</span></label>
+   <label for="death-time" style="flex-direction:row;align-items:center;justify-content:space-between">${t("deathTime")}<input type="time" id="death-time" value="${S.death.time}" style="width:auto"></label>
+   <label class="tw-step"><input type="checkbox" id="plan-notif" ${PL_.notif?"checked":""}><span>${t("planNotif")}</span></label></div>`;
+}
+function planCard(p){
+  const def=planDef(p.id), v=plLog(p.id); let body="";
+  if(def.kind==="pages"){const k=khatmaState(p),fin=isoOff(Math.ceil((604-k.pos)/k.per));
+    body=`<p class="pl-big">${fmt(t("plWird"),{n:k.per})}</p><div class="progress"><i style="width:${k.pos/604*100}%"></i></div><p class="note" style="margin:0">${fmt(t("plProg"),{p:k.pos,j:k.juz})} · ${fmt(t("plFinish"),{d:fmtD(fin)})}${p.k?" · "+fmt(t("plKhatmas"),{n:p.k}):""}</p>
+     <div class="pl-step"><span>${t("plPages")}</span><button data-plpg="-1">−</button><b>${+v||0}</b><button data-plpg="1">＋</button><button class="on" data-plpg="${k.per}" data-set="1">✓ ${t("plDone")}</button></div>`}
+  else if(["daoud","mt","white"].includes(def.kind)){const d=new Date(today),forb=forbiddenFast(d),fd=isFastDay(p,iso(today));
+    body=forb?`<p class="pl-big">${t("plForbid")}</p>`:fd?`<p class="pl-big">☾ ${t("plFastDay")}</p>${v==="ok"?`<p class="tw-msg ok">✓ ${t("plFasted")}</p>`:v==="no"?`<p class="tw-msg">${t("plCouldnt")}</p>`:`<div class="tw-check"><button class="btn" data-plfast="ok">✓ ${t("plFasted")}</button><button class="btn ghost" data-plfast="no">${t("plCouldnt")}</button></div>`}`:`<p class="pl-big">${t("plNoFast")}</p>`;
+    body+=`<p class="note" style="margin:0">${fmt(t("plNext"),{d:fmtD(nextFast(p))})}</p>`}
+  else if(def.kind==="day"){const n=def.count||1,arr=Array.isArray(v)?v:Array(n).fill(false);
+    body=`<div class="pl-subs">${(def.sub||[def.t]).map((s,k)=>`<button class="pl-sub ${arr[k]?"on":""}" data-plsub="${k}">${arr[k]?"✓ ":""}${L3(s)}</button>`).join("")}</div>`}
+  else if(def.kind==="count"){const n=+v||0;body=`<button class="tw-dhikr" data-plcnt="1"><span class="ar">أَسْتَغْفِرُ اللَّهَ</span><b>${fmt(t("plCount"),{n,g:def.goal})}</b></button><div class="progress"><i style="width:${Math.min(100,n)}%"></i></div>`}
+  else if(def.kind==="week"){const wk=[...Array(7).keys()].some(i=>plLog(p.id,isoOff(-i)));const fri=def.fri&&today.getDay()!==5;
+    body=wk?`<p class="tw-msg ok">${t("plWeekDone")}</p>`:fri?`<p class="note" style="margin:0">${t("plFriOnly")}</p>`:`<button class="btn" data-plweek="1">✓ ${t("plDone")}</button>`}
+  return `<div class="card pl-card" data-plid="${p.id}"><div class="pl-head"><span class="pl-ic">${def.ic}</span><b>${L3(def.t)}${def.kind==="pages"?` · ${fmt(t("plDaysN"),{n:p.days})}`:""}</b><button class="pl-rm" data-plrm="${p.id}">${S.pl.sure===p.id?t("twRemoveSure"):t("plRemove")}</button></div>${body}</div>`;
+}
+function examView(){
+  const a=S.pl.ans||[];
+  return `<section class="hello"><span class="eyebrow">${t("mPlan")}</span><h1>${t("exam")}</h1><p>${t("examIntro")}</p></section>
+  ${EXAM.map((q,k)=>`<div class="card pl-q"><p class="sch-q"><span class="sp-n" style="display:inline-grid;margin-inline-end:8px">${k+1}</span>${L3(q)}</p><div class="pl-ans">${[3,2,1,0].map(v=>`<button class="${a[k]===v?"on":""}" data-exa="${k}" data-v="${v}">${t("a"+v)}</button>`).join("")}</div></div>`).join("")}
+  <button class="btn sch-go" id="ex-done" ${a.filter(x=>x!=null).length<EXAM.length?"disabled":""}>${t("examSee")} ›</button>`;
+}
+function examResult(){
+  const ex=PL_.exams[PL_.exams.length-1], weak=(ex.a||[]).map((v,k)=>[v,k]).filter(x=>x[0]<=1);
+  return `<section class="hello"><span class="eyebrow">${t("mPlan")}</span><h1>${t("examRes")}</h1></section>
+  <div class="card sch-res ${ex.s>=14?"pass":""}"><div class="sr-score" style="color:${noteColor(ex.s)}">${String(ex.s).replace(".",",")}<small>/20</small></div><p class="pl-ment">${mention(ex.s)}</p></div>
+  ${weak.length?`<div class="card"><h3>${t("examWeak")}</h3>${weak.map(([v,k])=>`<div class="pl-weak"><b>${L3(EXAM[k])}</b><p>${L3(EXAM[k].tip)}</p></div>`).join("")}</div>`:""}
+  <button class="btn sch-go" id="ex-back">‹ ${t("mPlan")}</button>`;
+}
+
+// ---------- 4. Rappel de la mort ----------
+function deathOf(off){return DEATH[dayPick(DEATH.length,"death",off)]}
+function deathCard(inPlan){
+  const x=deathOf(0);
+  return `<div class="card death"><span class="eyebrow">🕯 ${t("deathT")}</span><p class="ar verse">${x.ar}</p><p class="src">${x.src}</p>
+   <p class="tw-tr">${S.lang==="ar"?x.ar2:L3(x)}</p><p class="death-act"><b>${t("deathAct")} :</b> ${L3(x.a)}</p><p class="note" style="margin:0">✦ ${L3(DEATH_HOPE)}</p>
+   ${inPlan?"":`<button class="dq-go" data-sub-go="plan">🕊 ${t("prepare")} ›</button>`}</div>`;
+}
+function deathBody(x){return `${S.lang==="ar"?x.ar+" ("+x.src+"). "+x.ar2:L3(x)} ${t("deathAct")} : ${L3(x.a)}`}
+
+// ---------- Notifications ----------
+function ibadaNotifs(list){
+  const now=new Date();
+  if(S.death&&S.death.on){const [h,m]=(S.death.time||"20:00").split(":").map(Number);
+    for(let i=0;i<21;i++){const d=new Date(today);d.setDate(d.getDate()+i);d.setHours(h,m,0,0);if(d<=now)continue;
+      list.push({id:600+i,title:"🕯 "+t("deathT"),body:deathBody(deathOf(i)),largeBody:deathBody(deathOf(i)),schedule:{at:d,allowWhileIdle:true}})}}
+  if(PL_.list.length&&PL_.notif!==false){const [h,m]=(PL_.time||"20:30").split(":").map(Number);
+    for(let i=0;i<14;i++){const d=new Date(today);d.setDate(d.getDate()+i);d.setHours(h,m,0,0);if(d<=now)continue;
+      const dIso=iso(d),tom=isoOff(1,d),names=[],fasts=[];
+      PL_.list.forEach(p=>{const def=planDef(p.id);if(["daoud","mt","white"].includes(def.kind)){if(isFastDay(p,tom))fasts.push(L3(def.t))}else if(def.kind!=="week"||(!def.fri||d.getDay()===5))names.push(L3(def.t))});
+      if(names.length)list.push({id:650+i,title:"DJAMILLAH HAYAT · "+t("mPlan"),body:fmt(t("planTonight"),{l:names.join(", ")}),schedule:{at:d,allowWhileIdle:true}});
+      if(fasts.length){const e=new Date(d);e.setHours(21,30,0,0);if(e>now)list.push({id:670+i,title:"☾ "+t("mPlan"),body:fmt(t("fastTomorrow"),{p:fasts.join(", ")}),schedule:{at:e,allowWhileIdle:true}})}}}
+}
+// Notification du matin : un conseil différent chaque jour
+function morningNotifs(list,h,m){
+  const now=new Date(), tips=getTips();
+  for(let i=0;i<14;i++){const d=new Date(today);d.setDate(d.getDate()+i);d.setHours(h,m,0,0);if(d<=now)continue;
+    const x=tips[dayPick(tips.length,"tip",i)], body=String(x.islam||"").split(/(?<=[.!?])\s/)[0];
+    list.push({id:700+i,title:t("todayIs"),body,largeBody:x.islam,schedule:{at:d,allowWhileIdle:true}})}
+}
+
+// ---------- 3a. Qibla ----------
+const KAABA=[21.4225,39.8262];
+S.qb=S.qb||{};
+function qiblaBearing(lat,lon){const r=Math.PI/180,f1=lat*r,f2=KAABA[0]*r,dl=(KAABA[1]-lon)*r;
+  const y=Math.sin(dl)*Math.cos(f2),x=Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl);return (Math.atan2(y,x)/r+360)%360}
+function distKm(lat,lon){const r=Math.PI/180,dLat=(KAABA[0]-lat)*r,dLon=(KAABA[1]-lon)*r,a=Math.sin(dLat/2)**2+Math.cos(lat*r)*Math.cos(KAABA[0]*r)*Math.sin(dLon/2)**2;return Math.round(12742*Math.asin(Math.sqrt(a)))}
+const CARD8={fr:["nord","nord-est","est","sud-est","sud","sud-ouest","ouest","nord-ouest"],en:["north","north-east","east","south-east","south","south-west","west","north-west"],ar:["الشمال","الشمال الشرقي","الشرق","الجنوب الشرقي","الجنوب","الجنوب الغربي","الغرب","الشمال الغربي"]};
+function qbPos(){if(S.qb.lat!=null)return [S.qb.lat,S.qb.lon,S.qb.name||"GPS"];const c=(typeof cityNow==="function"?cityNow():["Conakry",9.5092,-13.7122]);return [c[1],c[2],c[0]]}
+function viewQibla(){
+  const [lat,lon,name]=qbPos(), b=Math.round(qiblaBearing(lat,lon)), c=(CARD8[S.lang]||CARD8.fr)[Math.round(b/45)%8];
+  const ticks=[...Array(72).keys()].map(i=>`<line x1="150" y1="${i%9===0?14:20}" x2="150" y2="28" stroke="${i%18===0?"var(--accent)":"var(--muted)"}" stroke-width="${i%9===0?2.4:1}" transform="rotate(${i*5} 150 150)"/>`).join("");
+  const lab=["N","E","S","O"].map((l,i)=>`<text x="150" y="48" text-anchor="middle" font-size="18" font-weight="800" fill="${i===0?"#C0473F":"var(--ink)"}" transform="rotate(${i*90} 150 150)">${S.lang==="en"&&l==="O"?"W":l}</text>`).join("");
+  return `<section class="hello"><h1>${t("mQibla")}</h1><p>${t("qbIntro")}</p></section>
+  <div class="card qb-card"><div class="qb-wrap"><div class="qb-fix">▼</div>
+   <svg id="qb-dial" viewBox="0 0 300 300" width="280" height="280" style="transform:rotate(0deg)"><circle cx="150" cy="150" r="140" fill="var(--surface)" stroke="var(--gold)" stroke-width="4"/>${ticks}${lab}
+    <g transform="rotate(${b} 150 150)"><line x1="150" y1="150" x2="150" y2="62" stroke="var(--gold)" stroke-width="6" stroke-linecap="round"/><rect x="136" y="40" width="28" height="28" rx="3" fill="#111"/><rect x="136" y="47" width="28" height="4" fill="#D9AE4E"/></g>
+    <circle cx="150" cy="150" r="9" fill="var(--accent)"/></svg></div>
+   <p class="qb-msg" id="qb-msg">${fmt(t("qbDir"),{d:b,c,k:distKm(lat,lon).toLocaleString(S.lang)})}</p>
+   <button class="btn" id="qb-start">🧭 ${t("qbStart")}</button><p class="note" style="margin:0">${t("qbCalib")}</p></div>
+  <div class="card"><span class="eyebrow">${t("qbLoc")} : ${esc(name)}</span><button class="btn ghost" id="qb-gps">📍 ${t("qbGps")}</button>
+   <label for="qb-city">${t("qbCity")}<select id="qb-city">${(typeof CITIES!=="undefined"?CITIES:[]).map(c=>`<option ${S.qb.lat==null&&c[0]===name?"selected":""}>${c[0]}</option>`).join("")}</select></label></div>`;
+}
+let qbHeading=null,qbListening=false,qbLastVib=0;
+function qbOnOrient(e){
+  let h=null;
+  if(typeof e.webkitCompassHeading==="number") h=e.webkitCompassHeading;
+  else if(e.absolute&&e.alpha!=null) h=360-e.alpha;
+  else if(e.alpha!=null&&e.type==="deviceorientationabsolute") h=360-e.alpha;
+  if(h==null) return;
+  const so=(screen.orientation&&screen.orientation.angle)||0; h=(h+so+360)%360; qbHeading=h;
+  const dial=document.getElementById("qb-dial"), msg=document.getElementById("qb-msg"); if(!dial) return;
+  dial.style.transform=`rotate(${-h}deg)`;
+  const [lat,lon]=qbPos(), b=qiblaBearing(lat,lon); let diff=((b-h+540)%360)-180;
+  const ok=Math.abs(diff)<5; dial.parentElement.classList.toggle("ok",ok);
+  msg.textContent=ok?"✓ "+t("qbFace"):fmt(t("qbTurn"),{d:Math.round(Math.abs(diff)),s:diff>0?t("qbRight"):t("qbLeft")});
+  if(ok&&Date.now()-qbLastVib>3000&&navigator.vibrate){try{navigator.vibrate(60)}catch(_){}qbLastVib=Date.now()}
+}
+async function qbStart(){
+  try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")throw 0}}catch(e){toast(t("qbNoSensor"));return}
+  if(!qbListening){qbListening=true;if("ondeviceorientationabsolute" in window)addEventListener("deviceorientationabsolute",qbOnOrient,true);else addEventListener("deviceorientation",qbOnOrient,true)}
+  setTimeout(()=>{if(qbHeading==null)toast(t("qbNoSensor"))},2500);
+  const b=document.getElementById("qb-start");if(b)b.hidden=true;
+}
+
+// ---------- 3b. Calendrier ----------
+function viewCal(){
+  const c=S.cal||(S.cal={y:today.getFullYear(),m:today.getMonth()}), first=new Date(c.y,c.m,1), days=new Date(c.y,c.m+1,0).getDate();
+  const loc=S.lang==="ar"?"ar":S.lang, lead=(first.getDay()+6)%7, cells=[], evs=[];
+  const fastPlans=PL_.list.filter(p=>["daoud","mt","white"].includes(planDef(p.id).kind));
+  const hs=hParts(first), he=hParts(new Date(c.y,c.m,days));
+  for(let i=0;i<lead;i++) cells.push(`<span class="cal-c empty"></span>`);
+  for(let d=1;d<=days;d++){
+    const dt=new Date(c.y,c.m,d),s=iso(dt),h=hParts(dt),ev=hEvent(dt),white=h.d>=13&&h.d<=15,fast=fastPlans.some(p=>s>=p.start&&isFastDay(p,s));
+    if(ev&&!(ev==="ev_laylat"&&evs.some(x=>x[1]===ev))&&!(ev==="ev_tashriq"&&evs.some(x=>x[1]===ev))) evs.push([d,ev]);
+    cells.push(`<span class="cal-c ${s===iso(today)?"today":""} ${ev?"ev":""} ${dt.getDay()===5?"fri":""}"><b>${arNum(d)}</b><small>${h.d===1?hMonth(h.m).split(" ")[0]:arNum(h.d)}</small>${white||fast?`<i class="${fast?"f":"w"}"></i>`:""}</span>`);
+  }
+  const wd=[...Array(7).keys()].map(i=>new Date(2024,0,1+i).toLocaleDateString(loc,{weekday:"narrow"}));
+  return `<section class="hello"><h1>${t("mCal")}</h1><p>${t("dCal")}</p></section>
+  <div class="card cal"><div class="cal-top"><button class="qr-chip" id="cal-prev">‹</button><div><b>${first.toLocaleDateString(loc,{month:"long",year:"numeric"})}</b><span>${hMonth(hs.m)}${hs.m!==he.m?" – "+hMonth(he.m):""} ${arNum(he.y)}</span></div><button class="qr-chip" id="cal-next">›</button></div>
+   <div class="cal-g">${wd.map(w=>`<span class="cal-h">${w}</span>`).join("")}${cells.join("")}</div>
+   <div class="cal-leg"><span><i class="w"></i>${t("calWhite")}</span>${fastPlans.length?`<span><i class="f"></i>${t("calFast")}</span>`:""}</div>
+   ${c.y!==today.getFullYear()||c.m!==today.getMonth()?`<button class="btn ghost" id="cal-today">${t("calToday")}</button>`:""}</div>
+  ${evs.length?`<div class="card"><h3>${t("calEvents")}</h3>${evs.map(([d,ev])=>`<div class="cal-ev"><b>${new Date(c.y,c.m,d).toLocaleDateString(loc,{weekday:"short",day:"numeric",month:"short"})}</b><span>${t(ev)} · ${hijriStr(new Date(c.y,c.m,d))}</span></div>`).join("")}</div>`:""}
+  <div class="card"><span class="eyebrow">${t("calAdj")}</span><div class="qr-chips">${[-2,-1,0,1,2].map(n=>`<button class="qr-chip ${S.hadj===n?"on":""}" data-hadj="${n}">${n>0?"+"+n:n}</button>`).join("")}</div><p class="note" style="margin:0">${t("calAdjHelp")}</p></div>`;
+}
+
+// ---------- Événements ----------
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-pladd],[data-plrm],[data-plpg],[data-plfast],[data-plsub],[data-plcnt],[data-plweek],[data-exa],[data-hadj],[data-sub-go],#pl-exam,#ex-done,#ex-back,#qb-start,#qb-gps,#cal-prev,#cal-next,#cal-today");
+  if(!el) return;
+  const d=el.dataset, card=el.closest("[data-plid]"), pid=card&&card.dataset.plid, p=PL_.list.find(x=>x.id===pid);
+  const rer=()=>{const sy=scrollY;render();scrollTo(0,sy)};
+  if(d.subGo){S.tab="more";S.sub=d.subGo;S.pl={v:"home"};save();render();scrollTo(0,0);return}
+  if(d.pladd){const def=planDef(d.pladd);PL_.list.push({id:def.id,start:iso(today),days:+d.days||def.def||30,base:def.kind==="pages"?Object.values(PL_.log.khatma||{}).reduce((a,b)=>a+(+b||0),0):0,k:0});save();toast(L3(def.t)+" ✓",true);rer();return}
+  if(d.plrm){if(S.pl.sure===d.plrm){PL_.list=PL_.list.filter(x=>x.id!==d.plrm);S.pl.sure=null;save()}else S.pl.sure=d.plrm;rer();return}
+  if(d.plpg&&p){const k=khatmaState(p),cur=+plLog(p.id)||0,nv=d.set?Math.max(cur,+d.plpg):Math.max(0,cur+(+d.plpg));plSet(p.id,nv);
+    const k2=khatmaState(p);if(k2.pos>=604){p.k=(p.k||0)+1;p.base=Object.values(PL_.log.khatma).reduce((a,b)=>a+(+b||0),0);p.start=iso(today);save();toast(t("plKhatma"),true);if(typeof addPts==="function")addPts(100)}
+    else if(nv>=k.per&&cur<k.per&&typeof addPts==="function")addPts(5);rer();return}
+  if(d.plfast&&p){plSet(p.id,d.plfast);if(d.plfast==="ok"&&typeof addPts==="function")addPts(10);rer();return}
+  if(d.plsub!==undefined&&p){const def=planDef(p.id),n=def.count||1,arr=Array.isArray(plLog(p.id))?[...plLog(p.id)]:Array(n).fill(false);arr[+d.plsub]=!arr[+d.plsub];plSet(p.id,arr);if(arr[+d.plsub]&&typeof addPts==="function")addPts(2);rer();return}
+  if(d.plcnt&&p){const n=(+plLog(p.id)||0)+1;plSet(p.id,n);const b=el.querySelector("b");if(b)b.textContent=fmt(t("plCount"),{n,g:planDef(p.id).goal});const bar=card.querySelector(".progress i");if(bar)bar.style.width=Math.min(100,n)+"%";if(n===planDef(p.id).goal){toast("✓ "+L3(planDef(p.id).t),true);if(typeof addPts==="function")addPts(5)}if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){};return}
+  if(d.plweek&&p){plSet(p.id,"ok");if(typeof addPts==="function")addPts(5);rer();return}
+  if(el.id==="pl-exam"){S.pl={v:"exam",ans:[]};save();render();scrollTo(0,0);return}
+  if(d.exa!==undefined){S.pl.ans=S.pl.ans||[];S.pl.ans[+d.exa]=+d.v;save();rer();return}
+  if(el.id==="ex-done"){const a=S.pl.ans||[];if(a.filter(x=>x!=null).length<EXAM.length)return;const s=Math.round(a.reduce((x,y)=>x+y,0)/(EXAM.length*3)*40)/2;
+    const prev=PL_.exams[PL_.exams.length-1];PL_.exams.push({d:iso(today),s,a:[...a]});if(PL_.exams.length>52)PL_.exams.shift();if((!prev||dayDiffD(prev.d,iso(today))>=7)&&typeof addPts==="function")addPts(20);
+    S.pl={v:"examres"};save();render();scrollTo(0,0);return}
+  if(el.id==="ex-back"){S.pl={v:"home"};save();render();scrollTo(0,0);return}
+  if(el.id==="qb-start"){qbStart();return}
+  if(el.id==="qb-gps"){if(!navigator.geolocation){toast(t("qbNoSensor"));return}
+    navigator.geolocation.getCurrentPosition(pos=>{S.qb={lat:pos.coords.latitude,lon:pos.coords.longitude,name:"GPS"};save();rer()},()=>toast("📍 ✗"),{enableHighAccuracy:false,timeout:15000,maximumAge:600000});return}
+  if(el.id==="cal-prev"||el.id==="cal-next"){const c=S.cal;c.m+=el.id==="cal-next"?1:-1;if(c.m<0){c.m=11;c.y--}if(c.m>11){c.m=0;c.y++}save();rer();return}
+  if(el.id==="cal-today"){S.cal={y:today.getFullYear(),m:today.getMonth()};save();rer();return}
+  if(d.hadj!==undefined){S.hadj=+d.hadj;save();rer();return}
+});
+document.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.dataset&&el.dataset.prep!==undefined){PL_.prep[el.dataset.prep]=el.checked;save();return}
+  if(el.id==="death-on"){S.death.on=el.checked;save();return}
+  if(el.id==="death-time"){S.death.time=el.value||"20:00";save();return}
+  if(el.id==="plan-notif"){PL_.notif=el.checked;save();return}
+  if(el.id==="qb-city"){S.qb={};S.city=el.value;save();const sy=scrollY;render();scrollTo(0,sy);return}
+});
+document.addEventListener("click",e=>{
+  if(S.sub!=="plan"||!S.pl||S.pl.v==="home") return;
+  if(!(e.target.closest&&e.target.closest("#back"))) return;
+  e.stopPropagation();e.preventDefault();planBack();
+},true);
+function planBack(){if(S.sub!=="plan"||!S.pl||S.pl.v==="home")return false;S.pl={v:"home"};save();render();scrollTo(0,0);return true}
+
+// Carte « Souviens-toi de la mort » sur l'écran Aujourd'hui
+const _renderIb=render;
+render=function(){
+  _renderIb();
+  if(!S.gender||S.tab!=="today"||S.sub) return;
+  const anchor=document.querySelector(".sch-dq")||document.querySelector(".screen .hello");
+  if(anchor&&!document.querySelector(".card.death")) anchor.insertAdjacentHTML("afterend",deathCard(false));
+};
+Object.assign(MOTIF,{
+ plan:`<rect x="22" y="16" width="36" height="48" rx="6" fill="${IC.cream}"/><path d="M29 30l4 4 8-9M29 44l4 4 8-9" stroke="${IC.bg}" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="44" y="30" width="8" height="3" rx="1.5" fill="${IC.gold}"/><rect x="44" y="45" width="8" height="3" rx="1.5" fill="${IC.gold}"/>`,
+ qibla:`<circle cx="40" cy="40" r="24" fill="none" stroke="${IC.cream}" stroke-width="3"/><path d="M40 18l6 22-6 22-6-22z" fill="${IC.gold}"/><rect x="34" y="34" width="12" height="12" rx="2" fill="#111"/><rect x="34" y="37" width="12" height="2" fill="${IC.gold}"/>`,
+ calendar:`<rect x="18" y="22" width="44" height="40" rx="6" fill="${IC.cream}"/><rect x="18" y="22" width="44" height="11" rx="5" fill="${IC.gold}"/><path d="M50 40a8 8 0 1 0 0 12 6.5 6.5 0 1 1 0-12z" fill="${IC.bg}"/><circle cx="29" cy="44" r="2.5" fill="${IC.bg}"/><circle cx="29" cy="53" r="2.5" fill="${IC.bg}"/><circle cx="38" cy="44" r="2.5" fill="${IC.bg}"/>`});
+document.head.insertAdjacentHTML("beforeend",`<style>
+.pl-bul{gap:10px}.pl-notes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl-note{border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:2px;background:var(--soft)}
+.pl-note b{font-family:var(--f-display);font-size:38px;line-height:1}.pl-note b small{font-size:16px;color:var(--muted)}.pl-note span{font-size:12.5px;color:var(--muted);font-weight:700}
+.pl-ment{margin:0;text-align:center;font-weight:800;color:var(--accent)}
+.pl-bar{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;align-items:center;font-size:13px}.pl-bar em{font-style:normal;font-weight:800;color:var(--gold);min-width:42px;text-align:end}
+.pl-card{gap:8px}.pl-head{display:flex;align-items:center;gap:10px}.pl-head b{flex:1;min-width:0;font-size:15px}
+.pl-ic{flex:none;width:36px;height:36px;border-radius:12px;background:var(--accent);color:#F3DFA2;display:grid;place-items:center;font-size:18px}
+.pl-rm{border:none;background:none;color:var(--muted);font-size:12px;text-decoration:underline;padding:4px}
+.pl-big{margin:0;font-weight:800;font-size:16px;color:var(--accent)}
+.pl-step{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pl-step span{flex:1;min-width:120px;font-size:13.5px}
+.pl-step button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;min-width:40px;height:40px;font-size:18px;font-weight:800}
+.pl-step button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-size:14px;padding:0 12px}.pl-step b{min-width:32px;text-align:center;font-size:20px}
+.pl-subs{display:flex;flex-wrap:wrap;gap:6px}.pl-sub{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;font-size:14px}
+.pl-sub.on{background:#2E9E6B;border-color:#2E9E6B;color:#fff}
+.pl-add{border-top:1px solid var(--line);padding:10px 0}.pl-add summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none}.pl-add summary::-webkit-details-marker{display:none}
+.pl-add p{font-size:14px;line-height:1.55;margin:8px 0}
+.pl-q{gap:8px}.pl-ans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pl-ans button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:9px 2px;font:inherit;font-size:12.5px;font-weight:700}
+.pl-ans button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pl-weak{border-top:1px solid var(--line);padding:8px 0}.pl-weak p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.card.death{border-color:#5B5B6B;border-width:1.5px;background:linear-gradient(180deg,var(--surface),rgba(91,91,107,.08))}.card.death .eyebrow{color:#5B5B6B}
+.card.death .verse{font-size:22px;text-align:center;margin:2px 0}.death-act{margin:0;font-size:14.5px}.death-act b{color:var(--accent)}
+.qb-card{align-items:center;text-align:center}.qb-wrap{position:relative;padding-top:20px}.qb-fix{position:absolute;top:0;left:50%;transform:translateX(-50%);color:var(--accent);font-size:20px}
+#qb-dial{transition:transform .15s linear;display:block}.qb-wrap.ok #qb-dial circle:first-child{stroke:#2E9E6B;stroke-width:8}.qb-wrap.ok .qb-fix{color:#2E9E6B}
+.qb-msg{font-weight:800;font-size:16px;color:var(--accent);margin:0}
+.cal{gap:8px}.cal-top{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:center}.cal-top div{display:flex;flex-direction:column}.cal-top b{font-size:18px;text-transform:capitalize}.cal-top span{font-size:13px;color:var(--gold);font-weight:700}
+.cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.cal-h{text-align:center;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase}
+.cal-c{position:relative;border-radius:10px;background:var(--soft);padding:5px 2px 7px;display:flex;flex-direction:column;align-items:center;line-height:1.15;min-height:46px}
+.cal-c b{font-size:15px}.cal-c small{font-size:10.5px;color:var(--gold);font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-c.empty{background:none}.cal-c.fri b{color:var(--accent)}.cal-c.today{background:var(--accent)}.cal-c.today b,.cal-c.today small{color:#fff}
+.cal-c.ev{box-shadow:inset 0 0 0 2px var(--gold)}.cal-c i,.cal-leg i{position:absolute;bottom:3px;width:6px;height:6px;border-radius:50%}.cal-c i.w,.cal-leg i.w{background:#9AA8A5}.cal-c i.f,.cal-leg i.f{background:#2E9E6B}
+.cal-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.cal-leg span{display:flex;align-items:center;gap:6px}.cal-leg i{position:static}
+.cal-ev{display:flex;flex-direction:column;border-top:1px solid var(--line);padding:7px 0;font-size:14px}.cal-ev b{text-transform:capitalize;color:var(--accent)}.cal-ev span{color:var(--muted);font-size:13px}
 </style>`);
 
 scheduleNotifications();
