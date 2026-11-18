@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.39";
+const APP_VERSION = "1.0.40";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -4839,7 +4839,7 @@ function viewLearn(){
   return `<section class="hello"><h1>${t("lnTitle")}</h1><p>${t("lnSub")}</p></section>
   <div class="card" style="padding-block:4px">
    ${hubRow("quran",t("qaidaRow"),t("qaidaRowD"),'data-open="qaida"')}
-   ${hubRow("quran",t("mQuran"),t("dQuran"),'data-open="quran"')}
+   ${hubRow("quran",t("memo"),t("memoSub"),'data-open="memo"')}
    ${hubRow("school",t("mSchool"),t("dSchool"),'data-sub="school"')}
    ${hubRow("spirit",t("audRow"),t("audRowD"),'data-tab="audio"')}
   </div>`;
@@ -4868,16 +4868,16 @@ function viewHome(){
 const _viewMoreNav=viewMore;
 viewMore=function(){
   if(S.sub) return _viewMoreNav();
-  const mine=["favorites","badges","reminders"].map(moreRow).join("");
-  const all=MORE.filter(m=>!["favorites","badges","reminders"].includes(m[0])).map(m=>moreRow(m[0])).join("")
-    +hubRow("quran",t("qaidaRow"),t("qaidaRowD"),'data-open="qaida"')+hubRow("advisor",t("advCard"),t("advCardD"),'data-tab="advisor"')
+  const mine=["favorites","badges"].map(moreRow).join("");
+  const all=MORE.filter(m=>!["favorites","badges","reminders","quran","feasts"].includes(m[0])).map(m=>moreRow(m[0])).join("")
+    +hubRow("quran",t("qaidaRow"),t("qaidaRowD"),'data-open="qaida"')+hubRow("quran",t("memo"),t("memoSub"),'data-open="memo"')+hubRow("advisor",t("advCard"),t("advCardD"),'data-tab="advisor"')
     +hubRow("family",t("famRow"),t("famRowD"),'data-tab="family"')+hubRow("spirit",t("audRow"),t("audRowD"),'data-tab="audio"');
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <input class="more-q" id="more-q" type="search" placeholder="🔎 ${t("moreSearch")}" autocomplete="off">
   <section class="more-sec" data-searchonly hidden><h2 class="more-h"><span>🔎</span>${t("moreAll")}</h2><div class="card" style="padding-block:4px">${all}</div></section>
   <section class="more-sec" data-mine><h2 class="more-h"><span>⭐</span>${t("moreMine")}</h2><div class="card" style="padding-block:4px">${mine}</div></section>
   <h2 class="more-h" data-mine style="margin-top:8px"><span>⚙️</span>${t("settingsT")}</h2>
-  <div data-mine>${textSizeHTML()}${typeof themeHTML==="function"?themeHTML():""}</div>
+  <div class="card" data-mine style="padding-block:4px">${moreRow("reminders")}</div><div data-mine>${textSizeHTML()}${typeof themeHTML==="function"?themeHTML():""}</div>
   <p class="note">${t("offline")}</p><p class="note" style="text-align:center">DJAMILLAH HAYAT ${APP_VERSION} · © AMOD GROUP</p>`;
 };
 document.addEventListener("input",e=>{
@@ -4890,14 +4890,14 @@ document.addEventListener("input",e=>{
 });
 
 var VIEWS={today:viewToday,learn:viewLearn,worship:viewWorship,home:viewHome,more:viewMore,
- spirit:viewWorship,advisor:()=>backTo("home")+viewAdvisor(),family:()=>backTo("home")+viewFamily(),challenges:viewChallenges,audio:viewAudio};
+ spirit:viewWorship,advisor:()=>backTo("home")+viewAdvisor().replace(/<button class="sos-pill"[^>]*>[\s\S]*?<\/button>/,""),family:()=>backTo("home")+viewFamily(),challenges:viewChallenges,audio:viewAudio};
 
 // ---------- Navigation : on retient l'espace d'origine pour que « Retour » y ramène ----------
 document.addEventListener("click",e=>{
   const s=e.target.closest&&e.target.closest("[data-sub]"); if(s&&!S.sub) S.subFrom=navTab();
   const bk=e.target.closest&&e.target.closest("#back"); if(bk&&S.sub){const from=S.subFrom||SUBTAB[S.sub]||"more";setTimeout(()=>{if(!S.sub){S.subFrom=null;if(S.tab!==from){S.tab=from;save();render();scrollTo(0,0)}}},0)}
   const o=e.target.closest&&e.target.closest("[data-open]");
-  if(o){e.preventDefault();S.subFrom=navTab();S.tab="more";S.sub="quran";S.qr={...(S.qr||{}),v:["qaida","livre"].includes(o.dataset.open)?o.dataset.open:"home"};save();render();scrollTo(0,0)}
+  if(o){e.preventDefault();S.subFrom=navTab();S.tab="more";S.sub="quran";S.qr={...(S.qr||{}),v:["qaida","livre","memo"].includes(o.dataset.open)?o.dataset.open:"home"};save();render();scrollTo(0,0)}
 },true);
 // Ancien onglet « Plus » qui ne contient plus les rubriques : rien à migrer, seuls les noms d'espaces changent
 if(!TABS.concat(Object.keys(VIEWS)).includes(S.tab)) S.tab="today";
@@ -4918,7 +4918,8 @@ function organizeToday(){
   q(".sos-pill")&&q(".sos-pill").remove();
   if(day&&hello) hello.after(day);
   const anchor=brief||day||hello;
-  if(anchor){const w=document.createElement("div");w.innerHTML=todayQuick();anchor.after(w.firstElementChild)}
+  // (pas de raccourcis : chaque fonction n'a qu'une seule place)
+  m.querySelectorAll('[data-goto="family"],[data-goto="spirit"]').forEach(x=>x.remove());
   // Conseils du jour : un seul bloc à onglets
   const arts=[...m.querySelectorAll(":scope > article.card")];
   if(arts.length>=3){
@@ -5279,7 +5280,7 @@ function lvMark(i,stars){const l=LVL[i],prev=lvDone(l);S.lv.d2[l.id]=Math.max(pr
 const _viewQuranLv=viewQuran;
 viewQuran=function(){const v=S.qr.v;
   if(["qaida","livre","qlesson","qquiz"].includes(v))return lvHome();if(v==="lvl")return lvLesson();if(v==="lvq")return lvQuiz();return _viewQuranLv()};
-quranHome=function(){
+quranHome=function(){if(typeof memoHome==="function")return memoHome();
   const d=LVL.filter(lvDone).length, ms=QORDER.filter(n=>memCount(n)>=QSURAH[n][3]).length;
   return `<section class="hello"><h1>${t("mQuran")}</h1><p>${t("qrIntro")}</p></section>
   <button class="qr-big" data-qr="qaida"><span class="qr-ic ar">ا ب ت</span><span><b>${lvA("مُعَلِّمُ الْقِرَاءَةِ")}</b><small>${fmt(t("lvSub"),{n:LVL.length})}</small><i class="progress"><i style="width:${d/LVL.length*100}%"></i></i><em>${d}/${LVL.length}</em></span></button>
@@ -5289,7 +5290,7 @@ quranHome=function(){
 };
 const _quranBackLv=quranBack;
 quranBack=function(){
-  if(S.sub==="quran"&&S.qr&&S.qr.v==="qaida"&&S.subFrom){voxStop();S.qr={...S.qr,v:"home"};S.tab=S.subFrom;S.subFrom=null;S.sub=null;save();render();scrollTo(0,0);return true}
+  if(S.sub==="quran"&&S.qr&&["qaida","memo"].includes(S.qr.v)&&S.subFrom){voxStop();S.qr={...S.qr,v:"home"};S.tab=S.subFrom;S.subFrom=null;S.sub=null;save();render();scrollTo(0,0);return true}
   if(S.sub==="quran"&&S.qr&&["lvl","lvq","studio"].includes(S.qr.v)){voxStop();S.qr={...S.qr,v:{lvl:"qaida",lvq:"lvl",studio:"qaida"}[S.qr.v]};save();render();scrollTo(0,0);return true}
   return _quranBackLv();
 };
@@ -5414,7 +5415,7 @@ document.addEventListener("change",e=>{
 const _prayerCardPh=prayerCardHTML;
 prayerCardHTML=function(){return _prayerCardPh().replace(/<\/div>\s*$/,`<button class="btn ghost ph-open" data-sub="horaires" style="width:100%;margin-top:6px">${t("phBtn")}${phAdjusted()?" · ✓ "+t("phAdj"):""}</button></div>`)};
 if(typeof SUBTAB!=="undefined") SUBTAB.horaires="worship";
-if(typeof viewWorship==="function"){const _vw=viewWorship;viewWorship=function(){return _vw().replace('<div class="qgrid g3">',`<div class="qgrid g3">${tile("calendar",t("phTile"),'data-sub="horaires"')}`)};VIEWS.worship=viewWorship;VIEWS.spirit=viewWorship}
+
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest('[data-sub="horaires"]');if(!b||S.sub)return;e.stopImmediatePropagation();S.subFrom=typeof navTab==="function"?navTab():"worship";S.tab="more";S.sub="horaires";save();render();scrollTo(0,0)},true);
 if(typeof MOTIF!=="undefined"&&!MOTIF.horaires&&MOTIF.calendar)MOTIF.horaires=MOTIF.calendar;
 document.head.insertAdjacentHTML("beforeend",`<style>
@@ -5425,6 +5426,38 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .ph-opt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:13.5px}.ph-opt label{display:flex!important;align-items:center;gap:6px;flex-direction:row!important;white-space:nowrap;font-weight:600;margin:0}.ph-opt input[type=checkbox]{width:20px!important;height:20px;margin:0;flex:none}.ph-opt span{color:var(--accent);font-weight:600}
 .ph-reset{margin-inline-start:auto;border:none;background:none;color:var(--rose);font:inherit;font-weight:700;font-size:13px}
 </style>`);
+
+// ===== Une seule place pour chaque fonction =====  © AMOD GROUP
+// 1. Audios : uniquement dans « Apprendre → Conférences audio »
+if(S.spPart==="audio") S.spPart="couple";
+const _viewSpiritU=viewSpirit;
+viewSpirit=function(){if(S.spPart==="audio")S.spPart="couple";return _viewSpiritU().replace(/<button data-sp="audio"[^>]*>[\s\S]*?<\/button>/,"")};
+// 2. Réglages des notifications (mort, plan) : uniquement dans « Plus → Rappels » ; le rappel de la mort du jour : uniquement sur l'Accueil
+const _viewPlanU=viewPlan;
+viewPlan=function(){
+  let h=_viewPlanU();
+  if(S.pl&&["exam","examres"].includes(S.pl.v)) return h;
+  h=h.replace(deathCard(true),"");
+  const m=h.match(/<div class="card"><label class="tw-step"><input type="checkbox" id="death-on"[\s\S]*?<\/div>\s*$/);
+  if(m)h=h.replace(m[0],"");
+  return h;
+};
+const _viewRemindersU=viewReminders;
+viewReminders=function(){
+  return _viewRemindersU()+`<div class="card"><h3>🕯 ${t("deathT")} · ${t("mPlan")}</h3><label class="tw-step"><input type="checkbox" id="death-on" ${S.death.on?"checked":""}><span>${t("deathNotif")}</span></label>
+   <label for="death-time" style="flex-direction:row;align-items:center;justify-content:space-between">${t("deathTime")}<input type="time" id="death-time" value="${S.death.time}" style="width:auto"></label>
+   <label class="tw-step"><input type="checkbox" id="plan-notif" ${PL_.notif?"checked":""}><span>${t("planNotif")}</span></label></div>`;
+};
+// 3. Fêtes islamiques : dans le Calendrier (une seule page pour les dates)
+const _viewCalU=viewCal;
+const _viewFeastsU=viewFeasts;
+viewFeasts=function(){S.sub="calendar";return viewCal()};
+viewCal=function(){return _viewCalU()+_viewFeastsU().replace(/<section class="hello">[\s\S]*?<\/section>/,`<h3 class="lx-h">🌙 ${t("mFeasts")}</h3><p class="note">${t("approx")}</p>`)};
+if(typeof SUBTAB!=="undefined") SUBTAB.feasts="worship";
+if(S.sub==="feasts") S.sub="calendar";
+const _viewWorshipU=viewWorship;
+viewWorship=function(){return _viewWorshipU().replace(/<button class="qtile" data-sub="feasts">[\s\S]*?<\/button>/,"")};
+VIEWS.worship=viewWorship;VIEWS.spirit=viewWorship;
 
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
