@@ -629,8 +629,8 @@ function render(){
   r.innerHTML=`<div class="app">
    <header class="top"><div class="brand">${LOGO}<div><b>DJAMILLAH HAYAT</b><small>${t("tag")}</small></div></div>
    <button class="chip-btn icon" id="reset" aria-label="${t("settings")}" title="${t("settings")}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5"/></svg></button></header>
-   <main class="screen">${withIllu(S.tab, ({today:viewToday,spirit:viewSpirit,advisor:viewAdvisor,family:viewFamily,challenges:viewChallenges,more:viewMore})[S.tab]())}</main></div>
-   <div class="tabs"><nav>${["today","spirit","advisor","family","more"].map(k=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${ICONS[k]}${t("t"+k[0].toUpperCase()+k.slice(1))}</button>`).join("")}</nav></div>`;
+   <main class="screen">${withIllu(S.tab, (VIEWS[S.tab]||viewToday)())}</main></div>
+   <div class="tabs"><nav>${TABS.map(k=>`<button data-tab="${k}" ${navTab()===k?'aria-current="page"':''}>${ICONS[k]}${t("t"+k[0].toUpperCase()+k.slice(1))}</button>`).join("")}</nav></div>`;
   bindApp();
 }
 
@@ -1683,7 +1683,8 @@ if(NATIVE){
     if(typeof tawbaBack==="function"&&tawbaBack()) return;
     if(typeof quranBack==="function"&&quranBack()) return;
     if(typeof planBack==="function"&&planBack()) return;
-    if(S.sub){S.sub=null;save();render();window.scrollTo(0,0)}
+    if(S.sub){S.sub=null;if(S.subFrom){S.tab=S.subFrom;S.subFrom=null}save();render();window.scrollTo(0,0)}
+    else if(S.gender&&["advisor","family","audio","challenges"].includes(S.tab)){S.tab=typeof navTab==="function"?navTab():"today";save();render();window.scrollTo(0,0)}
     else if(S.gender&&S.tab!=="today"){S.tab="today";save();render();window.scrollTo(0,0)}
     else PL.App.exitApp();
   });
@@ -4771,6 +4772,196 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .st-acts,.st-nav{display:flex;gap:8px;width:100%}.st-acts .btn,.st-nav .btn{flex:1}.st-rec{background:#B3473E;border-color:#B3473E}.st-rec.on{animation:stp 1s infinite}
 @keyframes stp{50%{opacity:.6}}
 </style>`);
+
+// ===== Organisation professionnelle : 5 espaces clairs (Aujourd'hui · Apprendre · Adoration · Foyer · Plus) =====  © AMOD GROUP
+const UI16={
+ fr:{tToday:"Accueil",tLearn:"Apprendre",tWorship:"Adoration",tHome:"Foyer",tMore:"Plus",
+  lnTitle:"Apprendre",lnSub:"Le Coran, la lecture de l'arabe et la science de l'islam, pas à pas.",
+  wsTitle:"Adoration",wsSub:"Prières, rappels, plan spirituel, qibla et calendrier : tout votre culte au même endroit.",
+  hmTitle:"Mon foyer",hmSub:"Le conseiller, votre couple et votre famille.",
+  advCard:"Parler au conseiller",advCardD:"Décrivez votre situation : vous recevez des conseils islamiques et pratiques",
+  secCouple2:"Mon couple",secFam2:"Ma famille",famRow:"Mes proches et anniversaires",famRowD:"Épouse, enfants, parents : dates, rappels et idées de cadeaux",
+  audRow:"Conférences audio",audRowD:"Cheikhs et coachs africains sur le mariage et la famille",
+  qaidaRow:"معلّم القراءة",qaidaRowD:"Apprendre à lire l'arabe, des lettres jusqu'au Coran",
+  quick:"Accès rapide",tipsDay:"Conseils du jour",tdIslam:"Islam",tdCouple:"Couple",tdKids:"Enfants",tdAfrica:"Afrique",tdSpirit:"Spirituel",
+  qQuran:"Coran",qQaida:"Lecture",qSchool:"École",qPlan:"Mon plan",qQibla:"Qibla",qRappels:"Rappels",qAdvisor:"Conseiller",qSos:"Dispute",
+  moreMine:"Mon espace",moreAll:"Résultats",settingsT:"Réglages"},
+ en:{tToday:"Home",tLearn:"Learn",tWorship:"Worship",tHome:"Family",tMore:"More",
+  lnTitle:"Learn",lnSub:"The Quran, reading Arabic and Islamic knowledge, step by step.",
+  wsTitle:"Worship",wsSub:"Prayers, reminders, spiritual plan, qibla and calendar, all in one place.",
+  hmTitle:"My home",hmSub:"The advisor, your marriage and your family.",
+  advCard:"Talk to the advisor",advCardD:"Describe your situation and receive Islamic and practical advice",
+  secCouple2:"My marriage",secFam2:"My family",famRow:"My loved ones and birthdays",famRowD:"Wife, children, parents: dates, reminders and gift ideas",
+  audRow:"Audio talks",audRowD:"Sheikhs and African coaches on marriage and family",
+  qaidaRow:"معلّم القراءة",qaidaRowD:"Learn to read Arabic, from letters to the Quran",
+  quick:"Quick access",tipsDay:"Today's advice",tdIslam:"Islam",tdCouple:"Couple",tdKids:"Children",tdAfrica:"Africa",tdSpirit:"Spiritual",
+  qQuran:"Quran",qQaida:"Reading",qSchool:"School",qPlan:"My plan",qQibla:"Qibla",qRappels:"Reminders",qAdvisor:"Advisor",qSos:"Dispute",
+  moreMine:"My space",moreAll:"Results",settingsT:"Settings"},
+ ar:{tToday:"الرئيسية",tLearn:"تعلّم",tWorship:"العبادة",tHome:"الأسرة",tMore:"المزيد",
+  lnTitle:"تعلّم",lnSub:"القرآن وقراءة العربية وعلوم الإسلام خطوة بخطوة.",
+  wsTitle:"العبادة",wsSub:"الصلوات والتذكيرات والخطة الإيمانية والقبلة والتقويم في مكان واحد.",
+  hmTitle:"بيتي",hmSub:"المستشار وحياتك الزوجية وأسرتك.",
+  advCard:"تحدّث مع المستشار",advCardD:"صِف حالتك لتحصل على نصائح شرعية وعملية",
+  secCouple2:"حياتي الزوجية",secFam2:"أسرتي",famRow:"أحبّتي ومناسباتهم",famRowD:"الزوجة والأولاد والوالدان: التواريخ والتذكيرات وأفكار الهدايا",
+  audRow:"محاضرات صوتية",audRowD:"مشايخ ومدرّبون أفارقة عن الزواج والأسرة",
+  qaidaRow:"معلّم القراءة",qaidaRowD:"تعلّم قراءة العربية من الحروف إلى القرآن",
+  quick:"وصول سريع",tipsDay:"نصائح اليوم",tdIslam:"الإسلام",tdCouple:"الزوجان",tdKids:"الأولاد",tdAfrica:"أفريقيا",tdSpirit:"روحانيات",
+  qQuran:"القرآن",qQaida:"القراءة",qSchool:"المدرسة",qPlan:"خطتي",qQibla:"القبلة",qRappels:"التذكيرات",qAdvisor:"المستشار",qSos:"خلاف",
+  moreMine:"مساحتي",moreAll:"النتائج",settingsT:"الإعدادات"}
+};
+Object.keys(UI16).forEach(l=>Object.assign(UI2[l],UI16[l]));
+
+ICONS.learn='<svg viewBox="0 0 24 24"><path d="M3 5.5c3-1.3 6-1.3 9 .5 3-1.8 6-1.8 9-.5V19c-3-1.3-6-1.3-9 .5-3-1.8-6-1.8-9-.5z"/><path d="M12 6v13.5"/></svg>';
+ICONS.worship=ICONS.spirit;
+ICONS.home='<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>';
+
+const TABS=["today","learn","worship","home","more"];
+// Rubrique -> espace de la barre du bas
+const SUBTAB={school:"learn",quran:"learn",
+ rappels:"worship",plan:"worship",tawba:"worship",qibla:"worship",calendar:"worship",feasts:"worship",
+ programs:"home",sos:"home",situations:"home",barometer:"home",challenges:"home",couple:"home",gratitude:"home",africa:"home",fiances:"home",directory:"home",
+ favorites:"more",badges:"more",reminders:"more"};
+function navTab(){
+  if(S.sub) return SUBTAB[S.sub]||S.subFrom||"more";
+  return ({spirit:"worship",advisor:"home",family:"home",challenges:"home",audio:"learn"})[S.tab]||S.tab;
+}
+const backTo=k=>`<button class="back" data-tab="${k}">‹ ${t("back")}</button>`;
+
+function hubRow(k,title,desc,attr,badge){
+  return `<button class="hub" ${attr} data-find="${esc((title+" "+desc).toLowerCase())}">${illu(k,48)}<span><b>${title}${badge?` <em class="rp-pill">${badge}</em>`:""}</b><span>${desc}</span></span><i aria-hidden="true">›</i></button>`;
+}
+function moreRow(k){const m=MORE.find(x=>x[0]===k);if(!m)return "";const miss=k==="rappels"&&typeof rpMissedCount==="function"?rpMissedCount():0;
+  return hubRow(k,t(m[1]),t(m[2]),`data-sub="${k}"`,miss)}
+function tile(k,label,attr,badge){return `<button class="qtile" ${attr}>${illu(k,40)}<span>${label}</span>${badge?`<em class="rp-pill">${badge}</em>`:""}</button>`}
+
+// ---------- Apprendre ----------
+function viewLearn(){
+  return `<section class="hello"><h1>${t("lnTitle")}</h1><p>${t("lnSub")}</p></section>
+  <div class="card" style="padding-block:4px">
+   ${hubRow("quran",t("qaidaRow"),t("qaidaRowD"),'data-open="qaida"')}
+   ${hubRow("quran",t("mQuran"),t("dQuran"),'data-open="quran"')}
+   ${hubRow("school",t("mSchool"),t("dSchool"),'data-sub="school"')}
+   ${hubRow("spirit",t("audRow"),t("audRowD"),'data-tab="audio"')}
+  </div>`;
+}
+function viewAudio(){return backTo("learn")+`<section class="hello"><h1>${t("audRow")}</h1><p>${t("audRowD")}</p></section>`+(typeof audioListHTML==="function"?audioListHTML():"")}
+
+// ---------- Adoration ----------
+function viewWorship(){
+  const miss=typeof rpMissedCount==="function"?rpMissedCount():0;
+  const grid=["rappels","plan","qibla","calendar","tawba","feasts"].map(k=>{const m=MORE.find(x=>x[0]===k);return m?tile(k,t(m[1]),`data-sub="${k}"`,k==="rappels"?miss:0):""}).join("");
+  const sp=viewSpirit().replace(/<section class="hello">[\s\S]*?<\/section>/,"");
+  return `<section class="hello"><h1>${t("wsTitle")}</h1><p>${t("wsSub")}</p></section><div class="qgrid g3">${grid}</div>${sp}`;
+}
+
+// ---------- Foyer ----------
+function viewHome(){
+  const couple=["programs","sos","situations","barometer","challenges","couple","gratitude"].map(moreRow).join("");
+  const fam=hubRow("family",t("famRow"),t("famRowD"),'data-tab="family"')+["africa","fiances","directory"].map(moreRow).join("");
+  return `<section class="hello"><h1>${t("hmTitle")}</h1><p>${t("hmSub")}</p></section>
+  <button class="adv-card" data-tab="advisor">${illu("advisor",56)}<span><b>${t("advCard")}</b><span>${t("advCardD")}</span></span><i aria-hidden="true">›</i></button>
+  <section class="more-sec"><h2 class="more-h"><span>💞</span>${t("secCouple2")}</h2><div class="card" style="padding-block:4px">${couple}</div></section>
+  <section class="more-sec"><h2 class="more-h"><span>👨‍👩‍👧</span>${t("secFam2")}</h2><div class="card" style="padding-block:4px">${fam}</div></section>`;
+}
+
+// ---------- Plus : mon espace, réglages, recherche dans toute l'application ----------
+const _viewMoreNav=viewMore;
+viewMore=function(){
+  if(S.sub) return _viewMoreNav();
+  const mine=["favorites","badges","reminders"].map(moreRow).join("");
+  const all=MORE.filter(m=>!["favorites","badges","reminders"].includes(m[0])).map(m=>moreRow(m[0])).join("")
+    +hubRow("quran",t("qaidaRow"),t("qaidaRowD"),'data-open="qaida"')+hubRow("advisor",t("advCard"),t("advCardD"),'data-tab="advisor"')
+    +hubRow("family",t("famRow"),t("famRowD"),'data-tab="family"')+hubRow("spirit",t("audRow"),t("audRowD"),'data-tab="audio"');
+  return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
+  <input class="more-q" id="more-q" type="search" placeholder="🔎 ${t("moreSearch")}" autocomplete="off">
+  <section class="more-sec" data-searchonly hidden><h2 class="more-h"><span>🔎</span>${t("moreAll")}</h2><div class="card" style="padding-block:4px">${all}</div></section>
+  <section class="more-sec" data-mine><h2 class="more-h"><span>⭐</span>${t("moreMine")}</h2><div class="card" style="padding-block:4px">${mine}</div></section>
+  <h2 class="more-h" data-mine style="margin-top:8px"><span>⚙️</span>${t("settingsT")}</h2>
+  <div data-mine>${textSizeHTML()}${typeof themeHTML==="function"?themeHTML():""}</div>
+  <p class="note">${t("offline")}</p><p class="note" style="text-align:center">DJAMILLAH HAYAT ${APP_VERSION} · © AMOD GROUP</p>`;
+};
+document.addEventListener("input",e=>{
+  if(e.target.id!=="more-q") return;
+  const q=e.target.value.trim().toLowerCase();
+  const so=document.querySelector("[data-searchonly]"); if(!so) return;
+  so.querySelectorAll(".hub").forEach(b=>b.hidden=!q||!b.dataset.find.includes(q));
+  so.hidden=!q||![...so.querySelectorAll(".hub")].some(b=>!b.hidden);
+  document.querySelectorAll("[data-mine]").forEach(s=>{s.hidden=!!q;s.querySelectorAll&&s.querySelectorAll(".hub").forEach(b=>b.hidden=false)});
+});
+
+var VIEWS={today:viewToday,learn:viewLearn,worship:viewWorship,home:viewHome,more:viewMore,
+ spirit:viewWorship,advisor:()=>backTo("home")+viewAdvisor(),family:()=>backTo("home")+viewFamily(),challenges:viewChallenges,audio:viewAudio};
+
+// ---------- Navigation : on retient l'espace d'origine pour que « Retour » y ramène ----------
+document.addEventListener("click",e=>{
+  const s=e.target.closest&&e.target.closest("[data-sub]"); if(s&&!S.sub) S.subFrom=navTab();
+  const bk=e.target.closest&&e.target.closest("#back"); if(bk&&S.sub){S.tab=S.subFrom||SUBTAB[S.sub]||"more";S.subFrom=null}
+  const o=e.target.closest&&e.target.closest("[data-open]");
+  if(o){e.preventDefault();S.subFrom=navTab();S.tab="more";S.sub="quran";S.qr={...(S.qr||{}),v:o.dataset.open==="qaida"?"qaida":"home"};save();render();scrollTo(0,0)}
+},true);
+// Ancien onglet « Plus » qui ne contient plus les rubriques : rien à migrer, seuls les noms d'espaces changent
+if(!TABS.concat(Object.keys(VIEWS)).includes(S.tab)) S.tab="today";
+
+// ---------- Accueil : clair et court ----------
+function todayQuick(){
+  const miss=typeof rpMissedCount==="function"?rpMissedCount():0;
+  return `<section class="tq"><h2 class="more-h"><span>⚡</span>${t("quick")}</h2><div class="qgrid g4">
+   ${tile("quran",t("qQuran"),'data-open="quran"')}${tile("quran",t("qQaida"),'data-open="qaida"')}${tile("school",t("qSchool"),'data-sub="school"')}${tile("plan",t("qPlan"),'data-sub="plan"')}
+   ${tile("qibla",t("qQibla"),'data-sub="qibla"')}${tile("rappels",t("qRappels"),'data-sub="rappels"',miss)}${tile("advisor",t("qAdvisor"),'data-tab="advisor"')}${tile("sos",t("qSos"),'data-sub="sos"')}
+  </div></section>`;
+}
+function organizeToday(){
+  const m=document.querySelector("main.screen"); if(!m||S.sub||S.tab!=="today") return;
+  const q=sel=>m.querySelector(":scope > "+sel);
+  const hello=q(".hello"), brief=q(".brief"), day=q(".daybar");
+  q(".prayer-mini")&&q(".prayer-mini").remove();
+  q(".sos-pill")&&q(".sos-pill").remove();
+  if(day&&hello) hello.after(day);
+  const anchor=brief||day||hello;
+  if(anchor){const w=document.createElement("div");w.innerHTML=todayQuick();anchor.after(w.firstElementChild)}
+  // Conseils du jour : un seul bloc à onglets
+  const arts=[...m.querySelectorAll(":scope > article.card")];
+  if(arts.length>=3){
+    const pro=arts.find(a=>a.classList.contains("proverb")), rest=arts.filter(a=>a!==pro);
+    const sp=rest.find(a=>a.querySelector(".tag.spirit"));
+    const others=rest.filter(a=>a!==sp);
+    const kinds=[["islam",others[0],"tdIslam"],["couple",others[1],"tdCouple"],["kids",others[2],"tdKids"],["africa",pro,"tdAfrica"],["spirit",sp,"tdSpirit"]].filter(x=>x[1]);
+    const cur=kinds.some(k=>k[0]===S.tdTab)?S.tdTab:kinds[0][0];
+    const box=document.createElement("section"); box.className="tdbox";
+    box.innerHTML=`<h2 class="more-h"><span>✦</span>${t("tipsDay")}</h2><div class="seg tdseg" role="tablist">${kinds.map(([k,,l])=>`<button type="button" data-td="${k}" aria-pressed="${k===cur}">${t(l)}</button>`).join("")}</div>`;
+    arts[0].before(box);
+    kinds.forEach(([k,a])=>{a.dataset.tdk=k;a.hidden=k!==cur;box.appendChild(a)});
+  }
+}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-td]");if(!b)return;
+  S.tdTab=b.dataset.td;save();const box=b.closest(".tdbox");
+  box.querySelectorAll("[data-td]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  box.querySelectorAll("[data-tdk]").forEach(a=>a.hidden=a.dataset.tdk!==S.tdTab)});
+
+const _renderNav=render;
+render=function(){
+  _renderNav();
+  // surligner le bon espace dans la barre du bas
+  const nt=navTab();
+  document.querySelectorAll(".tabs [data-tab]").forEach(b=>{if(b.dataset.tab===nt)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  // boutons ajoutés dans les vues (Retour, tuiles) : même comportement que la barre du bas
+  organizeToday();
+  document.querySelectorAll("main [data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.sub=null;save();render();window.scrollTo(0,0)});
+  document.querySelectorAll(".tq [data-sub]").forEach(b=>b.onclick=()=>{S.tab="more";S.sub=b.dataset.sub;save();render();window.scrollTo(0,0)});
+};
+
+(function(){const st=document.createElement("style");st.textContent=`
+.qgrid{display:grid;gap:10px;margin:4px 0 18px}.qgrid.g4{grid-template-columns:repeat(4,1fr)}.qgrid.g3{grid-template-columns:repeat(3,1fr)}
+.qtile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px 10px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;line-height:1.2;text-align:center}
+.qtile:active{transform:scale(.97)}.qtile .rp-pill{position:absolute;top:6px;inset-inline-end:6px}
+.qgrid.g3 .qtile{font-size:13.5px;padding:14px 6px 12px}
+.adv-card{display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin:0 0 18px;border:none;border-radius:22px;background:linear-gradient(135deg,#0B5247,#11705F);color:#F4EEE2;text-align:start;font:inherit;cursor:pointer;box-shadow:0 10px 26px rgba(11,82,71,.25)}
+.adv-card b{display:block;font-size:17px}.adv-card span span{font-size:13.5px;opacity:.85}.adv-card i{margin-inline-start:auto;font-style:normal;font-size:22px;opacity:.8}
+.tdbox{margin:6px 0 16px}.tdseg{display:flex;overflow-x:auto;gap:6px;margin:0 0 12px;scrollbar-width:none}.tdseg::-webkit-scrollbar{display:none}
+.tdseg button{flex:0 0 auto;white-space:nowrap}
+.tq{margin:2px 0 6px}
+@media (max-width:360px){.qgrid.g4{grid-template-columns:repeat(4,1fr);gap:6px}.qtile{font-size:11px}}
+`;document.head.appendChild(st)})();
 
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
