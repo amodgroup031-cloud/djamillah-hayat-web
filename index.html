@@ -1483,6 +1483,7 @@ function bindBlock3(){
   const bqs=$("#bq-save"); if(bqs) bqs.onclick=()=>{const d=S.baroDraft;if(!d||!d.a||!d.b||!d.c)return;S.baro=S.baro||{};S.baro[weekKey(today)]=d;S.baroDraft=null;save();render()};
 }
 
+const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36, 52, 9, "وَعَدَ"], [36, 52, 11, "وَصَدَقَ"], [36, 78, 1, "وَضَرَبَ"], [36, 80, 2, "جَعَلَ"], [67, 23, 5, "وَجَعَلَ"]], "L05": [[36, 3, 2, "لَمِنَ"], [36, 11, 3, "مَنِ"], [36, 27, 6, "مِنَ"], [36, 61, 1, "وَأَنِ"], [67, 1, 3, "بِيَدِهِ"], [67, 13, 3, "أَوِ"], [67, 20, 11, "إِنِ"], [78, 2, 1, "عَنِ"]], "L06": [[36, 45, 3, "لَهُمُ"], [36, 47, 6, "رَزَقَكُمُ"], [36, 51, 1, "وَنُفِخَ"], [36, 69, 8, "هُوَ"], [36, 79, 7, "وَهُوَ"], [67, 15, 4, "لَكُمُ"], [67, 16, 7, "بِكُمُ"], [78, 19, 1, "وَفُتِحَتِ"]], "L08": [[1, 7, 8, "وَلَا"], [36, 7, 7, "لَا"], [36, 12, 6, "مَا"], [36, 17, 1, "وَمَا"], [36, 20, 7, "قَالَ"], [36, 27, 1, "بِمَا"], [36, 29, 6, "فَإِذَا"], [36, 35, 7, "أَفَلَا"]], "L09": [[36, 26, 1, "قِيلَ"], [36, 34, 2, "فِيهَا"], [36, 43, 5, "صَرِيخَ"], [67, 17, 12, "نَذِيرِ"], [67, 18, 8, "نَكِيرِ"], [67, 27, 8, "وَقِيلَ"], [67, 28, 11, "يُجِيرُ"], [78, 3, 3, "فِيهِ"]], "L10": [[36, 48, 1, "وَيَقُولُونَ"], [36, 63, 5, "تُوعَدُونَ"], [36, 74, 3, "دُونِ"], [36, 80, 11, "تُوقِدُونَ"], [36, 82, 7, "يَقُولَ"], [36, 82, 10, "فَيَكُونُ"], [36, 83, 4, "مَلَكُوتُ"], [67, 7, 8, "تَفُورُ"]], "L11": [[1, 4, 2, "يَوْمِ"], [1, 5, 2, "نَعْبُدُ"], [1, 5, 4, "نَسْتَعِينُ"], [1, 7, 3, "أَنْعَمْتَ"], [1, 7, 4, "عَلَيْهِمْ"], [1, 7, 5, "غَيْرِ"], [36, 6, 6, "فَهُمْ"], [36, 7, 1, "لَقَدْ"]], "L12": [[36, 23, 4, "ءَالِهَةً"], [36, 62, 5, "كَثِيرًا"], [78, 16, 2, "أَلْفَافًا"], [78, 20, 4, "سَرَابًا"], [78, 24, 6, "شَرَابًا"], [78, 26, 2, "وِفَاقًا"], [78, 30, 5, "عَذَابًا"], [78, 31, 3, "مَفَازًا"]], "L13": [[36, 11, 12, "كَرِيمٍ"], [36, 79, 9, "خَلْقٍ"], [67, 20, 15, "غُرُورٍ"], [67, 21, 12, "وَنُفُورٍ"], [67, 28, 14, "عَذَابٍ"], [80, 40, 2, "يَوْمَئِذٍ"], [83, 5, 1, "لِيَوْمٍ"], [83, 12, 6, "مُعْتَدٍ"]], "L14": [[36, 18, 11, "عَذَابٌ"], [36, 79, 10, "عَلِيمٌ"], [67, 1, 9, "قَدِيرٌ"], [67, 19, 15, "بَصِيرٌ"], [79, 8, 3, "وَاجِفَةٌ"], [80, 41, 2, "قَتَرَةٌ"], [84, 6, 4, "كَادِحٌ"], [84, 25, 7, "أَجْرٌ"]], "L15": [[1, 2, 2, "لِلَّهِ"], [1, 2, 3, "رَبِّ"], [1, 5, 1, "إِيَّاكَ"], [1, 5, 3, "وَإِيَّاكَ"], [36, 3, 1, "إِنَّكَ"], [36, 7, 2, "حَقَّ"], [36, 8, 1, "إِنَّا"], [36, 8, 10, "مُّقْمَحُونَ"]], "L16": [[1, 1, 2, "ٱللَّهِ"], [1, 1, 4, "ٱلرَّحِيمِ"], [1, 4, 3, "ٱلدِّينِ"], [36, 11, 5, "ٱلذِّكْرَ"], [36, 37, 6, "ٱلنَّهَارَ"], [36, 40, 2, "ٱلشَّمْسُ"], [36, 40, 11, "ٱلنَّهَارِ"], [36, 47, 7, "ٱللَّهُ"]], "L17": [[1, 2, 1, "ٱلْحَمْدُ"], [1, 6, 3, "ٱلْمُسْتَقِيمَ"], [1, 7, 6, "ٱلْمَغْضُوبِ"], [36, 2, 2, "ٱلْحَكِيمِ"], [36, 3, 3, "ٱلْمُرْسَلِينَ"], [36, 5, 2, "ٱلْعَزِيزِ"], [36, 7, 3, "ٱلْقَوْلُ"], [36, 8, 8, "ٱلْأَذْقَانِ"]], "L18": [[1, 1, 2, "ٱللَّهِ"], [1, 1, 3, "ٱلرَّحْمَٰنِ"], [1, 2, 2, "لِلَّهِ"], [36, 48, 3, "هَٰذَا"], [36, 38, 5, "ذَٰلِكَ"], [1, 2, 4, "ٱلْعَٰلَمِينَ"], [1, 4, 1, "مَٰلِكِ"]], "L19v": [[112, 1], [112, 2], [112, 3], [112, 4], [108, 1], [103, 1], [114, 1], [113, 1]]};
 
 // =====================================================================
 // APPLICATION ANDROID : analyse hors ligne en 3 langues, voix, micro,
@@ -3813,7 +3814,8 @@ Object.keys(UI12).forEach(l=>Object.assign(UI2[l],{
 // ---------- Vues du professeur ----------
 function qaidaLesson(){
   const l=QAIDA.find(x=>x.id===S.qr.ql), i=QAIDA.indexOf(l), it=l.items(), au=LECON_AUDIO[l.id];
-  const tile=(x,k,pre)=>`<button class="qa-tile ${au?"":"mute"}" data-lx="${pre}${k}"><span class="ar">${x.show}</span><small>${trl(x.tr)}${x.name?" · <span class='ar'>"+x.name+"</span>":""}</small></button>`;
+  const tile=(x,k,pre)=>`<button class="qa-tile ${au?"":"mute"} ${isHuman(x)?"human":""}" data-lx="${pre}${k}">${isHuman(x)?'<i class="hm" title="voix humaine">👤</i>':""}<span class="ar">${x.show}</span><small>${trl(x.tr)}${x.name?" · <span class='ar'>"+x.name+"</span>":""}</small></button>`;
+  (l.needs||[]).forEach(n=>{if(!QCACHE[n])loadSurah(n).then(()=>{if(S.qr.v==="qlesson"){const sy=scrollY;render();scrollTo(0,sy)}}).catch(()=>{})});
   const exv=l.ex, d=QCACHE[exv[0]]; if(!d) loadSurah(exv[0]).then(()=>{if(S.qr.v==="qlesson"){const sy=scrollY;render();scrollTo(0,sy)}}).catch(()=>{});
   const surahBlock=l.surah&&QCACHE[l.surah]?QCACHE[l.surah].ar.map((v,k)=>`<div class="card lx-ex"><div class="qr-line"><p class="ar qr-txt">${v}</p><span class="qr-num">${String(k+1).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x])}</span></div><button class="btn ghost" data-lex="${l.surah}:${k+1}">▶ ${t("playV")}</button></div>`).join(""):"";
   return `<section class="hello"><span class="eyebrow">${arW(t("qaida").split(" · ")[0])} · ${fmt(t("lessonN"),{n:i+1})}</span><h1>${arW(L3(l.t))}</h1></section>
@@ -3881,8 +3883,52 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .lx-h{margin:4px 2px 0;font-size:18px}
 .lx-prompt{font-family:var(--f-verse);font-size:56px;color:var(--accent);line-height:1.6;padding:4px 18px;border:2px solid var(--gold);border-radius:20px;min-width:120px}
 .lx-ex{gap:8px}
+.qa-tile{position:relative}.qa-tile .hm{position:absolute;top:3px;inset-inline-start:5px;font-style:normal;font-size:11px;opacity:.75}.qa-tile.human{border-color:rgba(46,158,107,.55)}
 .ar-in{font-family:var(--f-ar);letter-spacing:0!important;text-transform:none!important;font-weight:inherit}
 </style>`);
+
+// ---------- Vraies voix humaines dans les leçons ----------
+// Mots du Coran : récitation mot à mot (voix humaine) ; leçon 19 : versets par Al-Husary (Mou'allim)
+const TR_C={"ء":"ʾ","أ":"ʾ","إ":"ʾ","ؤ":"ʾ","ئ":"ʾ","آ":"ʾâ","ب":"b","ت":"t","ة":"t","ث":"th","ج":"dj","ح":"ḥ","خ":"kh","د":"d","ذ":"dh","ر":"r","ز":"z","س":"s","ش":"ch","ص":"ṣ","ض":"ḍ","ط":"ṭ","ظ":"ẓ","ع":"'","غ":"gh","ف":"f","ق":"q","ك":"k","ل":"l","م":"m","ن":"n","ه":"h","و":"w","ي":"y","ى":"","ا":""};
+function trlAuto(tok){
+  const p=[];for(const c of tok.replace(/﻿/g,"")){if(/[ء-يٱ]/.test(c))p.push([c,""]);else if(p.length)p[p.length-1][1]+=c}
+  let o="",sun=false;
+  const lengthen=()=>{if(o.endsWith("ou"))o=o.slice(0,-2)+"oû";else if(o.endsWith("a"))o=o.slice(0,-1)+"â";else if(o.endsWith("i"))o=o.slice(0,-1)+"î"};
+  p.forEach(([c,m],i)=>{
+    if(c==="ٱ"){o+=i===0?"a":"";return}
+    if(c==="ل"&&i===1&&p[0][0]==="ٱ"){if(!m){const nx=p[2]&&TR_C[p[2][0]];o+=(nx||"l")+"-";sun=true}else o+="l-";return}
+    if(!m){if(c==="ا"&&/an$/.test(o))return;if("اوىي".includes(c)){lengthen();return}}
+    let cs=TR_C[c]??"";
+    if(m.includes("ّ")&&!sun) cs=cs+cs;
+    sun=false;
+    let v="";
+    if(m.includes("َ"))v="a";else if(m.includes("ِ"))v="i";else if(m.includes("ُ"))v="ou";
+    else if(m.includes("ً"))v="an";else if(m.includes("ٍ"))v="in";else if(m.includes("ٌ"))v="oun";
+    if(m.includes("ٰ"))v="â";
+    o+=cs+v;
+  });
+  return o.replace(/^ʾ/,"").replace(/ʾ/g,"'");
+}
+if(typeof WBW!=="undefined"){
+  Object.entries(WBW).forEach(([L,list])=>{
+    const l=QAIDA.find(x=>x.id===(L.endsWith("v")?L.slice(0,-1):L)); if(!l) return;
+    if(L.endsWith("v")){l.items=()=>list.map(([s,a])=>({show:(QCACHE[s]&&QCACHE[s].ar[a-1])||"…",tr:`${QSURAH[s]?QSURAH[s][1]:s} · ${a}`,vref:[s,a]}));l.quiz="none";l.wide=1;l.needs=[...new Set(list.map(x=>x[0]))];return}
+    const words=list.map(([n,a,w,tk])=>({show:tk.replace(/﻿/g,""),tr:trlAuto(tk),ref:[n,a,w]}));
+    if(["L15","L16","L17","L18"].includes(L)){l.items=()=>words;l.words=null}else l.words=words;
+  });
+}
+const pad3w=x=>String(x).padStart(3,"0");
+function wbwUrl(r){return `voix/wbw/${pad3w(r[0])}_${pad3w(r[1])}_${pad3w(r[2])}.mp3`}
+function wbwOnline(r){return `https://audio.qurancdn.com/wbw/${pad3w(r[0])}_${pad3w(r[1])}_${pad3w(r[2])}.mp3`}
+var isHuman=it=>!!(it.ref||it.vref||(typeof VOX!=="undefined"&&VOX[voxKey("ar",it.name||it.show)]==="h"));
+// Lecture d'une case : voix humaine d'abord
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-lx]"); if(!el||S.sub!=="quran") return;
+  const l=QAIDA.find(x=>x.id===S.qr.ql); if(!l) return;
+  const k=el.dataset.lx, it=k[0]==="w"?(l.words||[])[+k.slice(1)]:l.items()[+k.slice(1)]; if(!it) return;
+  if(it.ref){e.stopImmediatePropagation();lxPlay(wbwUrl(it.ref),wbwOnline(it.ref),el);return}
+  if(it.vref){e.stopImmediatePropagation();const [s,a]=it.vref;lxPlay(`https://everyayah.com/data/Husary_Muallim_128kbps/${pad3w(s)}${pad3w(a)}.mp3`,null,el);return}
+},true);
 
 // ---------- Rappel de la mort, plans spirituels, examen : contenus ----------
 // Chaque rappel : verset ou hadith, texte qui fait réfléchir, action concrète ; l'espoir est rappelé à la fin.
@@ -4574,6 +4620,156 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .rp{gap:6px}.rp.missed{border-color:#C0473F;border-width:1.5px}.rp.missed small{color:#C0473F;font-weight:800}.rp.done small{color:#2E9E6B;font-weight:800}
 .rp-top{display:flex;gap:10px;align-items:center}.rp-t{display:flex;flex-direction:column}.rp-t small{font-size:12.5px;color:var(--muted)}.rp-b{margin:0;font-size:14.5px;line-height:1.55}
 .rp-day{text-transform:capitalize}
+</style>`);
+
+// ---------- Studio d'enregistrement : la voix d'une vraie personne (oustaz) ----------
+// L'oustaz enregistre chaque case dans l'application. Ses enregistrements remplacent aussitôt la voix de
+// synthèse sur ce téléphone, et peuvent être envoyés à AMOD GROUP pour être intégrés pour tout le monde.
+const UI15={
+ fr:{stTitle:"Studio de l'oustaz",stBtn:"🎙 Studio d'enregistrement de l'oustaz",stIntro:"Un oustaz qui maîtrise le tajwîd enregistre ici, case par case, les lettres, les syllabes, les invocations et les textes. Sa vraie voix remplace aussitôt la voix de synthèse. Envoyez ensuite les enregistrements à AMOD GROUP pour qu'ils soient ajoutés pour tous les utilisateurs.",
+  stName:"Nom de l'oustaz (affiché dans l'application)",stCat1:"Lettres et syllabes",stCat2:"Invocations et textes arabes",stCat3:"Textes en français",stDone:"{d} / {n} enregistrés",stRec:"● Enregistrer",stStop:"■ Arrêter",stPlay:"▶ Écouter",stNext:"Suivant ›",stPrev:"‹ Précédent",stRedo:"Recommencer",
+  stTip:"Touchez « Enregistrer », lisez la case une seule fois clairement, puis « Arrêter ». Écoutez : si ce n'est pas parfait, recommencez.",stMicNo:"Le micro n'est pas accessible. Autorisez le micro pour DJAMILLAH HAYAT dans les réglages du téléphone.",
+  stSend:"Envoyer les enregistrements à AMOD GROUP",stSendSub:"Un fichier .zip est créé : envoyez-le par WhatsApp. Ces voix seront intégrées dans la prochaine version pour tout le monde.",stNone:"Aucun enregistrement pour l'instant.",stSaved:"Enregistré ✓",stHuman:"Voix humaine"},
+ en:{stTitle:"Teacher's studio",stBtn:"🎙 Teacher's recording studio",stIntro:"A teacher who masters tajwid records here, tile by tile, the letters, syllables, supplications and texts. The real voice immediately replaces the synthetic voice. Then send the recordings to AMOD GROUP so they are added for all users.",
+  stName:"Teacher's name (shown in the app)",stCat1:"Letters and syllables",stCat2:"Arabic supplications and texts",stCat3:"French texts",stDone:"{d} / {n} recorded",stRec:"● Record",stStop:"■ Stop",stPlay:"▶ Listen",stNext:"Next ›",stPrev:"‹ Previous",stRedo:"Redo",
+  stTip:"Tap “Record”, read the tile once clearly, then “Stop”. Listen: if it is not perfect, record again.",stMicNo:"The microphone is not accessible. Allow the microphone for DJAMILLAH HAYAT in the phone settings.",
+  stSend:"Send the recordings to AMOD GROUP",stSendSub:"A .zip file is created: send it by WhatsApp. These voices will be added in the next version for everyone.",stNone:"No recordings yet.",stSaved:"Saved ✓",stHuman:"Human voice"},
+ ar:{stTitle:"استوديو الأستاذ",stBtn:"🎙 استوديو تسجيل الأستاذ",stIntro:"يسجّل هنا أستاذ متقن للتجويد، خانةً خانة، الحروف والمقاطع والأدعية والنصوص. فيحلّ صوته الحقيقي محلّ الصوت الاصطناعي فوراً، ثم تُرسل التسجيلات إلى AMOD GROUP لتُضاف لجميع المستخدمين.",
+  stName:"اسم الأستاذ (يظهر في التطبيق)",stCat1:"الحروف والمقاطع",stCat2:"الأدعية والنصوص العربية",stCat3:"النصوص الفرنسية",stDone:"سُجّل {d} من {n}",stRec:"● سجّل",stStop:"■ أوقف",stPlay:"▶ استمع",stNext:"التالي ›",stPrev:"‹ السابق",stRedo:"أعد",
+  stTip:"المس «سجّل» واقرأ الخانة مرة واحدة بوضوح ثم «أوقف». استمع، فإن لم تكن متقنة فأعد التسجيل.",stMicNo:"الميكروفون غير متاح. اسمح لتطبيق جميلة حياة باستخدامه من إعدادات الهاتف.",
+  stSend:"أرسل التسجيلات إلى AMOD GROUP",stSendSub:"يُنشأ ملف ‎.zip‎ فأرسله عبر واتساب، وستُضاف هذه الأصوات في الإصدار القادم للجميع.",stNone:"لا توجد تسجيلات بعد.",stSaved:"حُفظ ✓",stHuman:"صوت بشري"}
+};
+Object.keys(UI15).forEach(l=>Object.assign(UI2[l],UI15[l]));
+
+// ---------- Stockage local des enregistrements (IndexedDB) ----------
+const HV={db:null,keys:new Set(),urls:{}};
+function hvOpen(){return new Promise(res=>{if(HV.db)return res(HV.db);try{const r=indexedDB.open("djh-voix-humaine",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");r.onsuccess=()=>{HV.db=r.result;res(HV.db)};r.onerror=()=>res(null)}catch(e){res(null)}})}
+async function hvTx(mode,fn){const db=await hvOpen();if(!db)return null;return new Promise(res=>{const tx=db.transaction("v",mode),st=tx.objectStore("v");const r=fn(st);tx.oncomplete=()=>res(r&&r.result);tx.onerror=()=>res(null)})}
+const hvPut=(k,v)=>hvTx("readwrite",st=>st.put(v,k));
+const hvGet=k=>hvTx("readonly",st=>st.get(k));
+const hvAllKeys=()=>hvTx("readonly",st=>st.getAllKeys());
+hvAllKeys().then(ks=>{(ks||[]).forEach(k=>HV.keys.add(k))});
+async function hvUrl(k){if(HV.urls[k])return HV.urls[k];if(!HV.keys.has(k))return null;const v=await hvGet(k);if(!v||!v.blob)return null;return HV.urls[k]=URL.createObjectURL(v.blob)}
+
+// La lecture utilise d'abord la voix enregistrée sur ce téléphone
+const _speakSeqH=speakSeq;
+speakSeq=async function(parts){
+  const out=[];
+  for(const [text,lang] of parts){const k=voxKey(String(lang||"").slice(0,2),text);if(HV.keys.has(k)){out.push(["__hv:"+k,lang])}else out.push([text,lang])}
+  if(!out.some(x=>x[0].startsWith("__hv:"))) return _speakSeqH(parts);
+  voxStop();const gen=voxGen;
+  for(let i=0;i<out.length;i++){if(gen!==voxGen)return;const [x,lang]=out[i];
+    if(x.startsWith("__hv:")){const u=await hvUrl(x.slice(5));if(u){await playUrl(u,gen);continue}}
+    await new Promise(r=>{_speakSeqH([[parts[i][0],lang]]);const iv=setInterval(()=>{const a=voxAudio;const busy=(a&&!a.paused&&!a.ended)||(typeof speechSynthesis!=="undefined"&&speechSynthesis.speaking);if(!busy||gen!==voxGen){clearInterval(iv);r()}},400)});
+  }
+};
+const _isHuman0=typeof isHuman==="function"?isHuman:()=>false;
+isHuman=it=>_isHuman0(it)||HV.keys.has(voxKey("ar",it.name||it.show));
+
+// ---------- Liste des éléments à enregistrer ----------
+let ST_LIST=null;
+async function stList(){
+  if(ST_LIST) return ST_LIST;
+  let liste=[];try{const r=await fetch("voix/liste.json");if(r.ok)liste=await r.json()}catch(e){}
+  const qa=[];QAIDA.forEach(l=>{if(l.id>"L14")return;[...l.items(),...(l.words||[])].forEach(it=>{if(it.ref||it.vref)return;const t=it.name||it.show;qa.push({k:voxKey("ar",t),t,l:"ar",lesson:l.id})})});
+  const seen=new Set(qa.map(x=>x.k));
+  const ar=liste.filter(x=>x.l==="ar"&&!x.q&&!x.slow&&!seen.has(x.k)), fr=liste.filter(x=>x.l==="fr");
+  return ST_LIST={c1:qa,c2:ar,c3:fr};
+}
+S.st=S.st||{v:"home",cat:"c1",i:0,name:""};
+function viewStudio(){
+  if(!ST_LIST){stList().then(()=>{if(S.sub==="quran"&&S.qr.v==="studio"){render()}});return `<p class="note">${t("loading")}</p>`}
+  const st=S.st, cats=[["c1","stCat1"],["c2","stCat2"],["c3","stCat3"]];
+  const count=c=>ST_LIST[c].filter(x=>HV.keys.has(x.k)).length;
+  if(st.v==="item"){
+    const list=ST_LIST[st.cat], i=Math.min(st.i,list.length-1), x=list[i], has=HV.keys.has(x.k);
+    return `<section class="hello"><span class="eyebrow">${t("stTitle")} · ${t(cats.find(c=>c[0]===st.cat)[1])}</span><h1 class="sch-q-of">${i+1} / ${list.length}</h1></section>
+    <div class="progress"><i style="width:${count(st.cat)/list.length*100}%"></i></div>
+    <div class="card st-card"><div class="st-text ${x.l==="ar"?"ar":""}">${esc(x.t)}</div>
+     ${x.l==="ar"&&x.t.length<12&&/[\u064B-\u0652]/.test(x.t)?`<p class="note" style="margin:0">${trl(trlAuto(x.t))}</p>`:""}
+     <div class="st-acts"><button class="btn st-rec ${ST.rec?"on":""}" id="st-rec">${ST.rec?t("stStop"):has?t("stRedo"):t("stRec")}</button><button class="btn ghost" id="st-play" ${has?"":"disabled"}>${t("stPlay")}</button></div>
+     ${has?`<p class="tw-msg ok" style="margin:0">👤 ${t("stSaved")}</p>`:""}<p class="note" style="margin:0">${t("stTip")}</p></div>
+    <div class="st-nav"><button class="btn ghost" id="st-prev" ${i?"":"disabled"}>${t("stPrev")}</button><button class="btn" id="st-next">${t("stNext")}</button></div>`;
+  }
+  return `<section class="hello"><span class="eyebrow">${t("qaida").split(" · ")[0]}</span><h1>${t("stTitle")}</h1><p>${t("stIntro")}</p></section>
+  <div class="card"><label for="st-name">${t("stName")}<input id="st-name" value="${esc(st.name||"")}" placeholder="Oustaz …"></label></div>
+  <div class="card">${cats.map(([c,k])=>{const n=ST_LIST[c].length,d=count(c);return `<button class="sch-row ${d>=n&&n?"ok":""}" data-stcat="${c}"><span class="sch-num">${d>=n&&n?"✓":"🎙"}</span><span class="sch-t"><b>${t(k)}</b><span>${fmt(t("stDone"),{d,n})}</span></span><i aria-hidden="true">›</i></button>`}).join("")}</div>
+  <div class="card"><h3>📤 ${t("stSend")}</h3><p class="note" style="margin:0">${t("stSendSub")}</p><button class="btn" id="st-send" ${HV.keys.size?"":"disabled"}>${t("stSend")} (${HV.keys.size})</button></div>`;
+}
+// ---------- Enregistrement ----------
+const ST={rec:null,chunks:[],stream:null};
+async function stStart(){
+  try{
+    ST.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    const mime=["audio/webm;codecs=opus","audio/mp4","audio/webm",""].find(m=>!m||(window.MediaRecorder&&MediaRecorder.isTypeSupported(m)));
+    ST.rec=new MediaRecorder(ST.stream,mime?{mimeType:mime,audioBitsPerSecond:64000}:undefined);ST.chunks=[];
+    ST.rec.ondataavailable=e=>{if(e.data&&e.data.size)ST.chunks.push(e.data)};
+    ST.rec.onstop=async()=>{
+      const x=ST_LIST[S.st.cat][S.st.i], blob=new Blob(ST.chunks,{type:ST.rec.mimeType||"audio/webm"});
+      ST.stream.getTracks().forEach(tr=>tr.stop());ST.rec=null;
+      await hvPut(x.k,{blob,t:x.t,l:x.l,name:S.st.name||"",d:Date.now()});HV.keys.add(x.k);if(HV.urls[x.k]){URL.revokeObjectURL(HV.urls[x.k]);delete HV.urls[x.k]}
+      render();
+    };
+    ST.rec.start();render();
+  }catch(e){toast(t("stMicNo"))}
+}
+// ---------- Export .zip (sans compression) ----------
+function crc32(b){let c,t=crc32.t;if(!t){t=crc32.t=[];for(let n=0;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}}c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=t[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function makeZip(files){
+  const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+  const u16=v=>[v&255,(v>>8)&255],u32=v=>[v&255,(v>>8)&255,(v>>16)&255,(v>>>24)&255];
+  for(const f of files){const name=enc.encode(f.name),data=f.data,crc=crc32(data);
+    const lh=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0)]);
+    parts.push(lh,name,data);
+    cd.push(new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(off)]),name);
+    off+=lh.length+name.length+data.length}
+  const cdLen=cd.reduce((a,b)=>a+b.length,0);
+  const end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(cdLen),...u32(off),...u16(0)]);
+  return new Blob([...parts,...cd,end],{type:"application/zip"});
+}
+async function stSend(){
+  const keys=[...HV.keys], files=[], meta={};
+  for(const k of keys){const v=await hvGet(k);if(!v||!v.blob)continue;const ext=/mp4/.test(v.blob.type)?"m4a":/ogg/.test(v.blob.type)?"ogg":"webm";
+    files.push({name:`${k}.${ext}`,data:new Uint8Array(await v.blob.arrayBuffer())});meta[k]={t:v.t,l:v.l}}
+  files.push({name:"liste.json",data:new TextEncoder().encode(JSON.stringify({oustaz:S.st.name||"",app:APP_VERSION,voix:meta},null,1))});
+  const zip=makeZip(files), fname=`voix-oustaz-${(S.st.name||"djh").replace(/[^\w]+/g,"-")}-${iso(today)}.zip`;
+  try{
+    if(NATIVE&&PL.Filesystem&&PL.Share){
+      const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(zip)});
+      const w=await PL.Filesystem.writeFile({path:fname,data:b64,directory:"CACHE"});
+      await PL.Share.share({title:t("stSend"),text:"DJAMILLAH HAYAT – "+t("stTitle"),url:w.uri,dialogTitle:t("stSend")});return}
+    const file=new File([zip],fname,{type:"application/zip"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:t("stSend")});return}
+    const a=document.createElement("a");a.href=URL.createObjectURL(zip);a.download=fname;a.click();
+  }catch(e){}
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("#st-open,[data-stcat],#st-rec,#st-play,#st-next,#st-prev,#st-send");
+  if(!el) return;
+  if(el.id==="st-open"){qrGo({v:"studio"});S.st.v="home";save();render();return}
+  if(el.dataset.stcat){S.st={...S.st,v:"item",cat:el.dataset.stcat,i:Math.max(0,ST_LIST[el.dataset.stcat].findIndex(x=>!HV.keys.has(x.k)))};save();render();scrollTo(0,0);return}
+  if(el.id==="st-rec"){if(ST.rec)ST.rec.stop();else stStart();return}
+  if(el.id==="st-play"){const x=ST_LIST[S.st.cat][S.st.i];hvUrl(x.k).then(u=>{if(u){voxStop();playUrl(u,voxGen)}});return}
+  if(el.id==="st-next"){if(ST.rec)ST.rec.stop();S.st.i=Math.min(ST_LIST[S.st.cat].length-1,S.st.i+1);save();render();return}
+  if(el.id==="st-prev"){if(ST.rec)ST.rec.stop();S.st.i=Math.max(0,S.st.i-1);save();render();return}
+  if(el.id==="st-send"){stSend();return}
+});
+document.addEventListener("change",e=>{if(e.target.id==="st-name"){S.st.name=e.target.value.trim();save()}});
+// Bouton retour dans le studio
+document.addEventListener("click",e=>{
+  if(S.sub!=="quran"||!S.qr||S.qr.v!=="studio"||!(e.target.closest&&e.target.closest("#back"))) return;
+  e.stopImmediatePropagation();e.preventDefault();
+  if(S.st.v==="item"){S.st.v="home"}else{S.qr={...S.qr,v:"qaida"}}save();render();scrollTo(0,0);
+},true);
+// Entrée du studio dans la page du professeur de lecture
+const _qaidaHome0=qaidaHome;
+qaidaHome=function(){return _qaidaHome0()+`<button class="btn ghost" id="st-open">${t("stBtn")}</button>`};
+const _viewQuran0=viewQuran;
+viewQuran=function(){return S.qr.v==="studio"?viewStudio():_viewQuran0()};
+document.head.insertAdjacentHTML("beforeend",`<style>
+.st-card{align-items:center;text-align:center;gap:12px}.st-text{font-size:20px;line-height:1.6;max-height:42vh;overflow:auto;text-align:start}.st-text.ar{font-family:var(--f-verse);font-size:46px;text-align:center;color:var(--accent)}
+.st-acts,.st-nav{display:flex;gap:8px;width:100%}.st-acts .btn,.st-nav .btn{flex:1}.st-rec{background:#B3473E;border-color:#B3473E}.st-rec.on{animation:stp 1s infinite}
+@keyframes stp{50%{opacity:.6}}
 </style>`);
 
 scheduleNotifications();
