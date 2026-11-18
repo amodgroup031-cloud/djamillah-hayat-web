@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.37";
+const APP_VERSION = "1.0.38";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -4628,15 +4628,15 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 // synthèse sur ce téléphone, et peuvent être envoyés à AMOD GROUP pour être intégrés pour tout le monde.
 const UI15={
  fr:{stTitle:"Studio de l'oustaz",stBtn:"🎙 Studio d'enregistrement de l'oustaz",stIntro:"Un oustaz qui maîtrise le tajwîd enregistre ici, case par case, les lettres, les syllabes, les invocations et les textes. Sa vraie voix remplace aussitôt la voix de synthèse. Envoyez ensuite les enregistrements à AMOD GROUP pour qu'ils soient ajoutés pour tous les utilisateurs.",
-  stName:"Nom de l'oustaz (affiché dans l'application)",stCat1:"Lettres et syllabes",stCat2:"Invocations et textes arabes",stCat3:"Textes en français",stDone:"{d} / {n} enregistrés",stRec:"● Enregistrer",stStop:"■ Arrêter",stPlay:"▶ Écouter",stNext:"Suivant ›",stPrev:"‹ Précédent",stRedo:"Recommencer",
+  stName:"Nom de l'oustaz (affiché dans l'application)",stCat1:"Lettres et syllabes",stCat4:"Le programme complet de lecture (lettres, mots, phrases)",stCat2:"Invocations et textes arabes",stCat3:"Textes en français",stDone:"{d} / {n} enregistrés",stRec:"● Enregistrer",stStop:"■ Arrêter",stPlay:"▶ Écouter",stNext:"Suivant ›",stPrev:"‹ Précédent",stRedo:"Recommencer",
   stTip:"Touchez « Enregistrer », lisez la case une seule fois clairement, puis « Arrêter ». Écoutez : si ce n'est pas parfait, recommencez.",stMicNo:"Le micro n'est pas accessible. Autorisez le micro pour DJAMILLAH HAYAT dans les réglages du téléphone.",
   stSend:"Envoyer les enregistrements à AMOD GROUP",stSendSub:"Un fichier .zip est créé : envoyez-le par WhatsApp. Ces voix seront intégrées dans la prochaine version pour tout le monde.",stNone:"Aucun enregistrement pour l'instant.",stSaved:"Enregistré ✓",stHuman:"Voix humaine"},
  en:{stTitle:"Teacher's studio",stBtn:"🎙 Teacher's recording studio",stIntro:"A teacher who masters tajwid records here, tile by tile, the letters, syllables, supplications and texts. The real voice immediately replaces the synthetic voice. Then send the recordings to AMOD GROUP so they are added for all users.",
-  stName:"Teacher's name (shown in the app)",stCat1:"Letters and syllables",stCat2:"Arabic supplications and texts",stCat3:"French texts",stDone:"{d} / {n} recorded",stRec:"● Record",stStop:"■ Stop",stPlay:"▶ Listen",stNext:"Next ›",stPrev:"‹ Previous",stRedo:"Redo",
+  stName:"Teacher's name (shown in the app)",stCat1:"Letters and syllables",stCat4:"The complete reading programme (letters, words, sentences)",stCat2:"Arabic supplications and texts",stCat3:"French texts",stDone:"{d} / {n} recorded",stRec:"● Record",stStop:"■ Stop",stPlay:"▶ Listen",stNext:"Next ›",stPrev:"‹ Previous",stRedo:"Redo",
   stTip:"Tap “Record”, read the tile once clearly, then “Stop”. Listen: if it is not perfect, record again.",stMicNo:"The microphone is not accessible. Allow the microphone for DJAMILLAH HAYAT in the phone settings.",
   stSend:"Send the recordings to AMOD GROUP",stSendSub:"A .zip file is created: send it by WhatsApp. These voices will be added in the next version for everyone.",stNone:"No recordings yet.",stSaved:"Saved ✓",stHuman:"Human voice"},
  ar:{stTitle:"استوديو الأستاذ",stBtn:"🎙 استوديو تسجيل الأستاذ",stIntro:"يسجّل هنا أستاذ متقن للتجويد، خانةً خانة، الحروف والمقاطع والأدعية والنصوص. فيحلّ صوته الحقيقي محلّ الصوت الاصطناعي فوراً، ثم تُرسل التسجيلات إلى AMOD GROUP لتُضاف لجميع المستخدمين.",
-  stName:"اسم الأستاذ (يظهر في التطبيق)",stCat1:"الحروف والمقاطع",stCat2:"الأدعية والنصوص العربية",stCat3:"النصوص الفرنسية",stDone:"سُجّل {d} من {n}",stRec:"● سجّل",stStop:"■ أوقف",stPlay:"▶ استمع",stNext:"التالي ›",stPrev:"‹ السابق",stRedo:"أعد",
+  stName:"اسم الأستاذ (يظهر في التطبيق)",stCat1:"الحروف والمقاطع",stCat4:"المنهج الكامل للقراءة (حروف وكلمات وجمل)",stCat2:"الأدعية والنصوص العربية",stCat3:"النصوص الفرنسية",stDone:"سُجّل {d} من {n}",stRec:"● سجّل",stStop:"■ أوقف",stPlay:"▶ استمع",stNext:"التالي ›",stPrev:"‹ السابق",stRedo:"أعد",
   stTip:"المس «سجّل» واقرأ الخانة مرة واحدة بوضوح ثم «أوقف». استمع، فإن لم تكن متقنة فأعد التسجيل.",stMicNo:"الميكروفون غير متاح. اسمح لتطبيق جميلة حياة باستخدامه من إعدادات الهاتف.",
   stSend:"أرسل التسجيلات إلى AMOD GROUP",stSendSub:"يُنشأ ملف ‎.zip‎ فأرسله عبر واتساب، وستُضاف هذه الأصوات في الإصدار القادم للجميع.",stNone:"لا توجد تسجيلات بعد.",stSaved:"حُفظ ✓",stHuman:"صوت بشري"}
 };
@@ -4675,12 +4675,13 @@ async function stList(){
   const qa=[];QAIDA.forEach(l=>{if(l.id>"L14")return;[...l.items(),...(l.words||[])].forEach(it=>{if(it.ref||it.vref)return;const t=it.name||it.show;qa.push({k:voxKey("ar",t),t,l:"ar",lesson:l.id})})});
   const seen=new Set(qa.map(x=>x.k));
   const ar=liste.filter(x=>x.l==="ar"&&!x.q&&!x.slow&&!seen.has(x.k)), fr=liste.filter(x=>x.l==="fr");
-  return ST_LIST={c1:qa,c2:ar,c3:fr};
+  const lv=[];if(typeof lvTokens==="function"){const sn=new Set(qa.map(x=>x.k));lvTokens().forEach(t=>{const k=voxKey("ar",t);if(!sn.has(k)){sn.add(k);lv.push({k,t,l:"ar"})}})}
+  return ST_LIST={c1:qa,c4:lv,c2:ar,c3:fr};
 }
 S.st=S.st||{v:"home",cat:"c1",i:0,name:""};
 function viewStudio(){
   if(!ST_LIST){stList().then(()=>{if(S.sub==="quran"&&S.qr.v==="studio"){render()}});return `<p class="note">${t("loading")}</p>`}
-  const st=S.st, cats=[["c1","stCat1"],["c2","stCat2"],["c3","stCat3"]];
+  const st=S.st, cats=[["c1","stCat1"],["c4","stCat4"],["c2","stCat2"],["c3","stCat3"]];
   const count=c=>ST_LIST[c].filter(x=>HV.keys.has(x.k)).length;
   if(st.v==="item"){
     const list=ST_LIST[st.cat], i=Math.min(st.i,list.length-1), x=list[i], has=HV.keys.has(x.k);
@@ -4897,7 +4898,7 @@ document.addEventListener("click",e=>{
   const s=e.target.closest&&e.target.closest("[data-sub]"); if(s&&!S.sub) S.subFrom=navTab();
   const bk=e.target.closest&&e.target.closest("#back"); if(bk&&S.sub){S.tab=S.subFrom||SUBTAB[S.sub]||"more";S.subFrom=null}
   const o=e.target.closest&&e.target.closest("[data-open]");
-  if(o){e.preventDefault();S.subFrom=navTab();S.tab="more";S.sub="quran";S.qr={...(S.qr||{}),v:o.dataset.open==="qaida"?"qaida":"home"};save();render();scrollTo(0,0)}
+  if(o){e.preventDefault();S.subFrom=navTab();S.tab="more";S.sub="quran";S.qr={...(S.qr||{}),v:["qaida","livre"].includes(o.dataset.open)?o.dataset.open:"home"};save();render();scrollTo(0,0)}
 },true);
 // Ancien onglet « Plus » qui ne contient plus les rubriques : rien à migrer, seuls les noms d'espaces changent
 if(!TABS.concat(Object.keys(VIEWS)).includes(S.tab)) S.tab="today";
@@ -4962,6 +4963,273 @@ render=function(){
 .tq{margin:2px 0 6px}
 @media (max-width:360px){.qgrid.g4{grid-template-columns:repeat(4,1fr);gap:6px}.qtile{font-size:11px}}
 `;document.head.appendChild(st)})();
+
+// ===== معلّم القراءة — programme complet (d'après la progression du livre de lecture, réorganisé) =====  © AMOD GROUP
+// Blocs : g = grille de lettres/syllabes · w = mots · s = phrases (séparées par « . ») · x = texte · p = poème (vers séparés par « / ») · e = mot illustré (emoji|mot)
+const LV_ALPHA="ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+const LV_NAMES="أَلِفٌ بَاءٌ تَاءٌ ثَاءٌ جِيمٌ حَاءٌ خَاءٌ دَالٌ ذَالٌ رَاءٌ زَايٌ سِينٌ شِينٌ صَادٌ ضَادٌ طَاءٌ ظَاءٌ عَيْنٌ غَيْنٌ فَاءٌ قَافٌ كَافٌ لَامٌ مِيمٌ نُونٌ هَاءٌ وَاوٌ يَاءٌ".split(" ");
+const lvH=c=>c==="ا"?"أ":c;
+const lvMap=(f)=>LV_ALPHA.map(c=>f(lvH(c),c)).join(" ");
+const LIVRE=[
+{p:{fr:"Les lettres",en:"The letters",ar:"الحروف"},l:[
+ {t:"حُرُوفُ الْهِجَاءِ",fr:"L'alphabet et le nom des lettres",b:[
+  {k:"g",h:"الْحُرُوفُ",d:LV_ALPHA.join(" ")},
+  {k:"w",h:"أَسْمَاءُ الْحُرُوفِ",d:LV_NAMES.join(" ")}]},
+ {t:"أَ بَ تَ ثَ",fr:"Premières lettres avec la fatha",b:[{k:"e",d:"🐇|أَ|أَرْنَبٌ 🦆|بَ|بَطَّةٌ 🌴|تَ|تَمْرٌ 🧄|ثَ|ثُومٌ"}]},
+ {t:"جَ حَ خَ يَ",fr:"Lettres avec la fatha (2)",b:[{k:"e",d:"🐪|جَ|جَمَلٌ 🕊️|حَ|حَمَامَةٌ 🐑|خَ|خَرُوفٌ ✋|يَ|يَدٌ"}]},
+ {t:"دَ ذَ رَ زَ",fr:"Lettres avec la fatha (3)",b:[{k:"e",d:"🪣|دَ|دَلْوٌ 🐕|ذَ|ذَيْلٌ 🙂|رَ|رَأْسٌ 🌼|زَ|زَهْرَةٌ"}]},
+ {t:"سَ شَ صَ ضَ",fr:"Lettres avec la fatha (4)",b:[{k:"e",d:"🐟|سَ|سَمَكَةٌ 🌳|شَ|شَجَرَةٌ 🦅|صَ|صَقْرٌ 🐺|ضَ|ضَبُعٌ"}]},
+ {t:"طَ ظَ عَ غَ",fr:"Lettres avec la fatha (5)",b:[{k:"e",d:"🥁|طَ|طَبْلٌ 🦌|ظَ|ظَبْيٌ 👁️|عَ|عَيْنٌ 🐐|غَ|غَنَمٌ"}]},
+ {t:"فَ قَ كَ لَ",fr:"Lettres avec la fatha (6)",b:[{k:"e",d:"🐎|فَ|فَرَسٌ 🌙|قَ|قَمَرٌ 🐶|كَ|كَلْبٌ 📋|لَ|لَوْحٌ"}]},
+ {t:"مَ نَ هَ وَ",fr:"Lettres avec la fatha (7)",b:[{k:"e",d:"⛵|مَ|مَرْكَبٌ 🌴|نَ|نَخْلٌ 🔺|هَ|هَرَمٌ 🌹|وَ|وَرْدَةٌ"}]}
+]},
+{p:{fr:"La fatha",en:"Fatha",ar:"الْفَتْحَةُ"},l:[
+ {t:"الْحُرُوفُ الْمَفْتُوحَةُ",fr:"Toutes les lettres avec la fatha",b:[{k:"g",d:lvMap(c=>c+"َ")}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ١",fr:"Mots avec la fatha (1)",b:[{k:"w",d:"دَرَسَ دَرَجَ رَزَقَ رَزَمَ رَدَمَ رَدَفَ زَرَعَ زَرَدَ وَزَنَ وَزَرَ وَرَدَ وَدَعَ"},{k:"w",d:"رَأَفَ رَأَسَ دَأَبَ زَأَرَ أَكَلَ رَكَلَ وَكَلَ رَتَعَ رَدَعَ رَفَعَ ذَبَحَ دَبَغَ"}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ٢",fr:"Mots avec la fatha (2)",b:[{k:"w",d:"بَرَدَ بَرَزَ بَرَعَ بَرَكَ تَرَكَ تَرَبَ ثَرَدَ ثَرَمَ نَزَلَ نَزَعَ نَدَبَ نَذَرَ"},{k:"w",d:"جَرَدَ جَرَحَ جَزَمَ جَدَلَ حَزَمَ حَرَقَ حَرَثَ حَذَفَ خَرَجَ خَزَنَ خَذَلَ خَدَمَ"}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ٣",fr:"Mots avec la fatha (3)",b:[{k:"w",d:"سَرَدَ سَرَقَ شَرَحَ شَرَعَ صَدَقَ صَدَمَ ضَرَبَ ضَرَعَ طَرَقَ طَرَدَ طَرَحَ طَرَأَ"},{k:"w",d:"عَرَفَ عَزَمَ عَرَضَ عَزَلَ عَدَلَ غَرَفَ غَرَسَ غَزَلَ فَرَشَ فَرَضَ قَرَضَ قَذَفَ"}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ٤",fr:"Mots avec la fatha (4)",n:{fr:"Remarquez : ا د ذ ر ز و ne s'attachent jamais à la lettre qui les suit.",en:"Note: ا د ذ ر ز و never join the following letter.",ar:"لَاحِظْ: الْحُرُوفُ (ا د ذ ر ز و) لَا تَتَّصِلُ بِمَا بَعْدَهَا."},b:[{k:"w",d:"أَكَلَ أَخَذَ أَمَرَ أَسَرَ دَهَنَ دَفَنَ دَفَعَ دَخَلَ ذَهَبَ ذَكَرَ ذَبَحَ ذَهَلَ"},{k:"w",d:"رَقَدَ رَسَمَ رَبَطَ رَفَضَ زَهَدَ زَعَمَ زَجَرَ زَحَفَ وَجَدَ وَعَدَ وَلَدَ وَهَبَ"}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ٥",fr:"Mots avec la fatha (5)",b:[{k:"w",d:"وَضَعَ رَضَعَ وَقَعَ رَجَعَ طَرَقَ طَرَحَ فَرَشَ فَرَضَ صَدَمَ فَرَمَ حَزَمَ رَسَمَ"},{k:"w",d:"طَحَنَ سَجَدَ هَجَرَ هَجَمَ نَصَرَ نَصَحَ حَضَرَ نَضَجَ نَطَقَ نَطَحَ نَظَرَ نَظَمَ"}]},
+ {t:"كَلِمَاتٌ مَفْتُوحَةٌ ٦",fr:"Mots avec la fatha (6)",b:[{k:"w",d:"حَمَلَ جَمَعَ نَفَعَ نَقَلَ شَكَرَ شَكَلَ رَكَعَ سَكَنَ خَلَقَ خَلَطَ حَلَبَ جَلَسَ"},{k:"w",d:"وَعَدَ طَعَنَ قَعَدَ بَعَثَ رَجَعَ سَجَدَ طَحَنَ سَحَبَ وَهَبَ ظَهَرَ نَهَشَ نَهَبَ"}]}
+]},
+{p:{fr:"La kasra",en:"Kasra",ar:"الْكَسْرَةُ"},l:[
+ {t:"الْحُرُوفُ الْمَكْسُورَةُ",fr:"Toutes les lettres avec la kasra",b:[{k:"g",d:lvMap(c=>(c==="أ"?"إ":c)+"ِ")}]},
+ {t:"كَلِمَاتٌ بِالْكَسْرَةِ ١",fr:"Mots avec la kasra (1)",b:[{k:"w",d:"رَبِحَ شَبِعَ شَتِرَ فَتِنَ وَثِقَ غَشِيَ وَجِلَ خَجِلَ رَحِمَ ضَحِكَ سَخِرَ سَخِطَ"},{k:"w",d:"قَدِمَ نَدِمَ حَذِرَ حَذِقَ شَرِبَ فَرِحَ حَزِنَ فَزِعَ حَسِبَ نَسِيَ خَشِيَ نَشِطَ"}]},
+ {t:"كَلِمَاتٌ بِالْكَسْرَةِ ٢",fr:"Mots avec la kasra (2)",b:[{k:"w",d:"لَصِقَ رَضِيَ نَضِجَ غَضِبَ عَطِشَ فَطِنَ عَطِبَ حَظِيَ لَعِبَ تَعِبَ سَعِدَ رَغِبَ"},{k:"w",d:"حَفِظَ خَفِيَ رَقِيَ لَقِيَ رَكِبَ سَكِرَ عَلِمَ سَلِمَ سَمِعَ عَمِلَ دَنِسَ حَنِثَ"}]},
+ {t:"كَلِمَاتٌ بِالْكَسْرَةِ ٣",fr:"Mots avec la kasra (3)",b:[{k:"w",d:"فَهِمَ شَهِدَ جَهِلَ سَهِرَ قَوِيَ رَغِبَ خَشِيَ حَيِيَ غَنِيَ بَقِيَ نَشِطَ فَزِعَ"},{k:"w",d:"وَسِعَ هَرِمَ زَلِقَ ظَفِرَ حَمِدَ بَخِلَ صَحِبَ عَجِبَ رَحِمَ عَطِشَ شَرِبَ رَوِيَ"}]}
+]},
+{p:{fr:"La damma",en:"Damma",ar:"الضَّمَّةُ"},l:[
+ {t:"الْحُرُوفُ الْمَضْمُومَةُ",fr:"Toutes les lettres avec la damma",b:[{k:"g",d:lvMap(c=>c+"ُ")}]},
+ {t:"كَلِمَاتٌ بِالضَّمَّةِ ١",fr:"Mots avec la damma (1)",b:[{k:"w",d:"بُذِرَ بُعِثَ تُرِكَ تُبِعَ ثُقِبَ جُمِعَ جُعِلَ جُرِحَ حُزِمَ حُمِلَ خُبِزَ خُزِنَ"},{k:"w",d:"دُفِعَ دُهِنَ ذُكِرَ ذُبِحَ رُفِعَ رُزِقَ زُرِعَ حَزُنَ سُرِقَ سُمِعَ شُرِبَ شُغِلَ"}]},
+ {t:"كَلِمَاتٌ بِالضَّمَّةِ ٢",fr:"Mots avec la damma (2)",b:[{k:"w",d:"صُرِفَ صُبِغَ ضُرِبَ ضُبِطَ طُلِبَ طُرِدَ ظُلِمَ عَظُمَ عُرِفَ عُلِمَ غُسِلَ غُرِسَ"},{k:"w",d:"فُهِمَ فُتِحَ قُتِلَ قُبِلَ كُسِرَ كُشِطَ لُمِسَ لُفِتَ مُنِعَ مُنِحَ نُقِلَ وُلِدَ"}]},
+ {t:"كَلِمَاتٌ بِالضَّمَّةِ ٣",fr:"Mots avec la damma (3)",b:[{k:"w",d:"كَبُرَ كَثُرَ عَذُبَ قَرُبَ حَزُنَ ظَرُفَ عَظُمَ ثَقُلَ صَغُرَ سَهُلَ صَعُبَ حَسُنَ"},{k:"w",d:"يَسَعُ يَدَعُ يَقَعُ يَضَعُ يَرِثُ يَعِظُ يَقِفُ يَعِدُ يَثِقُ يَزِنُ يَصِلُ يَفِدُ"}]}
+]},
+{p:{fr:"Le soukoun",en:"Sukun",ar:"السُّكُونُ"},l:[
+ {t:"الْحُرُوفُ السَّاكِنَةُ",fr:"Le soukoun : petits mots",b:[{k:"e",d:"👨|أَبْ|أَبٌ 👩|أُمْ|أُمٌّ 👦|أَخْ|أَخٌ 👴|جَدْ|جَدٌّ"},{k:"w",d:"قَدْ هَلْ نَمْ مَنْ دَعْ عَنْ لَوْ سَلْ كَيْ لَمْ بَلْ لَنْ ضَعْ أَنْ نَعَمْ"}]},
+ {t:"أَفْعَالُ الْأَمْرِ ١",fr:"Ordres courts",b:[{k:"w",d:"سِرْ زِدْ صِلْ بِعْ قِفْ طِرْ عِدْ مِنْ قِسْ غِبْ إِنْ صِدْ زِنْ إِذْ بِتْ"},{k:"w",d:"قُمْ عُدْ قُلْ صُمْ خُذْ دُمْ كُنْ سُدْ تُبْ صُنْ عُمْ فُزْ كُلْ جُدْ ذُقْ"}]},
+ {t:"أَفْعَالُ الْأَمْرِ ٢",fr:"Ordres avec alif de liaison",b:[{k:"w",d:"اُبْذُرْ اُتْرُكْ اُشْكُرْ اُصْدُقْ اُخْرُجْ اُطْلُبْ اُكْتُبْ اُسْكُنْ اُقْطُفْ اُدْخُلْ اُرْقُدْ اُحْرُثْ"},{k:"w",d:"اِعْلَمْ اِعْمَلْ اِغْسِلْ اِغْرِسْ اِفْهَمْ اِقْطَعْ اِمْنَعْ اِسْمَعْ اِشْرَبْ أَنْصِتْ أَوْقِدْ أَنْعِمْ"}]},
+ {t:"جُمَلٌ قَصِيرَةٌ",fr:"Premières phrases",b:[{k:"s",d:"اِزْرَعْ تَحْصُدْ. اِعْمَلْ تَنْجَحْ. اِقْرَأْ تَفْهَمْ. اُصْدُقْ تَسْلَمْ. أَحْسِنْ تَسْعَدْ. أَكْرِمْ تُشْكَرْ"},{k:"s",d:"ضَعْ قَلَمَكَ. قُلْ دَرْسَكَ كَيْ تَنْجَحَ. مِنْ فَضْلِكَ. قِفْ عِنْدَكَ. مَنْ أَنْتَ؟. صِلْ مَنْ قَطَعَكَ. دَعْ مَنْ ظَلَمَكَ"}]},
+ {t:"جُمَلٌ مُفِيدَةٌ",fr:"Phrases utiles",b:[{k:"s",d:"لَنْ أَكْذِبَ بَلْ أَصْدُقُ. لَنْ أَظْلِمَ بَلْ أَعْدِلُ. لَنْ أُسْرِفَ. لَنْ أَسْرِقَ. لَنْ أُخْلِفَ الْوَعْدَ قَطُّ"},{k:"s",d:"يَكْتُبُ أَحْمَدُ دَرْسَهُ. تَقْرَأُ زَيْنَبُ. يَذْهَبُ أَسْعَدُ مَعَكَ. يَحْضُرُ أَنْوَرُ. أَرْغَبُ أَنْ أَلْعَبَ مَعَ أَنْوَرَ وَأَحْمَدَ"}]},
+ {t:"الْجُمْلَةُ الْكَامِلَةُ",fr:"La phrase complète",b:[{k:"s",d:"اَلْقِرْدُ يَلْعَبُ. يَلْعَبُ الْقِرْدُ. اَلْحَمَلُ يَرْضَعُ. يَرْضَعُ الْحَمَلُ. يُقْطَفُ الْوَرْدُ. يُرْفَعُ الْعَلَمُ"},{k:"s",d:"اَلْبِنْتُ تَحْلُبُ الْبَقَرَ. اَلْكَلْبُ يَحْرُسُ الْغَنَمَ. اَلْجَمَلُ يَحْمِلُ الْحَطَبَ. اَلْوَلَدُ يَقْطِفُ الْوَرْدَ"}]},
+ {t:"قِرَاءَةٌ: أَحْمَدُ وَزَيْنَبُ",fr:"Lecture : Ahmad et Zaynab",b:[
+  {k:"x",h:"الْكَلْبُ وَالْأَرْنَبُ",d:"أَحْمَدُ يَلْعَبُ مَعَ الْكَلْبِ، وَزَيْنَبُ تَلْعَبُ مَعَ الْأَرْنَبِ. الْأَرْنَبُ يَقْفِزُ فَوْقَ الْحَبْلِ، وَأَحْمَدُ يَقْفِزُ خَلْفَ الْأَرْنَبِ، وَزَيْنَبُ تَنْظُرُ إِلَيْهِ وَتَضْحَكُ."},
+  {k:"x",h:"أَحْمَدُ يَكْتُبُ",d:"مَنْ يَكْتُبُ؟ أَحْمَدُ يَكْتُبُ. وَمَنْ تَقْرَأُ؟ زَيْنَبُ تَقْرَأُ. أَحْمَدُ يَكْتُبُ دَرْسَهُ بَعْدَ أَنْ يَقْرَأَهُ، فَيُمْسِكُ الْقَلَمَ بِيَدِهِ وَيَكْتُبُ بِهِ فَوْقَ الْوَرَقِ. وَبَعْدَ أَنْ يَفْرُغَ يَلْعَبُ مَعَ أُخْتِهِ زَيْنَبَ بِكُرَتِهِ."},
+  {k:"x",h:"أَحْمَدُ يَلْعَبُ",d:"أَحْمَدُ يَلْعَبُ بِكُرَتِهِ مَعَ أُخْتِهِ زَيْنَبَ بَعْدَ أَنْ يَقْرَأَ دَرْسَهُ وَيَكْتُبَهُ بِقَلَمِهِ. أَحْمَدُ يَضْرِبُ الْكُرَةَ بِيَدِهِ أَوْ رِجْلِهِ فَتَذْهَبُ عِنْدَ أُخْتِهِ زَيْنَبَ، وَزَيْنَبُ تَلْقَفُ الْكُرَةَ قَبْلَ أَنْ تَقَعَ."}]}
+]},
+{p:{fr:"Les voyelles longues",en:"Long vowels",ar:"الْمَدُّ"},l:[
+ {t:"الْمَدُّ بِالْأَلِفِ",fr:"La voyelle longue « â »",b:[{k:"g",d:lvMap(c=>c==="أ"?"آ":c+"َا")},{k:"w",d:"بَاعَ تَابَ جَاعَ خَانَ خَافَ دَارَ ذَاقَ سَالَ صَادَ طَارَ عَامَ فَازَ"},{k:"w",d:"بَارَكَ جَاهَدَ حَاذَرَ سَالَمَ شَاهَدَ صَادَقَ طَالَبَ عَامَلَ فَارَقَ كَاتَبَ لَاعَبَ نَاصَرَ"},{k:"s",d:"إِنْ حَكَمْتَ فَلَا تَظْلِمْ يَا عَادِلُ. إِنْ وَعَدْتَ فَلَا تُخْلِفْ يَا حَامِدُ. إِنْ أَكَلْتَ فَلَا تُسْرِفْ يَا صَالِحُ"}]},
+ {t:"قِرَاءَةٌ: فِي الْبُسْتَانِ",fr:"Lecture : jeux au jardin",b:[
+  {k:"x",h:"لُعْبَةُ الْحَبْلِ",d:"اُنْظُرْ تَجِدْ أَمَامَكَ نُعْمَانَ وَأُخْتَهُ سُعَادَ وَهُمَا يَلْعَبَانِ الْحَبْلَ مَعَ الْأَوْلَادِ دَاخِلَ الْبُسْتَانِ. نُعْمَانُ يُمْسِكُ طَرَفَ الْحَبْلِ بِيَدِهِ، وَسُعَادُ تُمْسِكُ طَرَفَهُ الْآخَرَ، وَهَانِمُ تَقْفِزُ فَوْقَ الْحَبْلِ."},
+  {k:"x",h:"لُعْبَةُ الْمِيزَانِ",d:"أَمَامَكَ وَلَدَانِ وَبِنْتَانِ دَاخِلَ الْبُسْتَانِ. تَجْلِسُ فَاطِمَةُ مَعَ أُخْتِهَا سُعَادَ، وَيَجْلِسُ نُعْمَانُ وَأَحْمَدُ أَمَامَهُمَا. سُعَادُ تُمْسِكُ أُخْتَهَا بِيَدَيْهَا، وَنُعْمَانُ يُمْسِكُ أَخَاهُ بِيَدَيْهِ. الْوَلَدَانِ يَهْبِطَانِ وَالْبِنْتَانِ تَعْلُوَانِ."}]},
+ {t:"الْمَدُّ بِالْوَاوِ",fr:"La voyelle longue « oû »",b:[{k:"g",d:lvMap(c=>c==="أ"?"أُو":c+"ُو")},{k:"w",d:"أَبُوكَ أَتُوبُ أَجُودُ أَدُورُ أَزُورُ أَسُوقُ أَصُونُ أَطُوفُ أَفُوزُ أَقُولُ أَكُونُ أَلُومُ"},{k:"w",d:"يَدْنُو يَزْهُو يَرْبُو يَرْجُو يَنْمُو يَطْفُو يَلْهُو يَسْمُو يَقْسُو يَدْعُو يَشْكُو يَنْجُو"},{k:"s",d:"نَجُودُ بِمَالِنَا. نَصُونُ بِلَادَنَا. نَعُودُ لِدَارِنَا. نَسُودُ بِعَمَلِنَا. تَصْفُو قُلُوبُنَا. تَنْمُو عُقُولُنَا"}]},
+ {t:"قِرَاءَةٌ: الْقِرْدُ وَالْبُسْتَانُ",fr:"Lecture : le singe, le jardin",b:[
+  {k:"x",h:"الْقِرْدُ وَصَاحِبُهُ",d:"اَلْقِرْدُ يَلْعَبُ مَعَ صَاحِبِهِ. اُنْظُرْ إِلَيْهِ وَقَدْ أَمْسَكَ الْعَصَا بِيَدَيْهِ، وَالْأَوْلَادُ وَاقِفُونَ حَوْلَهُ يَنْظُرُونَ إِلَيْهِ وَهُوَ يَقْفِزُ وَيَرْقُصُ، وَهُمْ يَفْرَحُونَ بِهِ وَيَضْحَكُونَ مِنْهُ."},
+  {k:"x",h:"الْبُسْتَانُ",d:"هَذَا هُوَ الْبُسْتَانُ ذُو الْأَزْهَارِ. أَنَا أُشَاهِدُ الْأَشْجَارَ الْعَالِيَةَ وَالْأَزْهَارَ الْجَمِيلَةَ، وَأَنْظُرُ الْأَطْفَالَ وَالْأَوْلَادَ الْكِبَارَ يَجْرُونَ وَيَلْعَبُونَ، وَيَقْطِفُونَ الْأَثْمَارَ وَالْأَزْهَارَ، وَيَعُودُونَ لِلْمَنْزِلِ وَهُمْ فَرِحُونَ."}]},
+ {t:"الْمَدُّ بِالْيَاءِ",fr:"La voyelle longue « î »",b:[{k:"g",d:lvMap(c=>c==="أ"?"إِي":c+"ِي")},{k:"w",d:"كِتَابِي كُرَتِي لَوْحِي بِلَادِي دَارِي فِرَاشِي بَلَاغِي شَرَفِي مَالِي كَلَامِي لِسَانِي"},{k:"w",d:"بِيعَ حِيلَ زِيدَ سِيقَ صِيدَ قِيلَ أُقِيمَ أُعِيدَ أُنِيرُ أُفِيدُ أُرِيدُ أَسِيرُ"},{k:"s",d:"يَطِيرُ حَمَامِي. يَصِيحُ دَجَاجِي. أَصُونُ لِسَانِي. أَجُودُ بِمَالِي. أَزُورُ سَامِي. أَعُودُ لِدَارِي"}]},
+ {t:"قِرَاءَةٌ: أَشْيَائِي",fr:"Lecture : mes affaires",b:[
+  {k:"x",h:"كُرَتِي",d:"هَذِهِ كُرَتِي، أَنَا أَلْعَبُ بِهَا فِي حَدِيقَتِي مَعَ أَخِي سَامِي وَأُخْتِي سُعَادَ. أَنَا أَضْرِبُ الْكُرَةَ بِرِجْلِي فَتَجْرِي أَمَامَنَا، وَنَحْنُ نَجْرِي خَلْفَهَا، وَتُحَاوِلُ سُعَادُ أَنْ تُمْسِكَهَا بِيَدِهَا فَلَا تَقْدِرُ."},
+  {k:"x",h:"سَاعَتِي",d:"هَذِهِ سَاعَتِي، اُنْظُرِي إِلَيْهَا يَا زَيْنَبُ. أَنَا أَعْرِفُ بِهَا أَوْقَاتِي عِنْدَ قِيَامِي مِنْ نَوْمِي وَذَهَابِي لِلْمَدْرَسَةِ. وَقَدْ أَوْصَانِي أَبِي أَنْ أَحْفَظَهَا فِي جَيْبِي، وَعِنْدَمَا أَنَامُ أَضَعُهَا فِي دُرْجِي."},
+  {k:"s",h:"خَرُوفِي يَلْعَبُ",d:"هَلْ رَأَيْتَ خَرُوفِي يَا سَعِيدُ؟. نَعَمْ رَأَيْتُهُ يَجْرِي وَيَقْفِزُ. خَرُوفِي صُوفُهُ أَبْيَضُ جَمِيلٌ. أَنَا أَضَعُ لَهُ عِقْدِي فِي رَقَبَتِهِ. وَأُلَاعِبُهُ وَهُوَ لَا يَنْطَحُنِي. عِنْدَمَا أَسِيرُ يَمْشِي خَلْفِي. وَعِنْدَمَا أَجْلِسُ يَقِفُ جَنْبِي"}]}
+]},
+{p:{fr:"La chadda",en:"Shadda",ar:"الشَّدَّةُ"},l:[
+ {t:"الشَّدَّةُ مَعَ الْفَتْحَةِ",fr:"La chadda avec la fatha",b:[{k:"e",d:"👃|شَمَّ|شَمَّ 🔢|عَدَّ|عَدَّ 🔨|دَقَّ|دَقَّ 🦷|عَضَّ|عَضَّ"},{k:"w",d:"صَبَّ بَتَّ حَثَّ حَجَّ صَحَّ ذَمَّ شَذَّ فَرَّ عَزَّ دَسَّ رَشَّ قَصَّ قَطَّ دَكَّ دَلَّ"},{k:"w",d:"صَدَّقَ حَذَّرَ شَرَّفَ فَكَّرَ عَظَّمَ عَوَّدَ طَهَّرَ حَدَّثَ رَخَّصَ فَضَّلَ نَظَّمَ حَبَّرَ"},{k:"s",d:"اُعْبُدْ رَبَّكَ. أَكْرِمْ أُمَّكَ. قَابِلْ عَمَّكَ. رَافِقْ جَدَّكَ. لَاعِبْ هِرَّكَ. اُشْكُلْ خَطَّكَ"}]},
+ {t:"الشَّدَّةُ مَعَ الضَّمَّةِ",fr:"La chadda avec la damma",b:[{k:"w",d:"يَشُمُّ يَعُدُّ يَدُقُّ يَعَضُّ يَحُثُّ يَوَدُّ يَشِذُّ يَقُصُّ يَفِرُّ يُعِزُّ يَقُطُّ يَدُلُّ يَشُقُّ يُتِمُّ يَمُنُّ يُحِبُّ"},{k:"s",d:"أُحِبُّ أَبِي. أَوَدُّ أَخِي. أُعِزُّ أُخْتِي. أَهُزُّ يَدِي. أَقُطُّ قَلَمِي. أَشُمُّ زَهْرِي. أَعُدُّ مَالِي. أَسُرُّ جَارِي"},{k:"s",d:"أَقُولُ الْحَقَّ. أَذُمُّ الْكَذِبَ. أَشُمُّ الْفُلَّ. اِشْتَدَّ الْحَرُّ. عَمُّكَ يَوَدُّكَ. جَدُّكَ يُحِبُّكَ"}]},
+ {t:"الشَّدَّةُ مَعَ الْكَسْرَةِ",fr:"La chadda avec la kasra",b:[{k:"w",d:"فَكِّرْ عَظِّمْ حَسِّنْ صَفِّقْ حَبِّبْ رَتِّبْ شَجِّعْ رَحِّبْ هَذِّبْ شَرِّفْ يَسِّرْ بَشِّرْ قَرِّبْ صَغِّرْ وَفِّقْ بَكِّرْ"},{k:"s",d:"عَظِّمْ رَبَّكَ. حَسِّنْ خَطَّكَ. نَظِّفْ جِسْمَكَ. هَذِّبْ نَفْسَكَ. رَتِّبْ كُتُبَكَ. نَظِّمْ عَمَلَكَ"},{k:"s",d:"أَخَافُ رَبِّي. أَبَرُّ أُمِّي. أَوَدُّ عَمِّي. أُحِبُّ جَدِّي. أَشُمُّ فُلِّي. أُعِزُّ قِطِّي. أَقُصُّ شَعْرِي"}]},
+ {t:"قِرَاءَةٌ: بِلَادِي وَقِطَّتِي",fr:"Lecture : mon pays, ma chatte",b:[
+  {k:"x",h:"عَلَمُ بِلَادِي",d:"هَذَا هُوَ عَلَمُ بِلَادِنَا، رَمْزُ وَطَنِنَا الْعَزِيزِ. يُرْفَعُ فَوْقَ الْمَدَارِسِ فِي الْأَعْيَادِ وَالْمُنَاسَبَاتِ. نَحْنُ نُحِبُّ بِلَادَنَا، وَنَعْمَلُ بِجِدٍّ لِخَيْرِهَا وَسَعَادَتِهَا."},
+  {k:"x",h:"صَيْدُ الْفَأْرِ",d:"أَرَادَ أَحْمَدُ أَنْ يَصِيدَ الْفَأْرَ، فَأَحْضَرَ الْمِصْيَدَةَ وَوَضَعَ فِيهَا الْخُبْزَ. فَجَاءَ الْفَأْرُ وَدَخَلَ الْمِصْيَدَةَ وَأَكَلَ مِنَ الْخُبْزِ، فَتَحَرَّكَ الْغِطَاءُ وَانْطَبَقَ عَلَيْهِ، فَأَخَذَهُ أَحْمَدُ وَرَمَاهُ لِلْقِطَّةِ، وَاسْتَرَاحَ مِنْ شَرِّهِ."},
+  {k:"p",h:"قِطَّتِي",d:"قِطَّتِي صَغِيرَهْ وَاسْمُهَا نَمِيرَهْ / شَكْلُهَا جَمِيلُ شَعْرُهَا طَوِيلُ / لَعِبُهَا يُسَلِّي وَهْيَ لِي كَظِلِّي / تُظْهِرُ الْمَهَارَهْ كَيْ تَصِيدَ فَارَهْ"}]}
+]},
+{p:{fr:"Le tanwîn",en:"Tanwin",ar:"التَّنْوِينُ"},l:[
+ {t:"تَنْوِينُ الضَّمِّ",fr:"Tanwîn avec damma « oun »",b:[{k:"g",d:lvMap(c=>c+"ٌ")},{k:"w",d:"ثَوْبٌ صَوْتٌ حَرْثٌ دَرْسٌ قُرْصٌ خَيْطٌ لَيْلٌ عَظْمٌ زُجَاجٌ فَلَاحٌ صُرَاخٌ بَلَاغٌ"},{k:"s",d:"دَرْسٌ مُفِيدٌ. خَيْرٌ كَثِيرٌ. بَلَدٌ أَمِينٌ. وَطَنٌ عَزِيزٌ. رَجُلٌ كَرِيمٌ. قَمَرٌ مُنِيرٌ"},{k:"s",d:"لِلْفِيلِ خُرْطُومٌ طَوِيلٌ وَرَأْسٌ كَبِيرٌ. لِلْأَسَدِ شَكْلٌ مُخِيفٌ وَذَيْلٌ طَوِيلٌ. لِلْعُصْفُورِ شَكْلٌ جَمِيلٌ وَرِيشٌ كَثِيرٌ"}]},
+ {t:"تَنْوِينُ الْكَسْرِ",fr:"Tanwîn avec kasra « in »",b:[{k:"g",d:lvMap(c=>(c==="أ"?"إ":c)+"ٍ")},{k:"s",d:"جَبَلٌ عَالٍ. زَرْعٌ نَامٍ. زَهْرٌ زَاهٍ. ثَوْبٌ بَالٍ. وَلَدٌ رَاعٍ. ثَمَرٌ دَانٍ. قَلْبٌ وَاعٍ. كَيْلٌ وَافٍ. مَاءٌ جَارٍ"},{k:"s",d:"عَسَلٌ مِنْ نَحْلٍ. سَمْنٌ مِنْ لَبَنٍ. خُبْزٌ مِنْ قَمْحٍ. ثَوْبٌ مِنْ قُطْنٍ. طَيْرٌ فِي قَفَصٍ. سَمَكٌ فِي بَحْرٍ"},{k:"s",d:"أَخَافُ رَبِّي فِي كُلِّ وَقْتٍ. وَأَتَوَكَّلُ عَلَيْهِ فِي كُلِّ أَمْرٍ. وَأَعُوذُ بِهِ مِنْ كُلِّ ضَرَرٍ"}]},
+ {t:"تَنْوِينُ الْفَتْحِ",fr:"Tanwîn avec fatha « an »",n:{fr:"Remarquez l'alif ajouté après le tanwîn fath (sauf après ة).",en:"Note the alif added after tanwin fath (except after ة).",ar:"لَاحِظْ زِيَادَةَ الْأَلِفِ بَعْدَ تَنْوِينِ الْفَتْحِ."},b:[{k:"g",d:lvMap(c=>c+"ًا")},{k:"w",d:"عَذْبًا صَوْتًا حَرْثًا لَوْحًا عَدَدًا فَرَسًا قُرْصًا خَيْطًا فَزَعًا عَظْمًا وَجْهًا عَيْنًا"},{k:"s",d:"قَرَأْتُ دَرْسًا مُفِيدًا. لَبِسْتُ ثَوْبًا جَدِيدًا. عَمِلْتُ عَمَلًا جَلِيلًا. أَكَلْتُ خُبْزًا وَجُبْنًا. شَرِبْتُ مَاءً وَلَبَنًا"},{k:"s",d:"نَزْرَعُ فِي حَقْلِنَا قُطْنًا وَقَمْحًا. نَقْطِفُ مِنْ بُسْتَانِنَا زَهْرًا وَعِنَبًا. نَأْخُذُ مِنْ نَحْلِنَا عَسَلًا وَشَمْعًا"}]},
+ {t:"قِرَاءَةٌ: الْعُصْفُورُ وَالْقِطَّةُ",fr:"Lecture : l'oiseau et la chatte",b:[
+  {k:"x",h:"الْعُصْفُورُ",d:"هَذَا عُصْفُورٌ لَهُ شَكْلٌ جَمِيلٌ، وَرِيشٌ كَثِيرٌ، وَذَيْلٌ طَوِيلٌ، وَمِنْقَارٌ قَصِيرٌ، وَصَوْتٌ رَخِيمٌ. هُوَ يَطِيرُ فَوْقَ الْأَشْجَارِ، وَيَلْعَبُ وَيَصِيحُ بَيْنَ الْأَغْصَانِ بِسُرُورٍ وَانْشِرَاحٍ."},
+  {k:"x",h:"قِطَّةُ فَاطِمَةَ",d:"كَانَتْ لِفَاطِمَةَ قِطَّةٌ جَمِيلَةٌ تُحِبُّهَا كَثِيرًا، تُلَاعِبُهَا وَتُنَظِّفُهَا وَتُطْعِمُهَا مِنْ طَعَامِهَا وَتَسْقِيهَا مِنْ شَرَابِهَا. وَلِهَذَا كَانَتِ الْقِطَّةُ تُحِبُّهَا، فَإِذَا رَأَتْهَا دَارَتْ حَوْلَهَا رَافِعَةً ذَيْلَهَا فَرَحًا وَسُرُورًا بِهَا."},
+  {k:"p",h:"الطَّائِرُ",d:"يَا طَائِرًا مَا أَجْمَلَكْ / يَا بُلْبُلًا مَا أَحْسَنَكْ / غَرِّدْ وَصِحْ وَقْتَ السَّحَرْ / وَالْعَبْ وَطِرْ فَوْقَ الشَّجَرْ / الزَّهْرُ حَوْلَكَ فِي عَجَبْ / وَالْوَرْدُ مِثْلِي فِي طَرَبْ / أَعْطَاكَ رَبِّي ذُو الْكَرَمْ / مَا أَنْتَ فِيهِ مِنْ نِعَمْ"}]},
+ {t:"الشَّدَّةُ مَعَ التَّنْوِينِ",fr:"Chadda et tanwîn ensemble",b:[{k:"g",d:"دُبٌّ رَفٌّ قِطٌّ فُلٌّ دُبٍّ رَفٍّ قِطٍّ فُلٍّ دُبًّا رَفًّا قِطًّا فُلًّا"},{k:"s",d:"رَبٌّ كَرِيمٌ. جَدٌّ شَرِيفٌ. لِسَانٌ عَرَبِيٌّ. حَمَامٌ بَلَدِيٌّ. بِسَاطٌ عَجَمِيٌّ. نَسِيجٌ وَطَنِيٌّ"},{k:"s",d:"بَيْضٌ فِي عُشٍّ. أَسَدٌ فِي فَخٍّ. دُبٌّ عَلَى تَلٍّ. مَلَابِسُنَا مِنْ نَسِيجٍ وَطَنِيٍّ. خُبْزُنَا مِنْ بُرٍّ بَلَدِيٍّ"},{k:"s",d:"لَا تُفْشِ سِرًّا. لَا تَعْمَلْ شَرًّا. لَا تَقْبَلْ ذُلًّا. لَا تُحَاوِلْ غِشًّا. لَا تَصْحَبْ غِرًّا. لَا تَحْمِلْ هَمًّا"}]}
+]},
+{p:{fr:"L'article « al »",en:"The article “al”",ar:"أَلْ"},l:[
+ {t:"أَلْ الْقَمَرِيَّةُ",fr:"« al » lunaire : on prononce le l",b:[{k:"e",d:"🌙|قَمَرٌ|اَلْقَمَرُ ⚽|كُرَةٌ|اَلْكُرَةُ 🌹|وَرْدَةٌ|اَلْوَرْدَةُ 🛞|عَجَلَةٌ|اَلْعَجَلَةُ"},{k:"s",d:"اَلْقَمَرُ الْمُنِيرُ. اَلْوَرْدُ الْجَمِيلُ. اَلْوَلَدُ الْأَمِينُ. اَلْوَطَنُ الْعَزِيزُ. اَلْخَيْرُ الْكَثِيرُ. اَلْعَمَلُ الْمُفِيدُ"},{k:"s",d:"نَزْرَعُ الْقُطْنَ وَالْقَمْحَ فِي الْحُقُولِ. نَقْطِفُ الْوَرْدَ وَالْعِنَبَ مِنَ الْبَسَاتِينِ. نَرْكَبُ الْخَيْلَ وَالْبِغَالَ وَالْحَمِيرَ"},{k:"s",d:"نَأْخُذُ الْحَرِيرَ مِنْ دُودِ الْقَزِّ. نَسْتَخْرِجُ الْمَعَادِنَ مِنْ بَطْنِ الْأَرْضِ. نَصْنَعُ الْجُبْنَ مِنْ لَبَنِ الْغَنَمِ وَالْبَقَرِ"}]},
+ {t:"أَلْ الشَّمْسِيَّةُ",fr:"« al » solaire : le l ne se prononce pas",n:{fr:"Avec les lettres solaires, le ل s'écrit mais ne se prononce pas : la lettre suivante porte une chadda.",en:"With sun letters the ل is written but silent: the next letter takes a shadda.",ar:"مَعَ الْحُرُوفِ الشَّمْسِيَّةِ تُكْتَبُ اللَّامُ وَلَا تُنْطَقُ، وَيُشَدَّدُ الْحَرْفُ الَّذِي بَعْدَهَا."},b:[{k:"e",d:"☀️|شَمْسٌ|اَلشَّمْسُ 🌴|تَمْرَةٌ|اَلتَّمْرَةُ 🌼|زَهْرَةٌ|اَلزَّهْرَةُ 🦅|صَقْرٌ|اَلصَّقْرُ"},{k:"w",d:"اَلشَّجَرُ اَلتُّفَّاحُ اَلثَّمَرُ اَلدَّلْوُ اَلذَّهَبُ اَلرُّمَّانُ اَلسَّعْدُ اَلصِّدْقُ اَلطَّيْرُ اَلظُّهْرُ اَللَّبَنُ اَلنَّهْرُ"},{k:"s",d:"قَصَّ الشَّعْرَ. قَطَّ الْقَلَمَ. جَزَّ الصُّوفَ. خَاطَ الثَّوْبَ. طَارَ الصَّقْرُ. فَاضَ النَّهْرُ. حَرَثَ الْأَرْضَ. بَذَرَ الْحَبَّ. حَصَدَ الزَّرْعَ"},{k:"s",d:"أُحِبُّ الصِّدْقَ. أَذُمُّ الْكَذِبَ. أَشُمُّ الزَّهْرَ. أَقُولُ الْحَقَّ. أَقْبَلُ النُّصْحَ. أُحِبُّ الْوَطَنَ. أَفْعَلُ الْخَيْرَ. أُتْقِنُ الْعَمَلَ. أُكْرِمُ الْجَارَ"}]},
+ {t:"قِرَاءَةٌ: حَيَوَانَاتٌ نَافِعَةٌ",fr:"Lecture : des animaux utiles",b:[
+  {k:"x",h:"الْحِصَانُ",d:"حَيَوَانٌ كَبِيرُ الْجِسْمِ، طَوِيلُ الذَّيْلِ، سَرِيعُ الْعَدْوِ، أَنْوَاعُهُ كَثِيرَةٌ وَمَنَافِعُهُ عَظِيمَةٌ. يُسْتَخْدَمُ فِي الرُّكُوبِ وَجَرِّ الْعَرَبَاتِ. وَمِنْ جِلْدِهِ تُصْنَعُ النِّعَالُ، وَمِنْ شَعْرِهِ الْأَوْتَارُ، وَمِنْ حَوَافِرِهِ الْغِرَاءُ."},
+  {k:"x",h:"الْبَقَرَةُ",d:"اَلْبَقَرَةُ كَبِيرَةُ الْجِسْمِ، كَثِيرَةُ النَّفْعِ. نَحْلُبُ مِنْهَا اللَّبَنَ لِنَشْرَبَهُ، وَنَعْمَلُ مِنْهُ الْجُبْنَ وَالزُّبْدَ. وَنَسْتَخْدِمُهَا فِي حَرْثِ الْأَرْضِ وَسَقْيِ النَّبَاتِ وَدَرْسِ الْحَصَادِ وَطَحْنِ الْحَبِّ، وَنَعْمَلُ مِنْ جِلْدِهَا الْأَحْذِيَةَ."},
+  {k:"x",h:"الْحَمَامُ",d:"اَلْحَمَامُ مِنَ الطُّيُورِ الْجَمِيلَةِ النَّافِعَةِ، نَرَاهُ بِكَثْرَةٍ فِي الْحُقُولِ وَقْتَ حَصَادِ الْحُبُوبِ. وَيَعْتَنِي كَثِيرٌ مِنَ النَّاسِ بِتَرْبِيَتِهِ فِي مَنَازِلِهِمْ لِلْغِذَاءِ بِلَحْمِهِ، وَتَسْمِيدِ الْأَرْضِ الزِّرَاعِيَّةِ بِفَضَلَاتِهِ."}]},
+ {t:"قِرَاءَةٌ: سَامِي وَالْمَدْرَسَةُ",fr:"Lecture : Sâmî et l'école",b:[
+  {k:"x",h:"النَّظَافَةُ",d:"كَانَ سَامِي عِنْدَمَا يَقُومُ مِنْ نَوْمِهِ صَبَاحًا يُعْنَى بِنَظَافَةِ جِسْمِهِ، فَيَغْسِلُ يَدَيْهِ وَوَجْهَهُ وَعَيْنَيْهِ وَشَعْرَهُ، ثُمَّ يَلْبَسُ مَلَابِسَهُ وَيَذْهَبُ إِلَى الْمَدْرَسَةِ مَسْرُورًا. نَحْنُ نُحِبُّ سَامِي لِأَنَّهُ نَظِيفٌ وَمُجْتَهِدٌ."},
+  {k:"p",h:"الرِّيَاضَةُ فِي الْبُسْتَانِ",d:"هَيَّا بِنَا هَيَّا بِنَا نَلْعَبُ فِي الْبُسْتَانِ / نَجْرِي عَلَى حَشَائِشٍ مُخْضَرَّةِ الْأَلْوَانِ / فَنَجْتَنِي الْأَزْهَارَ مِنْ وَرْدٍ وَمِنْ رَيْحَانِ / وَنَقْطِفُ الْأَثْمَارَ مِنْ خَوْخٍ وَمِنْ رُمَّانِ / نَقْضِي فَرَاغَ الْوَقْتِ فِي رِيَاضَةِ الْأَبْدَانِ / ثُمَّ نَعُودُ بَعْدَهَا لِلْعِلْمِ وَالْعِرْفَانِ"},
+  {k:"x",h:"الذَّهَابُ إِلَى الْمَدْرَسَةِ",d:"يَذْهَبُ سَامِي إِلَى الْمَدْرَسَةِ كُلَّ صَبَاحٍ مَعَ أُخْتِهِ سُعَادَ. اُنْظُرْ إِلَيْهِ وَقَدْ حَمَلَ كُتُبَهُ وَأَدَوَاتِهِ، وَسَارَ بِنَشَاطٍ وَبِجَانِبِهِ أُخْتُهُ سُعَادُ. نَحْنُ نُحِبُّ الْمَدْرَسَةَ لِأَنَّهَا تُعَلِّمُنَا الْعِلْمَ وَالْأَدَبَ."}]}
+]},
+{p:{fr:"Révision : القاعدة البغدادية",en:"Review: al-Qa'ida al-Baghdadiyya",ar:"مُرَاجَعَةٌ: الْقَاعِدَةُ الْبَغْدَادِيَّةُ"},l:[
+ {t:"الْحُرُوفُ بِالْحَرَكَاتِ الثَّلَاثِ",fr:"Chaque lettre avec les trois voyelles",b:[{k:"g",d:LV_ALPHA.map(c=>{const h=lvH(c);return [h+"َ",(c==="ا"?"إ":h)+"ِ",h+"ُ"].join(" ")}).join(" ")}]},
+ {t:"الْحُرُوفُ بِالتَّنْوِينِ",fr:"Chaque lettre avec les trois tanwîn",b:[{k:"g",d:LV_ALPHA.map(c=>{const h=lvH(c);return [h+"ً",(c==="ا"?"إ":h)+"ٍ",h+"ٌ"].join(" ")}).join(" ")}]},
+ {t:"الْحَرْفُ الْمُشَدَّدُ",fr:"Lettres avec chadda",b:[{k:"g",h:"بِالْفَتْحِ",d:lvMap(c=>c+"َلَّ")},{k:"g",h:"بِالْكَسْرِ",d:lvMap(c=>(c==="أ"?"إ":c)+"ِنِّي")}]},
+ {t:"الْحُرُوفُ الْمُتَحَرِّكَةُ مَوْصُولَةً",fr:"Lettres liées avec voyelles longues",b:[{k:"g",d:LV_ALPHA.filter(c=>c!=="ا").map(c=>[c+"َانَ",c+"ُونَ",c+"ِينَ"].join(" ")).join(" ")}]},
+ {t:"تَسْكِينُ حُرُوفِ الْعِلَّةِ",fr:"Les lettres de prolongation au repos",b:[{k:"g",d:"أَبُو تَوْ ثِي جَيْ حَا خُو دَوْ ذِي رَيْ زَا سَوْ شَوْ صِي ضَيْ طَا ظُو عَوْ غَيْ فِي قَا كَوْ لَوْ مَيْ نِي وَا هُوَ هِيَ يَيْ"},{k:"w",d:"هَؤُلَاءِ"}]},
+ {t:"مَلِكِ النَّاسِ إِلَهِ النَّاسِ",fr:"Lecture enchaînée avec « kum »",b:[{k:"g",d:LV_ALPHA.filter(c=>c!=="ا").map(c=>[c+"َانَكُمْ",c+"ِينَكُمْ",c+"ُونَكُمْ"].join(" ")).join(" ")}]},
+ {t:"الْمَدُّ وَوَصْلُ الْحُرُوفِ",fr:"Prolongations et lecture liée",b:[{k:"w",d:"بَاعَ صَامَ عَادَ سَارَ جَاعَ فَازَ قَامَ سَادَ يَصُونُ يَقُومُ يَثُوبُ يَعُولُ يَدُومُ يَعُودُ يَجُوزُ يَلُومُ يَفُوزُ قِيلَ بِيعَ سِيقَ زِيدَ عِيلَ زِيغَ شِيدَ نِيطَ"},{k:"s",d:"مَا نَقَصَ مَالٌ مِنْ صَدَقَةٍ. اَلصَّبْرُ مِفْتَاحُ الْفَرَجِ. وَقِيلَ ادْخُلُوا الْجَنَّةَ"}]},
+ {t:"الشَّدَّةُ وَوَصْلُ الْحُرُوفِ",fr:"La chadda et la lecture liée",b:[{k:"w",d:"كَلَّمَ صَفَّقَ لَطَّفَ عَرَّبَ هَدَّمَ رَتَّبَ نَظَّفَ مَهَّدَ يُرَشُّ يُعَدُّ يُلَبُّ يُحَلُّ يَحُجُّ يَكُنُّ يَوَدُّ يَلُفُّ عَبِّرْ نَظِّفْ رَتِّبْ قَدِّمْ طَهِّرْ سَهِّلْ عَظِّمْ رَكِّبْ"},{k:"x",d:"اَلتِّلْمِيذُ الْمُهَذَّبُ يُنَظِّفُ وَجْهَهُ، وَيُقَلِّمُ أَظَافِرَهُ، وَيُرَتِّبُ كُتُبَهُ، وَيُصَلِّي فَرْضَهُ، وَيُطِيعُ وَالِدَيْهِ، وَيَعْبُدُ رَبَّهُ، وَيَحْمَدُ خَالِقَهُ."}]},
+ {t:"كَلِمَاتٌ خَاصَّةٌ",fr:"Mots à l'écriture particulière",n:{fr:"Dans ces mots, certaines lettres s'écrivent sans se prononcer, ou se prononcent sans s'écrire (alif caché de ذَلِكَ, هَذَا, لَكِنْ…).",en:"In these words some letters are written but silent, or pronounced but not written.",ar:"فِي هَذِهِ الْكَلِمَاتِ حُرُوفٌ تُكْتَبُ وَلَا تُنْطَقُ أَوْ تُنْطَقُ وَلَا تُكْتَبُ."},b:[{k:"w",d:"ذَاكُنَّ فَذَلِكُنَّ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ وَاللَّائِي قَالَ قَالُوا قَالَتْ لَسْتَ عَلَيْهِمْ"},{k:"w",d:"قَبْلَكُمْ اِسْتَنْصَرُوا اِسْتَطْعَمُوا سَتُغْلَبُونَ إِنْ كُنْتُمْ ظَاهِرِينَ"}]},
+ {t:"صِفَاتُ الْإِيمَانِ",fr:"La foi, résumée et détaillée",b:[{k:"x",h:"إِجْمَالًا",d:"آمَنْتُ بِاللَّهِ كَمَا هُوَ بِأَسْمَائِهِ وَصِفَاتِهِ، وَقَبِلْتُ جَمِيعَ أَحْكَامِهِ وَأَرْكَانِهِ."},{k:"x",h:"تَفْصِيلًا",d:"آمَنْتُ بِاللَّهِ، وَمَلَائِكَتِهِ، وَكُتُبِهِ، وَرُسُلِهِ، وَالْيَوْمِ الْآخِرِ، وَالْقَدَرِ خَيْرِهِ وَشَرِّهِ مِنَ اللَّهِ تَعَالَى، وَالْبَعْثِ بَعْدَ الْمَوْتِ حَقٌّ."},{k:"s",d:"لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ"}]},
+ {t:"حِكَمٌ وَخَاتِمَةٌ",fr:"Sagesses, conclusion et abjad",b:[{k:"s",d:"اَلتَّوَاضُعُ مَعَ الْمُتَوَاضِعِينَ. وَالتَّكَبُّرُ مَعَ الْمُتَكَبِّرِينَ. اَلْعِلْمُ حَسَنٌ وَالْجَهْلُ قَبِيحٌ. اَلذِّكْرُ نُورٌ وَالْغَفْلَةُ ظُلُمَاتٌ. وَاللَّهُ أَعْلَمُ بِالصَّوَابِ"},{k:"x",h:"﴿ الْأَنْعَام ١١٥ ﴾",d:"وَتَمَّتْ كَلِمَتُ رَبِّكَ صِدْقًا وَعَدْلًا لَا مُبَدِّلَ لِكَلِمَاتِهِ وَهُوَ السَّمِيعُ الْعَلِيمُ"},{k:"x",h:"﴿ الصَّافَّات ١٨٠-١٨٢ ﴾",d:"سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ عَمَّا يَصِفُونَ وَسَلَامٌ عَلَى الْمُرْسَلِينَ وَالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ"},{k:"w",h:"أَبْجَد",d:"أَبْجَدْ هَوَّزْ حُطِّي كَلَمُنْ سَعْفَصْ قَرَشَتْ ثَخَّذْ ضَظَغْ"}]}
+]}
+];
+
+// ===== معلّم القراءة — programme complet : leçons numérotées, écoute, exercices, progression =====  © AMOD GROUP
+const UI17={
+ fr:{lvTitle:"Programme complet de lecture",lvSub:"Des lettres jusqu'aux textes : {n} leçons numérotées, à écouter, lire et réviser.",lvPart:"Partie {n}",lvLesson:"Leçon {n}",
+  lvListen:"Écouter",lvAll:"▶ Tout écouter",lvStop:"■ Arrêter",lvQuiz:"Je m'entraîne",lvTap:"Touchez un élément pour l'écouter.",lvNext:"Leçon suivante",lvPrev:"Leçon précédente",
+  lvQ:"Écoutez puis choisissez ce que vous avez entendu",lvHear:"🔊 Réécouter",lvGood:"Bien lu !",lvBad:"Ce n'était pas ça. Bonne réponse :",lvRes:"Résultat : {s} / {n}",
+  lvPass:"Leçon réussie ✓",lvRetry:"Recommencer",lvBack:"Revenir à la leçon",lvDoneN:"{d} / {n} leçons réussies",lvCont:"Continuer : leçon {n}",lvVoice:"La voix est celle du téléphone. Un oustaz peut enregistrer chaque élément dans le Studio : sa voix remplacera alors celle du téléphone.",lvStudio:"🎙 Studio",lvNextQ:"Suivant"},
+ en:{lvTitle:"Complete reading programme",lvSub:"From letters to texts: {n} numbered lessons to listen to, read and review.",lvPart:"Part {n}",lvLesson:"Lesson {n}",
+  lvListen:"Listen",lvAll:"▶ Listen to all",lvStop:"■ Stop",lvQuiz:"Practise",lvTap:"Tap an item to hear it.",lvNext:"Next lesson",lvPrev:"Previous lesson",
+  lvQ:"Listen, then choose what you heard",lvHear:"🔊 Listen again",lvGood:"Well read!",lvBad:"Not quite. Correct answer:",lvRes:"Score: {s} / {n}",
+  lvPass:"Lesson passed ✓",lvRetry:"Try again",lvBack:"Back to the lesson",lvDoneN:"{d} / {n} lessons passed",lvCont:"Continue: lesson {n}",lvVoice:"The voice is the phone's. A teacher can record every item in the Studio, and his voice will replace the phone's.",lvStudio:"🎙 Studio",lvNextQ:"Next"},
+ ar:{lvTitle:"الْمَنْهَجُ الْكَامِلُ لِلْقِرَاءَةِ",lvSub:"مِنَ الْحُرُوفِ إِلَى النُّصُوصِ: {n} دَرْسًا مُرَقَّمًا لِلِاسْتِمَاعِ وَالْقِرَاءَةِ وَالْمُرَاجَعَةِ.",lvPart:"الْجُزْءُ {n}",lvLesson:"الدَّرْسُ {n}",
+  lvListen:"اِسْتَمِعْ",lvAll:"▶ اِسْتَمِعْ لِلْكُلِّ",lvStop:"■ قِفْ",lvQuiz:"تَدَرَّبْ",lvTap:"اِلْمِسْ أَيَّ عُنْصُرٍ لِتَسْمَعَهُ.",lvNext:"الدَّرْسُ التَّالِي",lvPrev:"الدَّرْسُ السَّابِقُ",
+  lvQ:"اِسْتَمِعْ ثُمَّ اخْتَرْ مَا سَمِعْتَ",lvHear:"🔊 أَعِدِ الِاسْتِمَاعَ",lvGood:"أَحْسَنْتَ!",lvBad:"لَيْسَ هَذَا. الْجَوَابُ الصَّحِيحُ:",lvRes:"النَّتِيجَةُ: {s} / {n}",
+  lvPass:"نَجَحْتَ فِي الدَّرْسِ ✓",lvRetry:"أَعِدْ",lvBack:"اِرْجِعْ إِلَى الدَّرْسِ",lvDoneN:"{d} / {n} دَرْسًا",lvCont:"تَابِعْ: الدَّرْسُ {n}",lvVoice:"الصَّوْتُ صَوْتُ الْهَاتِفِ، وَيُمْكِنُ لِلْأُسْتَاذِ تَسْجِيلُ كُلِّ عُنْصُرٍ فِي الِاسْتُودْيُو لِيَحُلَّ صَوْتُهُ مَحَلَّهُ.",lvStudio:"🎙 الِاسْتُودْيُو",lvNextQ:"التَّالِي"}
+};
+Object.keys(UI17).forEach(l=>Object.assign(UI2[l],UI17[l]));
+
+// Numérotation continue des leçons
+const LVL=[];LIVRE.forEach((p,pi)=>p.l.forEach(l=>LVL.push({...l,pi})));
+const lvArNum=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const lvNum=n=>S.lang==="ar"?lvArNum(n):String(n);
+S.lv=S.lv||{done:{}};
+const lvSplit=d=>d.split(/\.\s*/).map(x=>x.trim()).filter(Boolean);
+function lvItems(l){ // éléments à écouter, dans l'ordre
+  const out=[];l.b.forEach(b=>{
+    if(b.k==="e") b.d.split(" ").forEach(x=>{const [,a,w]=x.split("|");out.push(a,w)});
+    else if(b.k==="g"||b.k==="w") out.push(...b.d.split(" "));
+    else if(b.k==="p") out.push(...b.d.split(" / "));
+    else out.push(...lvSplit(b.d));
+  });return out.filter(Boolean);
+}
+function lvTokens(){const s=new Set();LVL.forEach(l=>lvItems(l).forEach(x=>s.add(x)));return [...s]}
+const lvA=s=>`<bdi class="ar" dir="rtl">${s}</bdi>`;
+const lvSay=s=>esc(s);
+
+function lvHome(){
+  const d=LVL.filter((_,i)=>S.lv.done[i]).length, next=LVL.findIndex((_,i)=>!S.lv.done[i]);
+  let html=`<section class="hello"><span class="eyebrow">${arW(t("qaida").split(" · ")[0])}</span><h1>${t("lvTitle")}</h1><p>${fmt(t("lvSub"),{n:LVL.length})}</p></section>
+  <div class="card lv-prog"><div class="progress"><i style="width:${d/LVL.length*100}%"></i></div><p>${fmt(t("lvDoneN"),{d,n:LVL.length})}</p>
+  ${next>=0?`<button class="btn" data-lvl="${next}">${fmt(t("lvCont"),{n:lvNum(next+1)})}</button>`:""}</div>`;
+  let i=0;
+  LIVRE.forEach((p,pi)=>{
+    html+=`<h2 class="more-h"><span class="lv-pn">${lvNum(pi+1)}</span>${fmt(t("lvPart"),{n:lvNum(pi+1)})} · ${p.p[S.lang]||p.p.fr}</h2><div class="card" style="padding-block:4px">`;
+    p.l.forEach(l=>{const ok=S.lv.done[i];
+      html+=`<button class="sch-row ${ok?"ok":""}" data-lvl="${i}"><span class="sch-num">${ok?"✓":lvNum(i+1)}</span><span class="sch-t"><b>${lvA(l.t)}</b><span>${S.lang==="ar"?fmt(t("lvLesson"),{n:lvNum(i+1)}):l.fr}${ok?" · "+"★".repeat(ok):""}</span></span><i aria-hidden="true">›</i></button>`;i++});
+    html+=`</div>`;
+  });
+  return html+`<p class="note">${t("lvVoice")}</p><button class="btn ghost" data-qr="studio" style="width:100%">${t("lvStudio")}</button>`;
+}
+function lvBlock(b,bi){
+  const head=b.h?`<h3 class="lv-h">${lvA(b.h)}</h3>`:"";
+  const all=`<button class="lv-all" data-lvall="${bi}">${t("lvAll")}</button>`;
+  if(b.k==="e") return `<div class="lv-blk">${head}<div class="lv-e">${b.d.split(" ").map(x=>{const [em,a,w]=x.split("|");return `<button class="lv-ec" data-say="${lvSay(w)}"><span class="lv-em">${em}</span><b class="ar" data-say="${lvSay(a)}">${a}</b><span class="ar">${w}</span></button>`}).join("")}</div></div>`;
+  if(b.k==="g") return `<div class="lv-blk">${head}${all}<div class="lv-g">${b.d.split(" ").map(x=>`<button class="ar" data-say="${lvSay(x)}">${x}</button>`).join("")}</div></div>`;
+  if(b.k==="w") return `<div class="lv-blk">${head}${all}<div class="lv-w">${b.d.split(" ").map(x=>`<button class="ar" data-say="${lvSay(x)}">${x}</button>`).join("")}</div></div>`;
+  if(b.k==="p") return `<div class="lv-blk lv-poem">${head}${all}${b.d.split(" / ").map(v=>`<button class="lv-s ar" data-say="${lvSay(v)}">${v}</button>`).join("")}</div>`;
+  if(b.k==="s") return `<div class="lv-blk">${head}${all}${lvSplit(b.d).map(v=>`<button class="lv-s ar" data-say="${lvSay(v)}">${v}</button>`).join("")}</div>`;
+  return `<div class="lv-blk lv-x">${head}${all}<p class="ar">${lvSplit(b.d).map(v=>`<span data-say="${lvSay(v)}">${v}${/[؟!]$/.test(v)?"":"."}</span>`).join(" ")}</p></div>`;
+}
+function lvLesson(){
+  const i=S.qr.li||0, l=LVL[i], p=LIVRE[l.pi];
+  return `<section class="hello"><span class="eyebrow">${fmt(t("lvPart"),{n:lvNum(l.pi+1)})} · ${p.p[S.lang]||p.p.fr} — ${fmt(t("lvLesson"),{n:lvNum(i+1)})}</span><h1>${lvA(l.t)}</h1>${S.lang!=="ar"?`<p>${l.fr}</p>`:""}</section>
+  ${l.n?`<div class="card lv-note"><p>${l.n[S.lang]||l.n.fr}</p></div>`:""}
+  <p class="note">${t("lvTap")}</p>
+  <div class="card lv-card">${l.b.map(lvBlock).join("")}</div>
+  <button class="btn" data-lvquiz="1" style="width:100%">✦ ${t("lvQuiz")}</button>
+  <div class="lv-nav">${i>0?`<button class="btn ghost" data-lvl="${i-1}">‹ ${t("lvPrev")}</button>`:"<span></span>"}${i<LVL.length-1?`<button class="btn ghost" data-lvl="${i+1}">${t("lvNext")} ›</button>`:""}</div>`;
+}
+// ---------- Exercice : écouter et reconnaître ----------
+function lvMakeQuiz(i){
+  const pool=[...new Set(lvItems(LVL[i]))], wide=[...new Set([...(LVL[i-1]?lvItems(LVL[i-1]):[]),...pool])];
+  const sh=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  const n=Math.min(6,pool.length);
+  return sh(pool).slice(0,n).map(ans=>{const others=sh((pool.length>=4?pool:wide).filter(x=>x!==ans)).slice(0,3);return {ans,opts:sh([ans,...others])}});
+}
+function lvQuiz(){
+  const z=S.qr.lvz, l=LVL[S.qr.li];
+  if(z.i>=z.r.length){
+    const pass=z.s>=Math.ceil(z.r.length*0.7);
+    return `<section class="hello"><span class="eyebrow">${fmt(t("lvLesson"),{n:lvNum(S.qr.li+1)})}</span><h1>${fmt(t("lvRes"),{s:z.s,n:z.r.length})}</h1></section>
+    <div class="card" style="text-align:center"><p style="font-size:44px;margin:6px 0">${pass?"🌟":"💪"}</p><p>${pass?t("lvPass"):""}</p>
+    <div class="lv-nav"><button class="btn ghost" data-lvquiz="1">${t("lvRetry")}</button>${pass&&S.qr.li<LVL.length-1?`<button class="btn" data-lvl="${S.qr.li+1}">${t("lvNext")} ›</button>`:`<button class="btn" data-lvl="${S.qr.li}">${t("lvBack")}</button>`}</div></div>`;
+  }
+  const q=z.r[z.i], long=q.ans.length>14;
+  return `<section class="hello"><span class="eyebrow">${lvA(l.t)}</span><h1 class="sch-q-of">${z.i+1} / ${z.r.length}</h1><p>${t("lvQ")}</p></section>
+  <div class="progress"><i style="width:${z.i/z.r.length*100}%"></i></div>
+  <button class="btn lv-hear" id="lv-hear">${t("lvHear")}</button>
+  <div class="lv-opts ${long?"long":""}">${q.opts.map((o,k)=>{const st=z.sel==null?"":o===q.ans?"ok":k===z.sel?"bad":"";return `<button class="ar ${st}" data-lvopt="${k}" ${z.sel!=null?"disabled":""}>${o}</button>`}).join("")}</div>
+  ${z.sel!=null?`<p class="tw-msg ${q.opts[z.sel]===q.ans?"ok":""}">${q.opts[z.sel]===q.ans?t("lvGood"):t("lvBad")+" "+lvA(q.ans)}</p><button class="btn" id="lv-nextq" style="width:100%">${t("lvNextQ")} ›</button>`:""}`;
+}
+// ---------- Navigation & sons ----------
+const _viewQuranLv=viewQuran;
+viewQuran=function(){const v=S.qr.v;if(v==="livre")return lvHome();if(v==="lvl")return lvLesson();if(v==="lvq")return lvQuiz();return _viewQuranLv()};
+const _quranBackLv=quranBack;
+quranBack=function(){
+  if(S.sub==="quran"&&S.qr&&["livre","lvl","lvq"].includes(S.qr.v)){voxStop();S.qr={...S.qr,v:{livre:"qaida",lvl:"livre",lvq:"lvl"}[S.qr.v]};save();render();scrollTo(0,0);return true}
+  return _quranBackLv();
+};
+function lvFlash(el){document.querySelectorAll(".lv-on").forEach(e=>e.classList.remove("lv-on"));if(el){el.classList.add("lv-on");setTimeout(()=>el.classList.remove("lv-on"),1400)}}
+document.addEventListener("click",e=>{
+  if(S.sub!=="quran") return;
+  const g=x=>e.target.closest&&e.target.closest(x);
+  let el;
+  if(el=g("[data-lvl]")){e.stopPropagation();voxStop();S.qr={...S.qr,v:"lvl",li:+el.dataset.lvl};save();render();scrollTo(0,0);return}
+  if(el=g("[data-lvquiz]")){voxStop();const i=S.qr.li||0;S.qr={...S.qr,v:"lvq",lvz:{r:lvMakeQuiz(i),i:0,s:0,sel:null}};save();render();scrollTo(0,0);setTimeout(()=>sayAr(S.qr.lvz.r[0].ans),350);return}
+  if(el=g("#lv-hear")){sayAr(S.qr.lvz.r[S.qr.lvz.i].ans);return}
+  if(el=g("[data-lvopt]")){const z=S.qr.lvz;if(z.sel!=null)return;z.sel=+el.dataset.lvopt;const q=z.r[z.i];if(q.opts[z.sel]===q.ans)z.s++;else sayAr(q.ans);save();const y=scrollY;render();scrollTo(0,y);return}
+  if(el=g("#lv-nextq")){const z=S.qr.lvz;z.i++;z.sel=null;
+    if(z.i>=z.r.length){const pass=z.s>=Math.ceil(z.r.length*0.7),i=S.qr.li,stars=z.s===z.r.length?3:z.s>=z.r.length-1?2:1;
+      if(pass){const prev=S.lv.done[i]||0;S.lv.done[i]=Math.max(prev,stars);if(!prev&&typeof addPts==="function")addPts(15);if(typeof toast==="function")toast(t("lvPass"),true)}}
+    save();render();scrollTo(0,0);if(z.i<z.r.length)setTimeout(()=>sayAr(z.r[z.i].ans),300);return}
+  if(el=g("[data-lvall]")){const blk=el.closest(".lv-blk");if(el.classList.contains("on")){voxStop();el.classList.remove("on");el.textContent=t("lvAll");return}
+    const parts=[...blk.querySelectorAll("[data-say]")].map(x=>[x.dataset.say,"ar-SA"]);
+    el.classList.add("on");el.textContent=t("lvStop");Promise.resolve(speakSeq(parts)).finally(()=>{el.classList.remove("on");el.textContent=t("lvAll")});return}
+  if(el=g("[data-say]")){if(!el.closest(".lv-card"))return;e.stopPropagation();sayAr(el.dataset.say);lvFlash(el);return}
+},true);
+
+// ---------- Points d'entrée ----------
+const _qaidaHomeLv=qaidaHome;
+qaidaHome=function(){
+  const d=LVL.filter((_,i)=>S.lv.done[i]).length;
+  return _qaidaHomeLv().replace('</section>',`</section>
+  <button class="qr-big lv-entry" data-qr="livre"><span class="qr-ic ar">أ ب ت</span><span><b>${t("lvTitle")}</b><small>${fmt(t("lvSub"),{n:LVL.length})}</small><i class="progress"><i style="width:${d/LVL.length*100}%"></i></i><em>${d}/${LVL.length}</em></span></button>`);
+};
+if(typeof viewLearn==="function"){const _vl=viewLearn;viewLearn=function(){return _vl().replace('<div class="card" style="padding-block:4px">',`<div class="card" style="padding-block:4px">${hubRow("quran",t("lvTitle"),fmt(t("lvSub"),{n:LVL.length}),'data-open="livre"')}`)};
+  VIEWS.learn=viewLearn}
+document.addEventListener("click",e=>{const o=e.target.closest&&e.target.closest('[data-qr="livre"],[data-qr="studio"]');if(!o||S.sub!=="quran")return;e.stopImmediatePropagation();voxStop();S.qr={...S.qr,v:o.dataset.qr};save();render();scrollTo(0,0)},true);
+if(typeof BADGES!=="undefined"){BADGES.push(["livre",{fr:"Lecteur accompli",en:"Accomplished reader",ar:"قارئ متمكّن"},{fr:"Réussir tout le programme de lecture",en:"Pass the whole reading programme",ar:"انجح في منهج القراءة كله"},()=>LVL.every((_,i)=>S.lv.done[i])]);if(typeof BADGE_ICON!=="undefined")BADGE_ICON.livre="ق"}
+
+document.head.insertAdjacentHTML("beforeend",`<style>
+.sch-row .sch-t b .ar{font-size:21px;line-height:1.6}.lv-prog{text-align:center}.lv-prog p{margin:8px 0}.lv-pn{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:13px;margin-inline-end:6px}
+.lv-card{display:flex;flex-direction:column;gap:18px}.lv-blk{position:relative}.lv-h{margin:0 0 8px;color:var(--accent);font-size:20px}
+.lv-all{display:block;margin:0 0 10px auto;border:1px solid var(--line);background:var(--soft);color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700}
+.lv-all.on{background:var(--accent);color:var(--accent-ink)}
+.lv-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:8px;direction:rtl}
+.lv-g button{min-height:60px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:28px;line-height:1.4;padding:4px}
+.lv-w{display:flex;flex-wrap:wrap;gap:8px;direction:rtl}
+.lv-w button{border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;line-height:1.5;padding:6px 14px}
+.lv-s{display:block;width:100%;text-align:right;direction:rtl;border:none;border-bottom:1px dashed var(--line);background:none;color:var(--ink);font-size:23px;line-height:1.8;padding:8px 4px}
+.lv-poem .lv-s{text-align:center;color:var(--accent)}
+.lv-x p{direction:rtl;text-align:justify;font-size:23px;line-height:2.1;margin:0}.lv-x span{cursor:pointer;border-radius:8px;padding:0 2px}
+.lv-e{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;direction:rtl}
+.lv-ec{display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 6px}
+.lv-em{font-size:38px;line-height:1.2}.lv-ec b{font-size:40px;color:var(--accent);line-height:1.4}.lv-ec span.ar{font-size:22px}
+.lv-on{background:var(--accent)!important;color:var(--accent-ink)!important;transition:background .2s}.lv-on *{color:var(--accent-ink)!important}
+.lv-note{border-inline-start:4px solid var(--gold)}.lv-note p{margin:0}
+.lv-nav{display:flex;justify-content:space-between;gap:10px;margin-top:12px}.lv-nav .btn{flex:1}
+.lv-hear{width:100%;margin:6px 0 14px}
+.lv-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lv-opts.long{grid-template-columns:1fr}
+.lv-opts button{min-height:70px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:26px;line-height:1.5;padding:6px;direction:rtl}
+.lv-opts.long button{font-size:20px}
+.lv-opts button.ok{border-color:var(--accent);background:var(--soft)}.lv-opts button.bad{border-color:var(--rose);opacity:.7}
+</style>`);
 
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
