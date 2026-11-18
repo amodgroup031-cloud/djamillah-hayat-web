@@ -267,7 +267,7 @@ body.has-player .app{padding-bottom:calc(200px + env(safe-area-inset-bottom,0px)
 <body>
 <div id="root"></div>
 
-<script>
+<script type="text/djh-app" id="djh-app">
 // ---------- Logo ----------
 const LOGO_OLD = `<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="var(--accent)"/><path d="M32 47c-9-6-15-11.5-15-18.5 0-4.6 3.4-8 7.6-8 3.2 0 5.7 1.8 7.4 4.6 1.7-2.8 4.2-4.6 7.4-4.6 4.2 0 7.6 3.4 7.6 8C47 35.5 41 41 32 47z" fill="none" stroke="var(--accent-ink)" stroke-width="2.4"/><path d="M38 14a8 8 0 1 0 6 13 9.5 9.5 0 1 1-6-13z" fill="var(--gold)"/></svg>`;
 
@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.40";
+const APP_VERSION = "1.0.41";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -5459,9 +5459,103 @@ const _viewWorshipU=viewWorship;
 viewWorship=function(){return _viewWorshipU().replace(/<button class="qtile" data-sub="feasts">[\s\S]*?<\/button>/,"")};
 VIEWS.worship=viewWorship;VIEWS.spirit=viewWorship;
 
+// ===== Mises à jour automatiques pour tout le monde =====  © AMOD GROUP
+// Android : la nouvelle version de l'application est téléchargée en arrière-plan et s'installe au prochain démarrage.
+// iPhone (version web) : le service worker charge toujours la dernière version.
+const OTA_BASE="https://amodgroup031-cloud.github.io/djamillah-hayat-web/ota/";
+const UI19={
+ fr:{otaReady:"Nouvelle version {v} prête",otaReadyD:"Les nouveautés s'installent toutes seules. Redémarrez pour en profiter maintenant.",otaNow:"Redémarrer maintenant",otaLater:"Plus tard",
+  otaApk:"Une nouvelle version complète de l'application est disponible",otaApkD:"Cette mise à jour touche le téléphone (sons, permissions). Elle doit être installée une fois.",otaApkBtn:"Télécharger et installer",
+  otaAuto:"Mises à jour automatiques",otaAutoD:"Version {v} · les améliorations arrivent toutes seules, sans rien faire.",otaCheck:"Vérifier maintenant",otaUp:"Vous avez la dernière version ✓",otaNew:"Les nouveautés de cette version"},
+ en:{otaReady:"New version {v} ready",otaReadyD:"Updates install by themselves. Restart to enjoy them now.",otaNow:"Restart now",otaLater:"Later",
+  otaApk:"A new full version of the app is available",otaApkD:"This update affects the phone (sounds, permissions). It must be installed once.",otaApkBtn:"Download and install",
+  otaAuto:"Automatic updates",otaAutoD:"Version {v} · improvements arrive by themselves.",otaCheck:"Check now",otaUp:"You have the latest version ✓",otaNew:"What's new in this version"},
+ ar:{otaReady:"الإصدار الجديد {v} جاهز",otaReadyD:"التحديثات تُثبَّت تلقائيًا. أعد التشغيل للاستفادة منها الآن.",otaNow:"أعد التشغيل الآن",otaLater:"لاحقًا",
+  otaApk:"تتوفر نسخة كاملة جديدة من التطبيق",otaApkD:"هذا التحديث يخص الهاتف (الأصوات والأذونات) ويجب تثبيته مرة واحدة.",otaApkBtn:"تنزيل وتثبيت",
+  otaAuto:"التحديث التلقائي",otaAutoD:"الإصدار {v} · التحسينات تصل وحدها دون أي جهد.",otaCheck:"تحقق الآن",otaUp:"لديك أحدث إصدار ✓",otaNew:"جديد هذا الإصدار"}
+};
+Object.keys(UI19).forEach(l=>Object.assign(UI2[l],UI19[l]));
+const otaCmp=(a,b)=>{a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(let i=0;i<3;i++){const d=(a[i]||0)-(b[i]||0);if(d)return d}return 0};
+const OTA_NATIVE=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+let OTA={ready:null,apk:null,info:null};
+async function otaCheck(manual){
+  try{
+    const r=await fetch(OTA_BASE+"version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;
+    const info=await r.json();OTA.info=info;
+    if(OTA_NATIVE){
+      const boot=window.DJH_BOOTV||APP_VERSION;
+      if(info.apk&&otaCmp(info.apk,boot)>0) OTA.apk=info;
+      if(otaCmp(info.v,APP_VERSION)>0&&localStorage.getItem("djh-ota-bad")!==info.v){
+        if(localStorage.getItem("djh-ota-v")!==info.v){
+          const h=await (await fetch(OTA_BASE+"app.html?v="+encodeURIComponent(info.v),{cache:"no-store"})).text();
+          if(!h.includes('id="djh-app"')||!h.includes('const APP_VERSION = "'+info.v+'"')||!h.trim().endsWith("</html>"))throw 0;
+          try{localStorage.setItem("djh-ota-html",h);localStorage.setItem("djh-ota-v",info.v)}catch(e){localStorage.removeItem("djh-ota-html");throw e}
+        }
+        OTA.ready=info;
+      }
+    }else if("serviceWorker" in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)reg.update()}
+    if(manual&&typeof toast==="function"&&!OTA.ready&&!OTA.apk)toast(t("otaUp"));
+    otaShow();
+  }catch(e){}
+}
+function otaShow(){
+  document.querySelector(".ota-bar")?.remove();
+  const x=OTA.ready||OTA.apk;if(!x||sessionStorage.getItem("djh-ota-later")===x.v)return;
+  const apk=!OTA.ready&&OTA.apk, notes=x.notes&&(x.notes[S.lang]||x.notes.fr);
+  const el=document.createElement("div");el.className="ota-bar";
+  el.innerHTML=`<b>✨ ${apk?t("otaApk"):fmt(t("otaReady"),{v:x.v})}</b><span>${apk?t("otaApkD"):t("otaReadyD")}</span>${notes?`<details><summary>${t("otaNew")}</summary><ul>${notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>`:""}
+   <div><button class="btn" id="ota-go">${apk?t("otaApkBtn"):t("otaNow")}</button><button class="btn ghost" id="ota-later">${t("otaLater")}</button></div>`;
+  document.body.appendChild(el);
+  el.querySelector("#ota-later").onclick=()=>{sessionStorage.setItem("djh-ota-later",x.v);el.remove()};
+  el.querySelector("#ota-go").onclick=()=>{
+    if(apk){const u=x.apkUrl;const B=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.Browser;if(B)B.open({url:u}).catch(()=>window.open(u,"_system"));else window.open(u,"_blank")}
+    else{save();location.reload()}};
+}
+// Réglage visible dans Plus
+const _viewMoreOta=viewMore;
+viewMore=function(){const h=_viewMoreOta();if(S.sub)return h;
+  return h.replace(`<p class="note">${t("offline")}</p>`,`<div class="card ota-card" data-mine><b>🔄 ${t("otaAuto")}</b><p class="note" style="margin:4px 0 10px">${fmt(t("otaAutoD"),{v:APP_VERSION})}</p><button class="btn ghost" id="ota-check" style="width:100%">${t("otaCheck")}</button></div><p class="note">${t("offline")}</p>`)};
+VIEWS.more=viewMore;
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#ota-check"))otaCheck(true)});
+// Quand : au démarrage, au retour dans l'application, et toutes les 6 heures
+setTimeout(()=>otaCheck(false),6000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-(OTA.t||0)>3600e3){OTA.t=Date.now();otaCheck(false)}});
+setInterval(()=>otaCheck(false),6*3600e3);
+document.head.insertAdjacentHTML("beforeend",`<style>
+.ota-bar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px;box-shadow:0 14px 40px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:6px;animation:otaIn .35s ease}
+.ota-bar b{font-size:16px;color:var(--accent)}.ota-bar span{font-size:14px;line-height:1.45}.ota-bar div{display:flex;gap:8px;margin-top:6px}.ota-bar .btn{flex:1}
+.ota-bar ul{margin:6px 0 0;padding-inline-start:18px;font-size:13.5px}.ota-bar summary{font-size:13.5px;font-weight:700;color:var(--accent)}
+@keyframes otaIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+</style>`);
+
 scheduleNotifications();
 if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
+</script>
+<script>
+var DJH_BOOTV="1.0.41";
+(function(){
+ var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
+ function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
+ function run(code){var bad=false,f=function(){bad=true};window.addEventListener("error",f);var s=document.createElement("script");s.text=code;document.body.appendChild(s);window.removeEventListener("error",f);return !bad}
+ var nat=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+ if(nat){try{
+  var L=localStorage,v=L.getItem("djh-ota-v"),h=L.getItem("djh-ota-html");
+  if(v&&cmp(v,DJH_BOOTV)<=0){L.removeItem("djh-ota-v");L.removeItem("djh-ota-html")}
+  else if(v&&h&&L.getItem("djh-ota-bad")!==v){
+   var d=new DOMParser().parseFromString(h,"text/html"),a2=d.getElementById("djh-app");
+   if(a2){
+    var olds=[].slice.call(document.head.querySelectorAll("style"));
+    [].forEach.call(d.head.querySelectorAll("style"),function(x){document.head.appendChild(document.importNode(x,true))});
+    olds.forEach(function(x){x.remove()});
+    window.DJH_OTA=v;
+    if(run(a2.textContent))return;
+    L.setItem("djh-ota-bad",v);L.removeItem("djh-ota-html");L.removeItem("djh-ota-v");location.reload();return;
+   }
+  }
+ }catch(e){}}
+ run(A.textContent);
+})();
 </script>
 
 <script>
