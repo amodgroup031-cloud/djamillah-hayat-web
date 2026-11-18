@@ -1,0 +1,135 @@
+{
+ "ok": 127,
+ "retires": [
+  {
+   "t": "أَكْثِرُوا ذِكْرَ هَاذِمِ اللَّذَّاتِ",
+   "entendu": "أكثر ذكر هاذم الذات",
+   "score": 0.84
+  },
+  {
+   "t": "لَا تَغْضَبْ",
+   "entendu": "لا ترضب",
+   "score": 0.83
+  },
+  {
+   "t": "À faire aujourd'hui : Invoquez pour vos morts : « Allâhoumma",
+   "entendu": "À faire aujourd'hui, invoquer pour vos morts, à la hommage e",
+   "score": 0.76
+  },
+  {
+   "t": "À faire aujourd'hui : Demandez à Allah une bonne fin : « All",
+   "entendu": "À faire aujourd'hui, demandez à Alain une bonne fin, à l'aum",
+   "score": 0.79
+  }
+ ],
+ "isoles": 454,
+ "moteurs": {
+  "chatterbox": 25,
+  "piper": 31,
+  "piper-lent": 3,
+  "kokoro": 54,
+  "kokoro-lent": 14
+ },
+ "notifications": {
+  "matin_ar": [
+   "piper",
+   0.97,
+   "أسلام عليكم، حان وقت برنامجك اليوم، أفتح التطبيق لأخبرك بما تفعله اليوم."
+  ],
+  "mort_ar": [
+   "piper",
+   0.97,
+   "تذكور الموت فقد يأتي اليوم، أستعد له صلف الوقت، واستغفر، ورد الحقوق، ولا تيأس أب"
+  ],
+  "plan_ar": [
+   "chatterbox",
+   1.0,
+   "حان وقت مراجعة خطتك الإيمانية، هل أنجزت أهدافك اليوم؟"
+  ],
+  "jeune_ar": [
+   "piper",
+   0.97,
+   "غدا يوم صيام إن شاء الله فلا تنسى السحور"
+  ],
+  "tawba_ar": [
+   "chatterbox",
+   1.0,
+   "خطوة أخرى نحو الله اليوم خذ دقيقة لتسجل يومك"
+  ],
+  "fajr_ar": [
+   "piper",
+   1.0,
+   "حان الآن وقت صلاة الفجر، حي على الصلاة، حي على الفلاح."
+  ],
+  "dhuhr_ar": [
+   "piper",
+   1.0,
+   "حان الآن وقت صلاة الظهر حي على الصلاة حي على الفلاح"
+  ],
+  "asr_ar": [
+   "piper",
+   1.0,
+   "حان الآن وقت صلاة العصر حي على الصلاة حي على الفلاح"
+  ],
+  "maghrib_ar": [
+   "piper",
+   1.0,
+   "حان الآن وقت صلاة المغرب، حي على الصلاة، حي على الفلاح"
+  ],
+  "isha_ar": [
+   "piper",
+   1.0,
+   "حان الآن وقت صلاة العشاء، حي على الصلاة، حي على الفلاح."
+  ],
+  "matin_fr": [
+   "kokoro",
+   0.96,
+   "As-salamu alaykoum. C'est l'heure de votre programme du jour. Ouvrez Jamila Ayat"
+  ],
+  "mort_fr": [
+   "piper",
+   0.99,
+   "Souviens-toi de la mort. Elle peut venir aujourd'hui. Prépare-toi, prie à l'heur"
+  ],
+  "plan_fr": [
+   "kokoro",
+   1.0,
+   "C'est l'heure de faire le point sur votre plan spirituel. Avez-vous accompli vos"
+  ],
+  "jeune_fr": [
+   "kokoro",
+   0.93,
+   "Demain est un jour de jeûne. Pensez au repas de l'aube. Cala vous facilite."
+  ],
+  "tawba_fr": [
+   "piper",
+   0.95,
+   "Encore un pas verra là aujourd'hui. Prenez une minute pour noter votre journée."
+  ],
+  "fajr_fr": [
+   "kokoro",
+   0.98,
+   "C'est l'heure de la prière du Fajr. Venez à la prière, venez à la réussite."
+  ],
+  "dhuhr_fr": [
+   "kokoro",
+   0.96,
+   "C'est l'heure de la prière du dort. Venez à la prière, venez à la réussite."
+  ],
+  "asr_fr": [
+   "piper",
+   0.98,
+   "C'est l'heure de la prière du astre. Venez à la prière, venez à la réussite."
+  ],
+  "maghrib_fr": [
+   "kokoro",
+   1.0,
+   "C'est l'heure de la prière du Maghreb. Venez à la prière, venez à la réussite."
+  ],
+  "isha_fr": [
+   "kokoro",
+   0.98,
+   "C'est l'heure de la prière du Hicha. Venez à la prière, venez à la réussite."
+  ]
+ }
+}
