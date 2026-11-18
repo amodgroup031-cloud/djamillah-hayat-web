@@ -1014,7 +1014,7 @@ function upcomingHTML(){
 // ---------- Vues de l'onglet Plus ----------
 const MORE=[["school","mSchool","dSchool"],["quran","mQuran","dQuran"],["plan","mPlan","dPlan"],["tawba","mTawba","dTawba"],["qibla","mQibla","dQibla"],["calendar","mCal","dCal"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={school:viewSchool,plan:viewPlan,qibla:viewQibla,calendar:viewCal,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={rappels:viewRappels,school:viewSchool,plan:viewPlan,qibla:viewQibla,calendar:viewCal,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1661,6 +1661,8 @@ async function doSchedule(){
     if(R.feast!==false) FEASTS.forEach((f,i)=>{const d=at(f.date,7);if(d>now)list.push({id:400+i,title:L3(f.name),body:fmt(t("inDays"),{n:7})+" · "+t("feastTips"),schedule:{at:d,allowWhileIdle:true}})});
     if(typeof tawbaNotif==="function"){const n=tawbaNotif();if(n)list.push(n)}
     if(typeof ibadaNotifs==="function") ibadaNotifs(list);
+    if(typeof prayerNotifs==="function") prayerNotifs(list);
+    if(typeof vxDecorate==="function") vxDecorate(list);
     if(list.length) await LN.schedule({notifications:list.map(n=>({...n,smallIcon:"ic_stat_icon",iconColor:"#0D6657"}))});
   }catch(e){}
 }
@@ -3803,9 +3805,9 @@ const QAIDA=[
 
 // ---------- Textes ----------
 Object.keys(UI12).forEach(l=>Object.assign(UI2[l],{
- fr:{qaida:"معلّم القراءة · Le professeur de lecture",qaidaSub:"Programme complet en 20 leçons, des lettres jusqu'à la lecture du Coran",exQ:"Exemple du Coran · Al-Husary (Mou'allim)",lxWords:"Lire des mots",voiceSoon:"🔊 Touchez une case pour l'entendre (voix du téléphone, en attendant la voix de l'oustaz). Pour une récitation parfaite, écoutez l'exemple du Coran ci-dessous.",voiceBy:"🔊 Voix : {v}",practice:"S'entraîner · 5 questions",lxQName:"Quel est le nom de cette lettre ?",lxQRead:"Comment se lit ceci ?",lxDone:"Leçon terminée",lxFinish:"J'ai lu toute la sourate",lxGo:"Passer à la suite"},
- en:{qaida:"معلّم القراءة · The reading teacher",qaidaSub:"Complete 20-lesson programme, from letters to reading the Quran",exQ:"Quranic example · Al-Husary (Mu'allim)",lxWords:"Read words",voiceSoon:"🔊 Tap a tile to hear it (phone voice, until the teacher's voice is added). For a perfect recitation, listen to the Quranic example below.",voiceBy:"🔊 Voice: {v}",practice:"Practise · 5 questions",lxQName:"What is the name of this letter?",lxQRead:"How is this read?",lxDone:"Lesson completed",lxFinish:"I have read the whole surah",lxGo:"Continue"},
- ar:{qaida:"معلّم القراءة",qaidaSub:"برنامج كامل في عشرين درساً من الحروف إلى قراءة القرآن",exQ:"مثال من القرآن · الحصري (المعلّم)",lxWords:"قراءة الكلمات",voiceSoon:"🔊 المس خانةً لتسمعها (صوت الهاتف إلى أن يُضاف صوت الأستاذ). وللتلاوة المتقنة استمع إلى المثال القرآني أدناه.",voiceBy:"🔊 الصوت: {v}",practice:"تدرّب · 5 أسئلة",lxQName:"ما اسم هذا الحرف؟",lxQRead:"كيف يُقرأ هذا؟",lxDone:"أنهيت الدرس",lxFinish:"قرأت السورة كاملة",lxGo:"تابع"}
+ fr:{qaida:"معلّم القراءة · Le professeur de lecture",qaidaSub:"Programme complet en 20 leçons, des lettres jusqu'à la lecture du Coran",exQ:"Exemple du Coran · Al-Husary (Mou'allim)",lxWords:"Lire des mots",voiceSoon:"🔊 Touchez une case pour l'entendre. Pour la récitation du Coran, écoutez l'exemple d'Al-Husary ci-dessous.",voiceBy:"🔊 Voix : {v}",practice:"S'entraîner · 5 questions",lxQName:"Quel est le nom de cette lettre ?",lxQRead:"Comment se lit ceci ?",lxDone:"Leçon terminée",lxFinish:"J'ai lu toute la sourate",lxGo:"Passer à la suite"},
+ en:{qaida:"معلّم القراءة · The reading teacher",qaidaSub:"Complete 20-lesson programme, from letters to reading the Quran",exQ:"Quranic example · Al-Husary (Mu'allim)",lxWords:"Read words",voiceSoon:"🔊 Tap a tile to hear it. For Quran recitation, listen to Al-Husary's example below.",voiceBy:"🔊 Voice: {v}",practice:"Practise · 5 questions",lxQName:"What is the name of this letter?",lxQRead:"How is this read?",lxDone:"Lesson completed",lxFinish:"I have read the whole surah",lxGo:"Continue"},
+ ar:{qaida:"معلّم القراءة",qaidaSub:"برنامج كامل في عشرين درساً من الحروف إلى قراءة القرآن",exQ:"مثال من القرآن · الحصري (المعلّم)",lxWords:"قراءة الكلمات",voiceSoon:"🔊 المس خانةً لتسمعها. ولتلاوة القرآن استمع إلى مثال الحصري أدناه.",voiceBy:"🔊 الصوت: {v}",practice:"تدرّب · 5 أسئلة",lxQName:"ما اسم هذا الحرف؟",lxQRead:"كيف يُقرأ هذا؟",lxDone:"أنهيت الدرس",lxFinish:"قرأت السورة كاملة",lxGo:"تابع"}
 }[l]));
 
 // ---------- Vues du professeur ----------
@@ -4310,6 +4312,268 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .cal-c.ev{box-shadow:inset 0 0 0 2px var(--gold)}.cal-c i,.cal-leg i{position:absolute;bottom:3px;width:6px;height:6px;border-radius:50%}.cal-c i.w,.cal-leg i.w{background:#9AA8A5}.cal-c i.f,.cal-leg i.f{background:#2E9E6B}
 .cal-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.cal-leg span{display:flex;align-items:center;gap:6px}.cal-leg i{position:static}
 .cal-ev{display:flex;flex-direction:column;border-top:1px solid var(--line);padding:7px 0;font-size:14px}.cal-ev b{text-transform:capitalize;color:var(--accent)}.cal-ev span{color:var(--muted);font-size:13px}
+</style>`);
+
+// ---------- Organisation, centre des rappels, programme du jour parlé, voix naturelle ----------
+const UI14={
+ fr:{secLearn:"Apprendre l'islam",secLearnD:"École, Coran et professeur de lecture",secWorship:"Mon adoration",secWorshipD:"Plan, rappels, repentir, qibla, calendrier",secCouple:"Mon couple",secCoupleD:"Parcours, disputes, défis, baromètre",secFamily:"Famille et société",secFamilyD:"Réalités africaines, fiançailles, imams",secMine:"Mon espace",secMineD:"Favoris, badges, réglages des rappels",
+  moreSearch:"Rechercher une rubrique…",mRappels:"Mes rappels du jour",dRappels:"Retrouvez les rappels manqués",rpIntro:"Tous les rappels envoyés ces 7 derniers jours. Ceux que vous avez manqués sont en rouge : touchez-les pour les voir et les faire.",
+  rpMissed:"Manqué",rpDone:"Fait",rpSeen:"Vu",rpToCome:"À venir",rpNone:"Aucun rappel pour l'instant.",rpAllSeen:"Tout marquer comme vu",rpOpen:"Ouvrir",rpListen:"Écouter",rpBadge:"{n} rappel(s) manqué(s)",
+  rpPlanLeft:"{n} objectif(s) du plan non fait(s)",rpPlanAll:"Tous les objectifs du plan sont faits",rpTawbaNo:"Journée non notée dans « Revenir à Allah »",rpTawbaOk:"Journée notée",
+  brTitle:"Mon programme du jour",brListen:"Écouter mon programme",brStop:"Arrêter",brNext:"Prochaine prière : {p} à {h}",brFast:"Aujourd'hui : jour de jeûne ({p})",brFastTom:"Demain : jour de jeûne ({p})",brPlan:"Plan : {d} sur {n} objectifs faits",brTawba:"Notez votre journée dans « Revenir à Allah »",brBirthday:"Anniversaire de {n} aujourd'hui !",brTip:"Conseil du jour",brDeath:"Pour la mort, aujourd'hui : {a}",
+  brHello:"Assalamou alaykoum {n}. Nous sommes le {d}, {h}.",brEnd:"Qu'Allah vous facilite cette journée.",
+  vxLoud:"Rappels à voix haute (si le téléphone n'est pas en silencieux)",vxPray:"Rappel vocal à l'heure de chaque prière",vxOpen:"Lire mon programme à voix haute à la première ouverture du matin",vxNote:"Le téléphone parle avec une voix naturelle en français et en arabe. Si le téléphone est en mode silencieux ou vibreur, il ne parle pas.",
+  prNow:"C'est l'heure de la prière du {p}",voiceTitle:"Voix"},
+ en:{secLearn:"Learn Islam",secLearnD:"School, Quran and reading teacher",secWorship:"My worship",secWorshipD:"Plan, reminders, repentance, qibla, calendar",secCouple:"My marriage",secCoupleD:"Programs, arguments, challenges, barometer",secFamily:"Family and society",secFamilyD:"African realities, engagement, imams",secMine:"My space",secMineD:"Favourites, badges, reminder settings",
+  moreSearch:"Search a section…",mRappels:"My reminders today",dRappels:"Find the reminders you missed",rpIntro:"All reminders sent in the last 7 days. The ones you missed are in red: tap them to see and do them.",
+  rpMissed:"Missed",rpDone:"Done",rpSeen:"Seen",rpToCome:"Upcoming",rpNone:"No reminders yet.",rpAllSeen:"Mark all as seen",rpOpen:"Open",rpListen:"Listen",rpBadge:"{n} missed reminder(s)",
+  rpPlanLeft:"{n} plan goal(s) not done",rpPlanAll:"All plan goals are done",rpTawbaNo:"Day not noted in “Return to Allah”",rpTawbaOk:"Day noted",
+  brTitle:"My programme for today",brListen:"Listen to my programme",brStop:"Stop",brNext:"Next prayer: {p} at {h}",brFast:"Today: fasting day ({p})",brFastTom:"Tomorrow: fasting day ({p})",brPlan:"Plan: {d} of {n} goals done",brTawba:"Note your day in “Return to Allah”",brBirthday:"{n}'s birthday today!",brTip:"Advice of the day",brDeath:"For death, today: {a}",
+  brHello:"Assalamu alaykum {n}. Today is {d}, {h}.",brEnd:"May Allah make this day easy for you.",
+  vxLoud:"Spoken reminders (if the phone is not on silent)",vxPray:"Spoken reminder at each prayer time",vxOpen:"Read my programme aloud on the first morning opening",vxNote:"The phone speaks with a natural voice in French and Arabic. In silent or vibrate mode, it does not speak.",
+  prNow:"It is time for the {p} prayer",voiceTitle:"Voice"},
+ ar:{secLearn:"تعلّم الإسلام",secLearnD:"المدرسة والقرآن ومعلّم القراءة",secWorship:"عبادتي",secWorshipD:"الخطة والتذكيرات والتوبة والقبلة والتقويم",secCouple:"حياتي الزوجية",secCoupleD:"البرامج والخلافات والتحديات والمقياس",secFamily:"الأسرة والمجتمع",secFamilyD:"الواقع الإفريقي والخطوبة والأئمة",secMine:"مساحتي",secMineD:"المفضلة والأوسمة وإعدادات التذكير",
+  moreSearch:"ابحث عن قسم…",mRappels:"تذكيرات اليوم",dRappels:"استرجع التذكيرات الفائتة",rpIntro:"كل التذكيرات المرسلة في الأيام السبعة الأخيرة. الفائتة باللون الأحمر: المسها لتراها وتعمل بها.",
+  rpMissed:"فائت",rpDone:"منجز",rpSeen:"شوهد",rpToCome:"قادم",rpNone:"لا توجد تذكيرات بعد.",rpAllSeen:"تعليم الكل كمقروء",rpOpen:"افتح",rpListen:"استمع",rpBadge:"{n} تذكير فائت",
+  rpPlanLeft:"{n} هدف لم يُنجز في الخطة",rpPlanAll:"أُنجزت كل أهداف الخطة",rpTawbaNo:"لم يُسجَّل اليوم في «العودة إلى الله»",rpTawbaOk:"سُجّل اليوم",
+  brTitle:"برنامجي اليوم",brListen:"استمع إلى برنامجي",brStop:"إيقاف",brNext:"الصلاة القادمة: {p} في {h}",brFast:"اليوم يوم صيام ({p})",brFastTom:"غداً يوم صيام ({p})",brPlan:"الخطة: أُنجز {d} من {n}",brTawba:"سجّل يومك في «العودة إلى الله»",brBirthday:"اليوم عيد ميلاد {n}!",brTip:"نصيحة اليوم",brDeath:"استعداداً للموت اليوم: {a}",
+  brHello:"السلام عليكم {n}. اليوم {d}، {h}.",brEnd:"يسّر الله لك يومك.",
+  vxLoud:"التذكير بصوت مسموع (إن لم يكن الهاتف صامتاً)",vxPray:"تذكير صوتي عند كل صلاة",vxOpen:"قراءة برنامجي بصوت مسموع عند أول فتح صباحاً",vxNote:"يتكلم الهاتف بصوت طبيعي بالفرنسية والعربية، ولا يتكلم في الوضع الصامت أو الاهتزاز.",
+  prNow:"حان الآن وقت صلاة {p}",voiceTitle:"الصوت"}
+};
+Object.keys(UI14).forEach(l=>Object.assign(UI2[l],UI14[l]));
+
+// ---------- 1. Onglet « Plus » organisé en rubriques ----------
+const MORE_SECTIONS=[
+ ["secLearn","📖",["school","quran"]],
+ ["secWorship","🕌",["rappels","plan","tawba","qibla","calendar","feasts"]],
+ ["secCouple","💞",["programs","sos","situations","barometer","challenges","couple","gratitude"]],
+ ["secFamily","👨‍👩‍👧",["africa","fiances","directory"]],
+ ["secMine","⭐",["favorites","badges","reminders"]]
+];
+if(!MORE.some(m=>m[0]==="rappels")) MORE.push(["rappels","mRappels","dRappels"]);
+const _viewMore0=viewMore;
+viewMore=function(){
+  if(S.sub) return _viewMore0();
+  const byId=Object.fromEntries(MORE.map(m=>[m[0],m])), used=new Set(), miss=rpMissedCount();
+  const row=k=>{const m=byId[k];if(!m)return "";used.add(k);return `<button class="hub" data-sub="${k}" data-find="${esc((t(m[1])+" "+t(m[2])).toLowerCase())}">${illu(k,48)}<span><b>${t(m[1])}${k==="rappels"&&miss?` <em class="rp-pill">${miss}</em>`:""}</b><span>${t(m[2])}</span></span><i aria-hidden="true">›</i></button>`};
+  const secs=MORE_SECTIONS.map(([k,ic,ids])=>`<section class="more-sec" data-sec><h2 class="more-h"><span>${ic}</span>${t(k)}<small>${t(k+"D")}</small></h2><div class="card" style="padding-block:4px">${ids.map(row).join("")}</div></section>`).join("");
+  const rest=MORE.filter(m=>!used.has(m[0]));
+  return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
+  <input class="more-q" id="more-q" type="search" placeholder="🔎 ${t("moreSearch")}" autocomplete="off">
+  ${secs}${rest.length?`<section class="more-sec" data-sec><div class="card" style="padding-block:4px">${rest.map(m=>row(m[0])).join("")}</div></section>`:""}
+  ${textSizeHTML()}${typeof themeHTML==="function"?themeHTML():""}<p class="note">${t("offline")}</p><p class="note" style="text-align:center">DJAMILLAH HAYAT ${APP_VERSION} · © AMOD GROUP</p>`;
+};
+document.addEventListener("input",e=>{
+  if(e.target.id!=="more-q") return;
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".hub[data-find]").forEach(b=>b.hidden=!!q&&!b.dataset.find.includes(q));
+  document.querySelectorAll(".more-sec").forEach(s=>s.hidden=![...s.querySelectorAll(".hub")].some(b=>!b.hidden));
+});
+
+// ---------- 2. Voix naturelle : fichiers préparés, Coran récité par Al-Husary, sinon voix du téléphone ----------
+let VOX={};
+fetch("voix/index.json").then(r=>r.ok?r.json():{}).then(j=>{VOX=j||{}}).catch(()=>{});
+function voxKey(l,text){let h=2166136261;const s=l+"|"+String(text).trim();for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)}
+let voxGen=0, voxAudio=null;
+function voxStop(){voxGen++;try{if(voxAudio){voxAudio.pause();voxAudio.src=""}}catch(e){}
+  try{if(NATIVE&&PL.TextToSpeech)PL.TextToSpeech.stop().catch(()=>{});else speechSynthesis.cancel()}catch(e){}}
+function playUrl(u,gen){return new Promise(res=>{if(gen!==voxGen)return res(false);
+  try{if(typeof audioEl!=="undefined"&&audioEl&&!audioEl.paused)audioEl.pause()}catch(e){}
+  const a=voxAudio||(voxAudio=new Audio());a.onended=()=>res(true);a.onerror=()=>res(false);a.src=u;a.play().catch(()=>res(false))})}
+function ttsOne(text,lang,gen){return new Promise(res=>{if(gen!==voxGen)return res();
+  if(NATIVE&&PL.TextToSpeech){PL.TextToSpeech.speak({text,lang,rate:0.95,pitch:1,volume:1,category:"playback"}).then(res).catch(res);return}
+  try{const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.95;u.onend=res;u.onerror=res;speechSynthesis.speak(u);setTimeout(res,Math.max(4000,text.length*120))}catch(e){res()}})}
+const pad3v=x=>String(x).padStart(3,"0");
+async function speakSeq(parts){
+  voxStop(); const gen=voxGen;
+  for(const [text,lang] of parts){
+    if(gen!==voxGen) return;
+    if(!text) continue;
+    const l=String(lang||"").slice(0,2), v=VOX[voxKey(l,text)];
+    if(v&&typeof v==="string"&&v.startsWith("q:")){                 // verset : récitation d'Al-Husary
+      const [s,a]=v.slice(2).split(":"), [a1,a2]=a.split("-").map(Number);
+      let ok=true; for(let k=a1;k<=(a2||a1)&&gen===voxGen;k++) ok=await playUrl(`https://everyayah.com/data/Husary_128kbps/${pad3v(s)}${pad3v(k)}.mp3`,gen)&&ok;
+      continue;                                                       // jamais de voix de synthèse pour le Coran
+    }
+    if(v){const ok=await playUrl("voix/"+voxKey(l,text)+".mp3",gen);if(ok)continue}
+    await ttsOne(text,lang,gen);
+  }
+}
+function speak(text,lang){speakSeq([[text,lang]])}
+
+// ---------- 3. Le programme du jour ----------
+function birthdaysToday(){const md=iso(today).slice(5);return (S.family||[]).filter(f=>f.birth&&f.birth.slice(5)===md).map(f=>f.name)}
+function planToday(){
+  if(typeof PL_==="undefined") return {n:0,d:0,fast:[],fastTom:[]};
+  let n=0,d=0;const fast=[],fastTom=[];
+  PL_.list.forEach(p=>{const def=planDef(p.id),v=plLog(p.id);
+    if(["daoud","mt","white"].includes(def.kind)){if(isFastDay(p,iso(today))){fast.push(L3(def.t));n++;if(v==="ok")d++}if(isFastDay(p,isoOff(1)))fastTom.push(L3(def.t));return}
+    if(def.kind==="week"){if(def.fri&&today.getDay()!==5)return;n++;if([...Array(7).keys()].some(i=>plLog(p.id,isoOff(-i))))d++;return}
+    n++;
+    if(def.kind==="day"){const c=def.count||1;if(Array.isArray(v)?v.filter(Boolean).length>=c:!!v)d++}
+    else if(def.kind==="count"){if((+v||0)>=def.goal)d++}
+    else if(def.kind==="pages"){if((+v||0)>=khatmaState(p).per)d++}
+  });
+  return {n,d,fast,fastTom};
+}
+function nextPrayerInfo(){try{return nextPrayer()}catch(e){return null}}
+function briefingLines(){
+  const L=[], np=nextPrayerInfo(), pt=planToday();
+  if(np) L.push(["🕌",fmt(t("brNext"),{p:np.name,h:np.time})]);
+  if(pt.fast.length) L.push(["☾",fmt(t("brFast"),{p:pt.fast.join(", ")})]);
+  if(pt.n) L.push(["✓",fmt(t("brPlan"),{d:pt.d,n:pt.n})]);
+  if(pt.fastTom.length) L.push(["☾",fmt(t("brFastTom"),{p:pt.fastTom.join(", ")})]);
+  if(typeof TW!=="undefined"&&TW.combats.length&&TW.combats.some(c=>!c.days[iso(today)])) L.push(["✦",t("brTawba")]);
+  birthdaysToday().forEach(n=>L.push(["🎂",fmt(t("brBirthday"),{n})]));
+  if(typeof deathOf==="function") L.push(["🕯",fmt(t("brDeath"),{a:L3(deathOf(0).a)})]);
+  return L;
+}
+function briefingText(){
+  const tips=getTips(), tip=tips[dayPick(tips.length,"tip"+S.gender,0)];
+  const d=today.toLocaleDateString(S.lang==="ar"?"ar":S.lang,{weekday:"long",day:"numeric",month:"long"});
+  const parts=[fmt(t("brHello"),{n:S.name||"",d,h:hijriStr(today)}).replace("  "," "),...briefingLines().map(x=>x[1]+"."),t("brTip")+" : "+String(tip.islam||"").split(/(?<=[.!?])\s/)[0],t("brEnd")];
+  return parts.join(" ").replace(/ﷺ/g,S.lang==="fr"?", paix et salut sur lui,":S.lang==="en"?", peace be upon him,":"ﷺ");
+}
+function briefingSpeak(){speakSeq([[briefingText(),VOICE[S.lang]]]);S.brSpoke=iso(today);save()}
+function briefingCard(){
+  const miss=rpMissedCount();
+  return `<div class="card brief"><div class="dq-top"><span class="eyebrow">☀ ${t("brTitle")}</span>${miss?`<button class="rp-pill big" data-sub-go="rappels">🔔 ${fmt(t("rpBadge"),{n:miss})}</button>`:""}</div>
+   <ul class="br-list">${briefingLines().map(([i,x])=>`<li><span>${i}</span>${x}</li>`).join("")}</ul>
+   <div class="br-acts"><button class="btn" id="br-say">🔊 ${t("brListen")}</button><button class="btn ghost" id="br-stop">■ ${t("brStop")}</button></div></div>`;
+}
+
+// ---------- 4. Centre des rappels (rappels manqués) ----------
+S.rpSeen=S.rpSeen||{};
+S.rpFrom=S.rpFrom||iso(today);   // pas de rappels « manqués » avant l'installation de cette version
+function rpItems(){
+  const R=S.rem||{}, out=[], now=new Date();
+  const at=(d,hhmm)=>{const [h,m]=(hhmm||"07:00").split(":").map(Number);const x=new Date(d);x.setHours(h,m,0,0);return x};
+  for(let i=6;i>=0;i--){
+    const d=new Date(today);d.setDate(d.getDate()-i);const di=iso(d);
+    if(di<S.rpFrom) continue;
+    if(R.morning!==false){const tips=getTips(),x=tips[dayPick(tips.length,"tip"+S.gender,-i)];out.push({k:"m"+di,when:at(d,R.time),ic:"☀",title:t("todayIs"),body:String(x.islam||"").split(/(?<=[.!?])\s/)[0],go:"today",off:-i,say:[[x.ar,"ar-SA"],[x.islam,VOICE[S.lang]]]})}
+    if(S.death&&S.death.on&&typeof deathOf==="function"){const x=deathOf(-i);out.push({k:"d"+di,when:at(d,S.death.time),ic:"🕯",title:t("deathT"),body:(S.lang==="ar"?x.ar2:L3(x))+" "+t("deathAct")+" : "+L3(x.a),go:"plan",say:[[x.ar,"ar-SA"],[S.lang==="ar"?x.ar2:L3(x),VOICE[S.lang]],[t("deathAct")+" : "+L3(x.a),VOICE[S.lang]]]})}
+    if(typeof PL_!=="undefined"&&PL_.list.length&&PL_.notif!==false){
+      let n=0,dn=0;PL_.list.forEach(p=>{if(di<p.start)return;const def=planDef(p.id),v=plLog(p.id,di);
+        if(["daoud","mt","white"].includes(def.kind)){if(isFastDay(p,di)){n++;if(v==="ok")dn++}return}
+        if(def.kind==="week")return; n++;
+        if(def.kind==="day"){const c=def.count||1;if(Array.isArray(v)?v.filter(Boolean).length>=c:!!v)dn++}
+        else if(def.kind==="count"){if((+v||0)>=def.goal)dn++}
+        else if(def.kind==="pages"){if((+v||0)>=khatmaState(p).per)dn++}});
+      if(n) out.push({k:"p"+di,when:at(d,PL_.time),ic:"✓",title:t("mPlan"),body:dn>=n?t("rpPlanAll"):fmt(t("rpPlanLeft"),{n:n-dn}),go:"plan",done:dn>=n})}
+    if(typeof TW!=="undefined"&&TW.combats.length){const ok=TW.combats.every(c=>c.days[di]);out.push({k:"t"+di,when:at(d,"21:00"),ic:"✦",title:t("mTawba"),body:ok?t("rpTawbaOk"):t("rpTawbaNo"),go:"tawba",done:ok})}
+    (S.family||[]).filter(f=>f.birth&&f.birth.slice(5)===di.slice(5)).forEach(f=>out.push({k:"b"+di+f.name,when:at(d,"08:00"),ic:"🎂",title:fmt(t("brBirthday"),{n:f.name}),body:t("giftIdeas")+" "+f.name,go:"family"}));
+  }
+  return out.filter(x=>x.when<=now).sort((a,b)=>b.when-a.when);
+}
+function rpState(x){if(x.done)return "done";if(S.rpSeen[x.k])return "seen";return "missed"}
+function rpMissedCount(){try{return rpItems().filter(x=>rpState(x)==="missed").length}catch(e){return 0}}
+function viewRappels(){
+  const items=rpItems(); let lastDay="";
+  return `<section class="hello"><h1>${t("mRappels")}</h1><p>${t("rpIntro")}</p></section>
+  ${items.some(x=>rpState(x)==="missed")?`<button class="btn ghost" id="rp-all">✓ ${t("rpAllSeen")}</button>`:""}
+  ${items.length?items.map((x,i)=>{const st=rpState(x),day=x.when.toLocaleDateString(S.lang==="ar"?"ar":S.lang,{weekday:"long",day:"numeric",month:"long"});
+    const head=day!==lastDay?(lastDay=day,`<h3 class="lx-h rp-day">${day}</h3>`):"";
+    return head+`<div class="card rp ${st}"><div class="rp-top"><span class="pl-ic">${x.ic}</span><span class="rp-t"><b>${x.title}</b><small>${x.when.toTimeString().slice(0,5)} · ${st==="done"?"✓ "+t("rpDone"):st==="seen"?t("rpSeen"):"● "+t("rpMissed")}</small></span></div>
+     <p class="rp-b">${x.body}</p><div class="br-acts">${x.say?`<button class="btn ghost" data-rp-say="${i}">🔊 ${t("rpListen")}</button>`:""}<button class="btn" data-rp-go="${i}">${t("rpOpen")} ›</button></div></div>`}).join(""):`<p class="note">${t("rpNone")}</p>`}`;
+}
+
+// ---------- 5. Réglages de la voix (dans « Rappels ») ----------
+const _viewRem0=viewReminders;
+viewReminders=function(){
+  const V=S.vx||(S.vx={loud:true,pray:true,open:true});
+  const row=(k,l)=>`<label class="tw-step"><input type="checkbox" data-vx="${k}" ${V[k]!==false?"checked":""}><span>${t(l)}</span></label>`;
+  return _viewRem0()+`<div class="card"><h3>🔊 ${t("voiceTitle")}</h3>${row("loud","vxLoud")}${row("pray","vxPray")}${row("open","vxOpen")}<p class="note" style="margin:0">${t("vxNote")}</p></div>`;
+};
+
+// ---------- 6. Notifications parlées (Android) ----------
+const VX_KINDS=["matin","mort","plan","jeune","tawba","fajr","dhuhr","asr","maghrib","isha"];
+const vxChan=k=>{const l=S.lang==="ar"?"ar":S.lang==="fr"?"fr":null;return (S.vx||{}).loud!==false&&l?`djh1_${k}_${l}`:"djh1_def"};
+let vxChannelsDone=false;
+async function vxChannels(LN){
+  if(vxChannelsDone||!LN.createChannel) return; vxChannelsDone=true;
+  try{await LN.createChannel({id:"djh1_def",name:"DJAMILLAH HAYAT",importance:4,visibility:1,vibration:true})}catch(e){}
+  for(const l of ["fr","ar"]) for(const k of VX_KINDS){
+    try{await LN.createChannel({id:`djh1_${k}_${l}`,name:`DJAMILLAH HAYAT · ${k} (${l})`,description:"Rappel à voix haute",importance:4,visibility:1,vibration:true,sound:`djh_${k}_${l}.ogg`})}catch(e){}
+  }
+}
+function vxKindOf(id){if(id===1||(id>=700&&id<720))return "matin";if(id>=600&&id<630)return "mort";if(id>=650&&id<670)return "plan";if(id>=670&&id<690)return "jeune";if(id===500)return "tawba";if(id>=800&&id<840)return ["fajr","dhuhr","asr","maghrib","isha"][(id-800)%5];return null}
+function prayerNotifs(list){
+  if((S.vx||{}).pray===false) return;
+  const [,la,lo]=cityNow(), now=new Date(), keys=[["fajr","pFajr"],["dhuhr","pDhuhr"],["asr","pAsr"],["maghrib","pMaghrib"],["isha","pIsha"]];
+  for(let i=0;i<7;i++){const d=new Date(today);d.setDate(d.getDate()+i);const pt=prayerTimes(d,la,lo);
+    keys.forEach(([k,l],j)=>{const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));x.setUTCMinutes(Math.round(pt[k]*60));if(x<=now)return;
+      list.push({id:800+i*5+j,title:"🕌 "+t(l)+" · "+hm(pt[k]),body:fmt(t("prNow"),{p:t(l)}),schedule:{at:x,allowWhileIdle:true}})})}
+}
+// Branche : avant la programmation, ajoute les prières et les canaux à voix
+if(typeof doSchedule==="function"){
+  const _doSchedule0=doSchedule;
+  doSchedule=async function(){
+    const LN=PL&&PL.LocalNotifications; if(NATIVE&&LN) await vxChannels(LN);
+    return _doSchedule0();
+  };
+}
+function vxDecorate(list){list.forEach(n=>{const k=vxKindOf(n.id);n.channelId=k?vxChan(k):"djh1_def"})}
+
+// Toucher une notification : ouvrir le bon écran et parler
+if(NATIVE&&PL.LocalNotifications&&PL.LocalNotifications.addListener){
+  PL.LocalNotifications.addListener("localNotificationActionPerformed",e=>{
+    const id=e&&e.notification&&e.notification.id, k=vxKindOf(id);
+    setTimeout(()=>{
+      if(k==="matin"){S.tab="today";S.sub=null;save();render();scrollTo(0,0);briefingSpeak()}
+      else if(k==="mort"){S.tab="more";S.sub="plan";S.pl={v:"home"};save();render();const x=deathOf(0);speakSeq([[x.ar,"ar-SA"],[S.lang==="ar"?x.ar2:L3(x),VOICE[S.lang]],[t("deathAct")+" : "+L3(x.a),VOICE[S.lang]]])}
+      else if(k==="plan"||k==="jeune"){S.tab="more";S.sub="plan";S.pl={v:"home"};save();render()}
+      else if(k==="tawba"){S.tab="more";S.sub="tawba";S.tw={v:"home"};save();render()}
+      else {S.tab="today";S.sub=null;save();render()}
+    },400);
+  });
+}
+// Première ouverture du matin : lire le programme à voix haute
+setTimeout(()=>{
+  const V=S.vx||{}, h=new Date().getHours(), mt=+((S.rem&&S.rem.time)||"07:00").split(":")[0];
+  if(S.gender&&V.open!==false&&S.brSpoke!==iso(today)&&h>=mt&&h<12&&S.tab==="today"&&!S.sub) briefingSpeak();
+},1800);
+
+// ---------- Événements ----------
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("#br-say,#br-stop,#rp-all,[data-rp-say],[data-rp-go]");
+  if(!el) return;
+  if(el.id==="br-say"){briefingSpeak();return}
+  if(el.id==="br-stop"){voxStop();return}
+  if(el.id==="rp-all"){rpItems().forEach(x=>S.rpSeen[x.k]=1);save();const sy=scrollY;render();scrollTo(0,sy);return}
+  const items=rpItems();
+  if(el.dataset.rpSay){const x=items[+el.dataset.rpSay];S.rpSeen[x.k]=1;save();speakSeq(x.say);return}
+  if(el.dataset.rpGo){const x=items[+el.dataset.rpGo];S.rpSeen[x.k]=1;
+    if(x.go==="today"){S.tab="today";S.sub=null;S.dayOffset=x.off||0}else if(x.go==="family"){S.tab="family";S.sub=null}else{S.tab="more";S.sub=x.go;if(x.go==="plan")S.pl={v:"home"};if(x.go==="tawba")S.tw={v:"home"}}
+    save();render();scrollTo(0,0);return}
+});
+document.addEventListener("change",e=>{const el=e.target;if(el.dataset&&el.dataset.vx){S.vx=S.vx||{};S.vx[el.dataset.vx]=el.checked;vxChannelsDone=false;save()}});
+
+// Écran Aujourd'hui : programme du jour en haut, question du jour et rappel de la mort plus bas
+const _renderOrg=render;
+render=function(){
+  _renderOrg();
+  if(!S.gender||S.tab!=="today"||S.sub) return;
+  const hello=document.querySelector(".screen .hello"); if(!hello) return;
+  if(!document.querySelector(".card.brief")) hello.insertAdjacentHTML("afterend",briefingCard());
+  const scr=hello.parentElement, dq=document.querySelector(".sch-dq"), de=document.querySelector(".card.death");
+  const after=[...scr.children].filter(x=>x.matches&&x.matches("article.card,.card")).pop();
+  if(after){if(dq&&after!==dq)after.after(dq);if(de)(dq||after).after(de)}
+};
+Object.assign(MOTIF,{rappels:MOTIF.reminders||MOTIF.plan});
+document.head.insertAdjacentHTML("beforeend",`<style>
+.more-q{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;background:var(--surface);color:var(--ink)}
+.more-sec{display:flex;flex-direction:column;gap:6px}.more-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:19px;margin:6px 2px 0}
+.more-h span{font-size:18px}.more-h small{flex-basis:100%;font-family:var(--f-body);font-size:12.5px;color:var(--muted);font-weight:600}
+.rp-pill{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#C0473F;color:#fff;font-style:normal;font-size:12px;font-weight:800;border:none}
+.rp-pill.big{height:auto;padding:5px 10px;font-size:12.5px}
+.brief{border-color:var(--gold);background:linear-gradient(180deg,var(--surface),var(--soft))}.brief .eyebrow{color:var(--gold)}
+.br-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:14.5px;line-height:1.45}.br-list li{display:flex;gap:10px}.br-list li span{flex:none;width:22px;text-align:center}
+.br-acts{display:flex;gap:8px;flex-wrap:wrap}.br-acts .btn{flex:1;min-width:120px;padding:11px 10px}
+.rp{gap:6px}.rp.missed{border-color:#C0473F;border-width:1.5px}.rp.missed small{color:#C0473F;font-weight:800}.rp.done small{color:#2E9E6B;font-weight:800}
+.rp-top{display:flex;gap:10px;align-items:center}.rp-t{display:flex;flex-direction:column}.rp-t small{font-size:12.5px;color:var(--muted)}.rp-b{margin:0;font-size:14.5px;line-height:1.55}
+.rp-day{text-transform:capitalize}
 </style>`);
 
 scheduleNotifications();
