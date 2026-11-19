@@ -27,10 +27,10 @@ jobs:
           pip install -q "piper-tts==1.2.0" "kokoro>=0.9.4" soundfile faster-whisper numpy
       - name: Voix vérifiées
         env:
-          LISTE: tools/bebe-liste-3.json
+          LISTE: tools/bebe-liste-4.json
         run: python3 tools/voix-bebe.py ${{ matrix.phase }} ${{ matrix.part }}
       - uses: actions/upload-artifact@v4
         with:
-          name: r3-${{ strategy.job-index }}
+          name: r4-${{ strategy.job-index }}
           path: sortie-*
           retention-days: 5

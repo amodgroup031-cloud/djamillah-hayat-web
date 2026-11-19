@@ -166,7 +166,7 @@ print("à fabriquer :", len(liste), flush=True)
 index, qualite = {}, {"ok": 0, "retires": [], "non_verifies": 0, "moteurs": {}}
 for i, x in enumerate(liste):
     if x.get("q"): index[x["k"]] = "q:" + x["q"]; continue
-    wav, eng, sc, h = produce(x["l"], x["t"], bool(x.get("slow")), bool(x.get("solo")))
+    wav, eng, sc, h = produce(x["l"], x.get("say", x["t"]), bool(x.get("slow")), bool(x.get("solo")))
     if eng == "isole": qualite.setdefault("isoles", 0); qualite["isoles"] += 1; continue
     if not wav: qualite["retires"].append({"t": x["t"][:60], "raison": "échec"}); continue
     if sc is not None and sc < (0.5 if x.get("name") else x.get("min", SEUIL[x["l"]])):
