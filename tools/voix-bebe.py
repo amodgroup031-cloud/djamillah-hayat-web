@@ -105,6 +105,8 @@ def norm(l, s):
         s = MARKS.sub("", s).replace("ٱ", "ا").replace("أ", "ا").replace("إ", "ا").replace("آ", "ا").replace("ى", "ي").replace("ة", "ه").replace("ؤ", "و").replace("ئ", "ي").replace("ء", "")
         s = re.sub(r"[^ء-ي]", "", s)
     else:
+        s = s.replace("œ", "oe").replace("æ", "ae")
+        s = re.sub(r"\d+", lambda m: ["zero","un","deux","trois","quatre","cinq","six","sept","huit","neuf","dix"][int(m.group())] if int(m.group()) <= 10 else m.group(), s)
         s = "".join(c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn")
         s = re.sub(r"[^a-z0-9]", "", s)
     return s
