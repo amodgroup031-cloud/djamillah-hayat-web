@@ -1482,7 +1482,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.48";
+const APP_VERSION = "1.0.49";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -6424,21 +6424,27 @@ function bbStart(k,steps,lim){
   try{bbPrefetch(bbAllTexts(k,steps).map(x=>voxKey(x.l,x.t)).filter(x=>BBV[x]))}catch(e){}
   if(lim){BB.over=1;bbEnd(true)}else bbNext();
 }
-function bbClose(silent){if(!BB&&!document.getElementById("bb-play"))return;if(BB&&BB.tick)clearInterval(BB.tick);const el=document.getElementById("bb-play");el&&el.remove();document.documentElement.classList.remove("cr-lock");BB=null;if(!silent){voxStop();save();const y=scrollY;render();scrollTo(0,y)}}
+function bbClose(silent){bbStop();bbSoft(false);if(!BB&&!document.getElementById("bb-play"))return;if(BB&&BB.tick)clearInterval(BB.tick);const el=document.getElementById("bb-play");el&&el.remove();document.documentElement.classList.remove("cr-lock");BB=null;if(!silent){voxStop();save();const y=scrollY;render();scrollTo(0,y)}}
 function bbStageEl(){return document.querySelector("#bb-play .bb-stage")}
-function bbNext(){if(!BB)return;BB.i++;const s=BB.steps[BB.i];if(!s){bbEnd(false);return}BB.miss=0;
+// Répétition douce : le mot revient, calmement, jusqu'à ce qu'on touche « suivant »
+const bbWait=ms=>new Promise(r=>setTimeout(r,ms));
+function bbLoop(k,first,rep,gap){if(!BB)return;const id=BB.loop=(BB.loop||0)+1;
+  (async()=>{let parts=first;while(BB&&BB.loop===id){bbSoft(true);await bbSay(k,parts);if(!BB||BB.loop!==id)break;parts=rep||first;await bbWait(gap||2600)}})()}
+function bbStop(){if(BB)BB.loop=(BB.loop||0)+1}
+function bbSoft(on){try{if(typeof voxAudio!=="undefined"){if(!voxAudio&&on)voxAudio=new Audio();if(voxAudio){voxAudio.defaultPlaybackRate=on?0.9:1;voxAudio.playbackRate=on?0.9:1;voxAudio.volume=on?0.85:1}}}catch(e){}}
+function bbNext(){if(!BB)return;bbStop();BB.i++;const s=BB.steps[BB.i];if(!s){bbEnd(false);return}BB.miss=0;
   ({img:bbImg,cou:bbCou,show:bbShow,cnt:bbCnt,par:bbPar})[s.g](s)}
 function bbNav(){return `<button class="bb-next" data-bbnext aria-label="Suivant">➜</button>`}
 function bbImg(s){const k=BB.k,w=s.w;
   bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay>${bbPic(w,150)}<b>${bbCap(w[4])}</b><span class="ar">${w[5]}</span></button>${bbNav()}`;
-  bbSeen(k,w[0]);bbSay(k,bbWordParts(k,w,true));
-  BB.say=()=>bbSay(k,bbWordParts(k,w,true));
+  bbSeen(k,w[0]);const P=bbWordParts(k,w,true);bbLoop(k,P);
+  BB.say=()=>bbLoop(k,P);
 }
 function bbCou(s){const k=BB.k,w=s.w;
   bbStageEl().innerHTML=`<button class="bb-card bb-cover" data-bbuncover><span class="bb-veil">🙈</span><div class="bb-hid">${bbPic(w,150)}<b>${bbCap(w[4])}</b></div></button>`;
-  bbSay(k,bbCfg(k).lang==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[[bbOu(w),FR]]);
-  BB.say=()=>{const c=bbStageEl().querySelector(".bb-cover");if(!c||c.classList.contains("open"))return bbSay(k,bbWordParts(k,w,true));
-    c.classList.add("open");bbSeen(k,w[0]);bbSay(k,[["Coucou !",FR],...bbWordParts(k,w,true)]);
+  bbLoop(k,bbCfg(k).lang==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[[bbOu(w),FR]],null,3200);
+  BB.say=()=>{const c=bbStageEl().querySelector(".bb-cover"),P=bbWordParts(k,w,true);if(!c||c.classList.contains("open"))return bbLoop(k,P);
+    c.classList.add("open");bbSeen(k,w[0]);bbLoop(k,[["Coucou !",FR],...P],P);
     bbStageEl().insertAdjacentHTML("beforeend",bbNav())};
 }
 function bbShow(s){const k=BB.k,w=s.w,n=Math.max(2,bbChoices(k)||2);
@@ -6447,16 +6453,17 @@ function bbShow(s){const k=BB.k,w=s.w,n=Math.max(2,bbChoices(k)||2);
   bbStageEl().innerHTML=`<p class="bb-q">${bbCap(w[4])} ?</p><div class="bb-opts n${opts.length}">${opts.map(o=>`<button class="bb-opt" data-bbopt="${o[0]}">${bbPic(o,opts.length>2?90:120)}</button>`).join("")}</div>`;
   BB.target=w;
   const L=bbCfg(k).lang;
-  BB.say=()=>bbSay(k,L==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[["Montre-moi "+w[4]+" !",FR],...(L==="both"?[[w[5],AR]]:[])]);
+  BB.ask=L==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[["Montre-moi "+w[4]+" !",FR],...(L==="both"?[[w[5],AR]]:[])];
+  BB.say=()=>bbLoop(k,BB.ask,null,3500);
   BB.say();
 }
 function bbPick(key,btn){const k=BB.k,w=BB.target;if(!w||BB.lock)return;
   if(key===w[0]){BB.lock=1;bbAnswer(k,w[0],!BB.miss);btn.classList.add("ok");bbStar();
-    bbSay(k,[...bbBravo(k),...bbWordParts(k,w,false)]).then(()=>{});setTimeout(()=>{BB&&(BB.lock=0,bbNext())},2600)}
+    bbStop();bbSay(k,[...bbBravo(k),...bbWordParts(k,w,false)]).then(()=>{});setTimeout(()=>{BB&&(BB.lock=0,bbNext())},2600)}
   else{BB.miss++;btn.classList.remove("no");void btn.offsetWidth;btn.classList.add("no");
     const o=BBW.find(x=>x[0]===key),L=bbCfg(k).lang;
     if(BB.miss>=2){const c=bbStageEl().querySelector(`[data-bbopt="${w[0]}"]`);c&&c.classList.add("hint")}
-    bbSay(k,L==="ar"?[[o[5],AR],["أَيْنَ "+w[5]+"؟",AR]]:[["Ça, c'est "+o[4]+".",FR],["Montre-moi "+w[4]+" !",FR]])}
+    bbLoop(k,L==="ar"?[[o[5],AR],["أَيْنَ "+w[5]+"؟",AR]]:[["Ça, c'est "+o[4]+".",FR],["Montre-moi "+w[4]+" !",FR]],BB.ask,3500)}
 }
 function bbCnt(){const k=BB.k,st=bbStage(bbMonths(k.birth)),max=st.cnt||3;
   const N=1+Math.floor(Math.random()*Math.min(max,BB.i<2?3:max)),w=bbShuffle(BBW.filter(x=>(x[1]==="nou"||x[1]==="ani")&&x[3][0]!=="#"))[0];
@@ -6476,8 +6483,8 @@ function bbCount(btn){const C=BB.cnt,k=BB.k;if(!C||btn.classList.contains("done"
 function bbPar(s){const k=BB.k,p=s.p,L=bbCfg(k).lang;
   bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay><span class="bb-em" style="font-size:96px">${p[2]}</span><span class="ar bb-par">${p[3]}</span><b>${p[4]}</b><small>${p[5]}</small></button>${bbNav()}`;
   bbSeen(k,"p_"+p[0]);
-  BB.say=()=>bbSay(k,[[p[3],AR],[p[3],AR]]);
-  bbSay(k,[[L==="ar"?(bbFem(k)?"قُولِي مَعِي":"قُلْ مَعِي"):"Répète avec moi :",L==="ar"?AR:FR],[p[3],AR],[p[3],AR],...(L!=="ar"?[[p[5],FR]]:[])]);
+  BB.say=()=>bbLoop(k,[[p[3],AR]],null,3000);
+  bbLoop(k,[[L==="ar"?(bbFem(k)?"قُولِي مَعِي":"قُلْ مَعِي"):"Répète avec moi :",L==="ar"?AR:FR],[p[3],AR]],[[p[3],AR]],3000);
 }
 function bbStar(){if(!BB)return;BB.stars++;const s=document.querySelector("#bb-play .bb-stars");if(!s)return;
   s.insertAdjacentHTML("beforeend","<i>⭐</i>");const b=document.createElement("div");b.className="bb-burst";b.innerHTML="⭐🌟✨⭐🌟".split("").filter(x=>x.trim()).map((x,i)=>`<i style="--a:${i*72}deg">${x}</i>`).join("");document.getElementById("bb-play").appendChild(b);setTimeout(()=>b.remove(),1200);
@@ -6596,7 +6603,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.48";
+var DJH_BOOTV="1.0.49";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
