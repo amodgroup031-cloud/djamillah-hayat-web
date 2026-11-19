@@ -169,7 +169,7 @@ for i, x in enumerate(liste):
     wav, eng, sc, h = produce(x["l"], x["t"], bool(x.get("slow")), bool(x.get("solo")))
     if eng == "isole": qualite.setdefault("isoles", 0); qualite["isoles"] += 1; continue
     if not wav: qualite["retires"].append({"t": x["t"][:60], "raison": "échec"}); continue
-    if sc is not None and sc < (0.5 if x.get("name") else SEUIL[x["l"]]):
+    if sc is not None and sc < (0.5 if x.get("name") else x.get("min", SEUIL[x["l"]])):
         qualite["retires"].append({"t": x["t"][:60], "entendu": h[:60], "score": round(sc, 2)}); continue
     encode(wav, f"{OUT}/voix/{x['k']}.mp3"); index[x["k"]] = 1
     qualite["ok"] += 1; qualite["moteurs"][eng] = qualite["moteurs"].get(eng, 0) + 1
