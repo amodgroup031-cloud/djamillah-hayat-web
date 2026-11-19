@@ -1,0 +1,39 @@
+name: Assembler les voix de l'Éveil
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Numéro de la fabrication"
+        required: true
+permissions:
+  contents: write
+  actions: read
+jobs:
+  assembler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: parts
+      - name: Fusionner
+        run: |
+          mkdir -p voix/bebe
+          python3 - <<'PY'
+          import json, glob, os, shutil
+          p = "voix/bebe/index.json"
+          idx = json.load(open(p)) if os.path.exists(p) else {"k": {}, "n": {}}
+          for d in glob.glob("parts/*/sortie-*"):
+              for f in glob.glob(d + "/voix/*.mp3"): shutil.copy(f, "voix/bebe/")
+              if os.path.exists(d + "/index.json"): idx["k"].update({k: 1 for k in json.load(open(d + "/index.json"))})
+          noms = json.load(open("tools/bebe-noms.json"))
+          idx["n"] = {n: k for n, k in noms.items() if k in idx["k"]}
+          json.dump(idx, open(p, "w"), separators=(",", ":"))
+          print("voix :", len(idx["k"]), "prénoms :", len(idx["n"]))
+          PY
+      - name: Publier
+        run: |
+          git config user.name "AMOD GROUP"; git config user.email "amodgroup031@gmail.com"
+          git add voix/bebe && git commit -qm "Voix de l'Éveil de bébé" && git push -q || echo "rien de nouveau"
