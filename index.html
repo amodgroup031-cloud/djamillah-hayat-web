@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.47";
+const APP_VERSION = "1.0.48";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -6368,8 +6368,8 @@ function viewBebe(){
   const offA=st.off, off=offA[noRep("bboff_"+k.id,offA.length,bbDay())].replace(/\{n\}/g,esc(k.name));
   h+=`${L.length>1?`<div class="seg bb-kids">${L.map(x=>`<button type="button" data-bbkid="${x.id}" aria-pressed="${x.id===k.id}">${esc(x.name)}</button>`).join("")}</div>`:""}
   <div class="card bb-head"><div class="bb-av">${bbFem(k)?"👧":"👦"}</div><div><b>${esc(k.name)}</b><span>${bbAgeTxt(m)} · étape « ${st.t} »</span></div></div>
-  <button class="bb-go" data-bbplay="session"><span class="bb-go-ic">▶</span><span><b>Séance du jour</b><span>${Math.max(1,Math.round(bbLimit(k)))} min maximum · choisie pour ${esc(k.name)}</span></span></button>
-  <div class="bb-stats"><div><b>${known}</b><span>mots acquis</span></div><div><b>${learning}</b><span>en cours</span></div><div><b>${Math.floor(used/60)}/${bbLimit(k)}</b><span>min aujourd'hui</span></div></div>
+  <button class="bb-go" data-bbplay="session"><span class="bb-go-ic">▶</span><span><b>Séance du jour</b><span>Choisie pour ${esc(k.name)}</span></span></button>
+  <div class="bb-stats"><div><b>${known}</b><span>mots acquis</span></div><div><b>${learning}</b><span>en cours</span></div><div><b>${Math.floor(used/60)}</b><span>min aujourd'hui</span></div></div>
   <h3 class="lx-h">Jeux</h3><div class="bb-games">
    ${bbGame("img","🖼️","Imagier parlant","Il voit, il entend son prénom et le mot")}
    ${st.cou?bbGame("cou","🙈","Coucou !","Cacher et retrouver : l'objet existe encore"):""}
@@ -6383,8 +6383,7 @@ function viewBebe(){
   <div class="card bb-guide"><h3>🌱 À ${bbAgeTxt(m)}</h3><p>${st.ms}</p><div class="how"><b>Comment l'aider</b>${st.help}</div>
    <div class="how bb-off"><b>🌿 Sans écran aujourd'hui</b>${off}</div>
    <p class="note">Chaque enfant a son propre rythme. Si quelque chose vous inquiète (pas de babillage vers 12 mois, aucun mot vers 18 mois, perte de mots déjà acquis), parlez-en au médecin.</p></div>
-  <div class="card bb-screen"><h3>📵 Le bon usage de l'écran</h3><p>L'OMS déconseille les écrans pour un enfant de moins de 2 ans quand il est seul et passif, et recommande moins d'une heure par jour entre 2 et 4 ans. Ici, les séances sont très courtes et faites pour être vécues <b>avec vous</b> : asseyez-vous près de ${esc(k.name)}, répétez les mots avec lui, montrez-lui les vrais objets.</p>
-   <label for="bb-lim" style="flex-direction:row;align-items:center;justify-content:space-between">Temps maximum par jour<select id="bb-lim" style="width:auto">${[3,5,8,10,15,20].map(v=>`<option value="${v}" ${v===bbLimit(k)?"selected":""}>${v} min</option>`).join("")}</select></label></div>
+  <div class="card bb-screen"><h3>💡 Conseil</h3><p>Votre enfant apprend encore mieux quand vous êtes à côté de lui : répétez les mots avec ${esc(k.name)} et montrez-lui les vrais objets.</p></div>
   <div class="card bb-set"><h3>🗣️ La voix</h3>
    <label for="bb-lang">Langue<select id="bb-lang"><option value="both" ${cfg.lang==="both"?"selected":""}>Français + arabe</option><option value="fr" ${cfg.lang==="fr"?"selected":""}>Français</option><option value="ar" ${cfg.lang==="ar"?"selected":""}>Arabe</option></select></label>
    <label for="bb-phon">Comment prononcer « ${esc(k.name)} » (écrivez-le comme il se dit)<input id="bb-phon" value="${esc(cfg.phon||"")}" placeholder="${esc(k.name)}"></label>
@@ -6411,7 +6410,6 @@ function bbAllTexts(k,steps){
 // ---------- Mode enfant (plein écran verrouillé) ----------
 let BB=null;
 function bbOpen(k,mode,cat){
-  if(bbUsed(k)>=bbLimit(k)*60){bbStart(k,[],true);return}
   let steps=[];const pool=bbPool(k,cat);
   if(mode==="session") steps=bbSession(k);
   else if(mode==="img") steps=bbOrder(k,pool).slice(0,10).map(w=>({g:"img",w}));
@@ -6432,7 +6430,7 @@ function bbStart(k,steps,lim){
   const el=document.createElement("div");el.id="bb-play";
   el.innerHTML=`<div class="bb-top"><span class="bb-name">${esc(k.name)}</span><div class="bb-bar"><i></i></div><button class="bb-x" aria-label="Maintenir pour quitter"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="16"/></svg><span>✕</span></button></div><div class="bb-stage"></div><div class="bb-stars"></div>`;
   document.body.appendChild(el);document.documentElement.classList.add("cr-lock");
-  BB.tick=setInterval(()=>{if(!BB)return;bbTick(k,1);const u=bbUsed(k),l=bbLimit(k)*60;el.querySelector(".bb-bar i").style.width=Math.min(100,u/l*100)+"%";if(u>=l&&!BB.over){BB.over=1;bbEnd(true)}},1000);
+  BB.tick=setInterval(()=>{if(!BB)return;bbTick(k,1);const n=BB.steps.length||1;el.querySelector(".bb-bar i").style.width=Math.min(100,(BB.i+1)/n*100)+"%"},1000);
   try{bbPrefetch(bbAllTexts(k,steps).map(x=>voxKey(x.l,x.t)).filter(x=>BBV[x]))}catch(e){}
   if(lim){BB.over=1;bbEnd(true)}else bbNext();
 }
@@ -6608,7 +6606,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.47";
+var DJH_BOOTV="1.0.48";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
