@@ -1482,7 +1482,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.50";
+const APP_VERSION = "1.0.51";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -5740,6 +5740,7 @@ async function otaCheck(manual){
       }
     }else if("serviceWorker" in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)reg.update()}
     if(manual&&typeof toast==="function"&&!OTA.ready&&!OTA.apk)toast(t("otaUp"));
+    if(OTA.ready&&!otaTouched&&performance.now()<30000&&otaApply())return;
     otaShow();
   }catch(e){}
 }
@@ -5764,7 +5765,16 @@ VIEWS.more=viewMore;
 document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#ota-check"))otaCheck(true)});
 // Quand : au démarrage, au retour dans l'application, et toutes les 6 heures
 setTimeout(()=>otaCheck(false),6000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-(OTA.t||0)>3600e3){OTA.t=Date.now();otaCheck(false)}});
+// La mise à jour s'applique toute seule : dès que l'on revient dans l'application après l'avoir quittée,
+// ou au démarrage si l'on n'a encore rien touché. Aucun bouton à toucher.
+let otaTouched=false,otaAway=0;
+document.addEventListener("pointerdown",()=>{otaTouched=true},{capture:true,once:true});
+const otaBusy=()=>(typeof BB!=="undefined"&&BB)||(typeof crOv!=="undefined"&&crOv);
+function otaApply(){if(!OTA.ready||otaBusy())return false;try{save()}catch(e){}location.reload();return true}
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){otaAway=Date.now();return}
+  if(OTA.ready&&otaAway&&Date.now()-otaAway>15000&&otaApply())return;
+  if(Date.now()-(OTA.t||0)>300e3){OTA.t=Date.now();otaCheck(false)}});
 setInterval(()=>otaCheck(false),6*3600e3);
 document.head.insertAdjacentHTML("beforeend",`<style>
 .ota-bar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px;box-shadow:0 14px 40px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:6px;animation:otaIn .35s ease}
@@ -6178,6 +6188,8 @@ const BBW=[
  ["noir","col",30,"⚫","le noir","أَسْوَدُ",""],["blanc","col",30,"⚪","le blanc","أَبْيَضُ",""],["orangec","col",30,"🟠","l'orange","بُرْتُقَالِيٌّ",""],["violet","col",30,"🟣","le violet","بَنَفْسَجِيٌّ",""],
  ["cercle","for",30,"#c","le cercle","دَائِرَةٌ",""],["carre","for",30,"#s","le carré","مُرَبَّعٌ",""],["triangle","for",30,"#t","le triangle","مُثَلَّثٌ",""],["coeurf","for",36,"#h","le cœur","قَلْبٌ",""],["etoilef","for",36,"#e","l'étoile","نَجْمَةٌ",""]
 ];
+// aucune imitation de cri ni phrase : seulement le nom de la chose
+BBW.forEach(w=>{w[6]=""});
 const BBN=[["un","وَاحِدٌ"],["deux","اِثْنَانِ"],["trois","ثَلَاثَةٌ"],["quatre","أَرْبَعَةٌ"],["cinq","خَمْسَةٌ"],["six","سِتَّةٌ"],["sept","سَبْعَةٌ"],["huit","ثَمَانِيَةٌ"],["neuf","تِسْعَةٌ"],["dix","عَشَرَةٌ"]];
 const BBAD="٠١٢٣٤٥٦٧٨٩";
 BBN.forEach(([f,a],i)=>BBW.push(["n"+(i+1),"num",i<3?24:i<5?30:36,"#"+(i+1),"le chiffre "+f,a,""]));
@@ -6602,7 +6614,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.50";
+var DJH_BOOTV="1.0.51";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
