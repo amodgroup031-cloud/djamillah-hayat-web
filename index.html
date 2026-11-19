@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.46";
+const APP_VERSION = "1.0.47";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -6299,7 +6299,6 @@ function bbWordParts(k,w,full){
   const L=bbCfg(k).lang, out=[];
   if(L!=="ar") out.push([bbCap(w[4])+" !",FR]);
   if(L!=="fr") out.push([w[5],AR]);
-  if(full&&w[6]&&L!=="ar") out.push([w[6],FR]);
   return out;
 }
 const BBOK_F=["Bravo !","Très bien !","Super !","Mâ châ Allah !","Oui, c'est ça !"];
@@ -6444,7 +6443,7 @@ function bbNext(){if(!BB)return;BB.i++;const s=BB.steps[BB.i];if(!s){bbEnd(false
 function bbNav(){return `<button class="bb-next" data-bbnext aria-label="Suivant">➜</button>`}
 function bbImg(s){const k=BB.k,w=s.w;
   bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay>${bbPic(w,150)}<b>${bbCap(w[4])}</b><span class="ar">${w[5]}</span></button>${bbNav()}`;
-  bbSeen(k,w[0]);bbSay(k,[[bbCfg(k).lang==="ar"?(bbFem(k)?"اُنْظُرِي":"اُنْظُرْ"):"Regarde !",bbCfg(k).lang==="ar"?AR:FR],...bbWordParts(k,w,true)]);
+  bbSeen(k,w[0]);bbSay(k,bbWordParts(k,w,true));
   BB.say=()=>bbSay(k,bbWordParts(k,w,true));
 }
 function bbCou(s){const k=BB.k,w=s.w;
@@ -6609,7 +6608,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.46";
+var DJH_BOOTV="1.0.47";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
