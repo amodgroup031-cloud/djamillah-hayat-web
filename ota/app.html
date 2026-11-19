@@ -1004,7 +1004,7 @@ function upcomingHTML(){
 // ---------- Vues de l'onglet Plus ----------
 const MORE=[["school","mSchool","dSchool"],["quran","mQuran","dQuran"],["plan","mPlan","dPlan"],["tawba","mTawba","dTawba"],["qibla","mQibla","dQibla"],["calendar","mCal","dCal"],["favorites","mFavorites","dFavorites"],["badges","mBadges","dBadges"],["programs","mPrograms","dPrograms"],["sos","mSos","dSos"],["situations","mSituations","dSituations"],["africa","mAfrica","dAfrica"],["barometer","mBarometer","dBarometer"],["challenges","mChallenges","dChallenges"],["reminders","mReminders","dReminders"],["couple","mCouple","dCouple"],["gratitude","mGratitude","dGratitude"],["feasts","mFeasts","dFeasts"],["fiances","mFiances","dFiances"],["directory","mDirectory","dDirectory"]];
 function viewMore(){
-  if(S.sub){const v={horaires:viewHoraires,rappels:viewRappels,school:viewSchool,plan:viewPlan,qibla:viewQibla,calendar:viewCal,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
+  if(S.sub){const v={bebe:viewBebe,horaires:viewHoraires,rappels:viewRappels,school:viewSchool,plan:viewPlan,qibla:viewQibla,calendar:viewCal,quran:viewQuran,tawba:viewTawba,africa:viewAfrica,favorites:viewFavorites,badges:viewBadges,programs:viewPrograms,sos:viewSos,situations:viewSituations,barometer:viewBarometer,challenges:viewChallenges,reminders:viewReminders,couple:viewCouple,gratitude:viewGratitude,feasts:viewFeasts,fiances:viewFiances,directory:viewDirectory}[S.sub];
     if(v) return `<button class="back" id="back">‹ ${t("back")}</button>`+withIllu(S.sub,v());}
   return `<section class="hello"><h1>${t("moreTitle")}</h1></section>
   <div class="card" style="padding-block:4px">${MORE.map(([k,a,b])=>`<button class="hub" data-sub="${k}">${illu(k,48)}<span><b>${t(a)}</b><span>${t(b)}</span></span><i aria-hidden="true">›</i></button>`).join("")}</div>
@@ -1482,7 +1482,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.44";
+const APP_VERSION = "1.0.45";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -6150,6 +6150,399 @@ html.cr-lock,html.cr-lock body{overflow:hidden}
 .cr-ov-c{font-size:13px;opacity:.75;margin-top:8px}
 </style>`);
 
+// ==========================================================
+// ÉVEIL DE BÉBÉ (8 mois – 4 ans) : apprendre en jouant, avec son prénom
+// ==========================================================
+S.bb=S.bb||{};S.bb.k=S.bb.k||{};S.bb.p=S.bb.p||{};
+// [clé, catégorie, âge minimum (mois), image, français, arabe, cri/phrase]
+const BBW=[
+ ["papa","fam",8,"👨","papa","بَابَا",""],["maman","fam",8,"👩","maman","مَامَا",""],["bebe","fam",8,"👶","le bébé","طِفْلٌ",""],
+ ["gpere","fam",12,"👴","grand-père","جَدٌّ",""],["gmere","fam",12,"👵","grand-mère","جَدَّةٌ",""],["frere","fam",15,"👦","le grand frère","أَخٌ",""],["soeur","fam",15,"👧","la grande sœur","أُخْتٌ",""],
+ ["chat","ani",8,"🐱","le chat","قِطٌّ","Le chat fait miaou !"],["chien","ani",8,"🐶","le chien","كَلْبٌ","Le chien fait ouaf ouaf !"],["vache","ani",8,"🐄","la vache","بَقَرَةٌ","La vache fait meuh !"],
+ ["mouton","ani",8,"🐑","le mouton","خَرُوفٌ","Le mouton fait bêê !"],["poule","ani",8,"🐔","la poule","دَجَاجَةٌ","La poule fait cot cot !"],["canard","ani",10,"🦆","le canard","بَطَّةٌ","Le canard fait coin coin !"],
+ ["oiseau","ani",10,"🐦","l'oiseau","عُصْفُورٌ","L'oiseau fait cui cui !"],["chevre","ani",12,"🐐","la chèvre","مَاعِزٌ","La chèvre fait mêê !"],["cheval","ani",12,"🐴","le cheval","حِصَانٌ","Le cheval galope : tagada !"],
+ ["lion","ani",12,"🦁","le lion","أَسَدٌ","Le lion fait grrr !"],["elephant","ani",12,"🐘","l'éléphant","فِيلٌ","L'éléphant a une longue trompe !"],["poisson","ani",12,"🐟","le poisson","سَمَكَةٌ","Le poisson nage dans l'eau !"],
+ ["chameau","ani",15,"🐪","le chameau","جَمَلٌ","Le chameau marche dans le désert !"],["singe","ani",15,"🐒","le singe","قِرْدٌ","Le singe grimpe aux arbres !"],["lapin","ani",15,"🐰","le lapin","أَرْنَبٌ","Le lapin saute, hop hop !"],
+ ["abeille","ani",18,"🐝","l'abeille","نَحْلَةٌ","L'abeille fait bzzz et donne du miel !"],["papillon","ani",18,"🦋","le papillon","فَرَاشَةٌ","Le papillon vole !"],["grenouille","ani",24,"🐸","la grenouille","ضِفْدَعٌ","La grenouille fait croa croa !"],
+ ["pomme","nou",12,"🍎","la pomme","تُفَّاحَةٌ",""],["banane","nou",12,"🍌","la banane","مَوْزَةٌ",""],["lait","nou",12,"🥛","le lait","حَلِيبٌ",""],["eau","nou",12,"💧","l'eau","مَاءٌ",""],
+ ["mangue","nou",15,"🥭","la mangue","مَانْجُو",""],["orange","nou",15,"🍊","l'orange","بُرْتُقَالَةٌ",""],["pain","nou",15,"🍞","le pain","خُبْزٌ",""],["riz","nou",15,"🍚","le riz","أَرُزٌّ",""],
+ ["oeuf","nou",18,"🥚","l'œuf","بَيْضَةٌ",""],["pasteque","nou",18,"🍉","la pastèque","بِطِّيخٌ",""],["citron","nou",24,"🍋","le citron","لَيْمُونٌ","Le citron est acide !"],["mais","nou",24,"🌽","le maïs","ذُرَةٌ",""],
+ ["ballon","obj",12,"⚽","le ballon","كُرَةٌ",""],["chaussure","obj",12,"👟","la chaussure","حِذَاءٌ",""],["voiture","obj",12,"🚗","la voiture","سَيَّارَةٌ","La voiture fait vroum vroum !"],["maison","obj",15,"🏠","la maison","بَيْتٌ",""],
+ ["lit","obj",15,"🛏️","le lit","سَرِيرٌ",""],["livre","obj",15,"📖","le livre","كِتَابٌ",""],["avion","obj",18,"✈️","l'avion","طَائِرَةٌ","L'avion vole dans le ciel !"],["bateau","obj",18,"⛵","le bateau","قَارِبٌ",""],
+ ["velo","obj",24,"🚲","le vélo","دَرَّاجَةٌ",""],["cle","obj",24,"🔑","la clé","مِفْتَاحٌ",""],["telephone","obj",24,"📱","le téléphone","هَاتِفٌ",""],["chapeau","obj",24,"👒","le chapeau","قُبَّعَةٌ",""],
+ ["yeux","cor",15,"👀","les yeux","عَيْنَانِ","Avec les yeux, on regarde !"],["nez","cor",15,"👃","le nez","أَنْفٌ","Avec le nez, on sent !"],["bouche","cor",15,"👄","la bouche","فَمٌ","Avec la bouche, on mange et on parle !"],
+ ["oreille","cor",18,"👂","l'oreille","أُذُنٌ","Avec les oreilles, on écoute !"],["main","cor",18,"✋","la main","يَدٌ","Avec la main, on donne !"],["pied","cor",18,"🦶","le pied","قَدَمٌ","Avec les pieds, on marche !"],["dents","cor",24,"🦷","les dents","أَسْنَانٌ","On brosse ses dents !"],
+ ["soleil","nat",18,"☀️","le soleil","شَمْسٌ",""],["lune","nat",18,"🌙","la lune","قَمَرٌ",""],["etoile","nat",18,"⭐","l'étoile","نَجْمَةٌ",""],["arbre","nat",18,"🌳","l'arbre","شَجَرَةٌ",""],
+ ["fleur","nat",18,"🌸","la fleur","زَهْرَةٌ",""],["pluie","nat",24,"🌧️","la pluie","مَطَرٌ","Allah fait tomber la pluie !"],["mer","nat",24,"🌊","la mer","بَحْرٌ",""],
+ ["rouge","col",24,"🔴","le rouge","أَحْمَرُ",""],["bleu","col",24,"🔵","le bleu","أَزْرَقُ",""],["jaune","col",24,"🟡","le jaune","أَصْفَرُ",""],["vert","col",24,"🟢","le vert","أَخْضَرُ",""],
+ ["noir","col",30,"⚫","le noir","أَسْوَدُ",""],["blanc","col",30,"⚪","le blanc","أَبْيَضُ",""],["orangec","col",30,"🟠","l'orange","بُرْتُقَالِيٌّ",""],["violet","col",30,"🟣","le violet","بَنَفْسَجِيٌّ",""],
+ ["cercle","for",30,"#c","le cercle","دَائِرَةٌ",""],["carre","for",30,"#s","le carré","مُرَبَّعٌ",""],["triangle","for",30,"#t","le triangle","مُثَلَّثٌ",""],["coeurf","for",36,"#h","le cœur","قَلْبٌ",""],["etoilef","for",36,"#e","l'étoile","نَجْمَةٌ",""]
+];
+const BBN=[["un","وَاحِدٌ"],["deux","اِثْنَانِ"],["trois","ثَلَاثَةٌ"],["quatre","أَرْبَعَةٌ"],["cinq","خَمْسَةٌ"],["six","سِتَّةٌ"],["sept","سَبْعَةٌ"],["huit","ثَمَانِيَةٌ"],["neuf","تِسْعَةٌ"],["dix","عَشَرَةٌ"]];
+const BBAD="٠١٢٣٤٥٦٧٨٩";
+BBN.forEach(([f,a],i)=>BBW.push(["n"+(i+1),"num",i<3?24:i<5?30:36,"#"+(i+1),"le chiffre "+f,a,""]));
+// lettres : [lettre, nom arabe, nom français, mot exemple arabe, image, mot français]
+const BBL=[["ا","أَلِف","Alif","أَسَدٌ","🦁","le lion"],["ب","بَاء","Bâ","بَطَّةٌ","🦆","le canard"],["ت","تَاء","Tâ","تُفَّاحَةٌ","🍎","la pomme"],["ث","ثَاء","Thâ","ثَعْلَبٌ","🦊","le renard"],
+ ["ج","جِيم","Jîm","جَمَلٌ","🐪","le chameau"],["ح","حَاء","Hâ","حِصَانٌ","🐴","le cheval"],["خ","خَاء","Khâ","خَرُوفٌ","🐑","le mouton"],["د","دَال","Dâl","دَجَاجَةٌ","🐔","la poule"],
+ ["ذ","ذَال","Dhâl","ذُرَةٌ","🌽","le maïs"],["ر","رَاء","Râ","رِيشَةٌ","🪶","la plume"],["ز","زَاي","Zây","زَهْرَةٌ","🌸","la fleur"],["س","سِين","Sîn","سَمَكَةٌ","🐟","le poisson"],
+ ["ش","شِين","Chîn","شَمْسٌ","☀️","le soleil"],["ص","صَاد","Sâd","صَقْرٌ","🦅","le faucon"],["ض","ضَاد","Dâd","ضِفْدَعٌ","🐸","la grenouille"],["ط","طَاء","Tâ","طَائِرَةٌ","✈️","l'avion"],
+ ["ظ","ظَاء","Zhâ","ظَرْفٌ","✉️","l'enveloppe"],["ع","عَيْن","'Ayn","عُصْفُورٌ","🐦","l'oiseau"],["غ","غَيْن","Ghayn","غَزَالٌ","🦌","la gazelle"],["ف","فَاء","Fâ","فِيلٌ","🐘","l'éléphant"],
+ ["ق","قَاف","Qâf","قَمَرٌ","🌙","la lune"],["ك","كَاف","Kâf","كَلْبٌ","🐶","le chien"],["ل","لَام","Lâm","لَيْمُونٌ","🍋","le citron"],["م","مِيم","Mîm","مَوْزٌ","🍌","la banane"],
+ ["ن","نُون","Nûn","نَحْلَةٌ","🐝","l'abeille"],["ه","هَاء","Hâ","هَاتِفٌ","📱","le téléphone"],["و","وَاو","Wâw","وَرْدَةٌ","🌹","la rose"],["ي","يَاء","Yâ","يَدٌ","✋","la main"]];
+BBL.forEach(([l,an,fn,ex,em,fw],i)=>BBW.push(["l"+i,"let",36,"@"+l,"la lettre "+fn,an,`${fn}, comme ${fw}`]));
+// paroles de l'islam : [clé, âge min, image, arabe, translittération, quand on le dit]
+const BBP=[["allah",8,"☝️","اللَّهُ","Allah","Allah est notre Créateur. Il nous aime et prend soin de nous."],
+ ["bism",12,"🍽️","بِسْمِ اللَّهِ","Bismillah","On le dit avant de manger, de boire et de commencer quelque chose."],
+ ["hamd",12,"😊","الْحَمْدُ لِلَّهِ","Al-hamdu lillah","On remercie Allah après avoir mangé, et pour tout ce qu'Il nous donne."],
+ ["salam",12,"👋","السَّلَامُ عَلَيْكُمْ","As-salâmu 'alaykum","On le dit pour saluer les gens."],
+ ["tawhid",18,"☝️","لَا إِلَهَ إِلَّا اللَّهُ","Lâ ilâha illa Allah","Il n'y a pas d'autre dieu qu'Allah."],
+ ["jazak",24,"🎁","جَزَاكَ اللَّهُ خَيْرًا","Jazâk Allahu khayran","On le dit pour remercier quelqu'un qui nous donne ou nous aide."],
+ ["subhan",24,"🌅","سُبْحَانَ اللَّهِ","Subhâna Allah","On le dit devant une belle chose créée par Allah."],
+ ["akbar",24,"🕌","اللَّهُ أَكْبَرُ","Allahu akbar","Allah est le plus grand. On l'entend à l'appel à la prière."],
+ ["masha",30,"🌸","مَا شَاءَ اللَّهُ","Mâ châ Allah","On le dit quand quelque chose nous plaît."],
+ ["insha",30,"🌤️","إِنْ شَاءَ اللَّهُ","In châ Allah","On le dit pour ce qu'on fera plus tard."],
+ ["nawm",30,"😴","بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا","Bismika Allâhumma amûtu wa ahyâ","L'invocation avant de dormir (al-Bukhârî 6324)."],
+ ["istighfar",36,"🤲","أَسْتَغْفِرُ اللَّهَ","Astaghfirullah","On demande pardon à Allah quand on a fait une bêtise."],
+ ["ikhlas",36,"📖","قُلْ هُوَ اللَّهُ أَحَدٌ","Qul huwa Allâhu ahad","Le premier verset de la sourate Al-Ikhlâs : Allah est Unique."],
+ ["istiqaz",42,"🌞","الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ","Al-hamdu lillâhi lladhî ahyânâ ba'da mâ amâtanâ wa ilayhi n-nuchûr","L'invocation du réveil (al-Bukhârî 6312)."]];
+const BBCAT={fam:"👨‍👩‍👧 Ma famille",ani:"🐄 Les animaux",nou:"🍎 À manger",obj:"⚽ Mes affaires",cor:"👃 Mon corps",nat:"🌳 La nature",col:"🎨 Les couleurs",for:"🔺 Les formes",num:"🔢 Les chiffres",let:"ا Les lettres arabes"};
+// étapes du développement
+const BBST=[
+ {k:"A",max:12,t:"Éveil des sens",cats:["fam","ani"],ch:[0,0],cou:1,cnt:0,lim:5,
+  ms:"Votre bébé babille (ba-ba, ma-ma), reconnaît les voix familières, joue à coucou, cherche un objet caché et commence à montrer du doigt vers 12 mois.",
+  help:"Parlez-lui sans cesse en décrivant ce que vous faites. Répondez à ses babillages comme à une vraie conversation. Prononcez souvent son prénom en le regardant.",
+  off:["Jouez à coucou avec un foulard : cachez votre visage et dites « Coucou {n} ! ».","Pendant le bain, nommez chaque partie du corps que vous lavez.","Chantez doucement « Lâ ilâha illa Allah » pour l'endormir.","Cachez un jouet sous un tissu et laissez-le le retrouver.","Montrez-lui son reflet dans un miroir : « C'est {n} ! ».","Répondez à chacun de ses babillages en le regardant dans les yeux."]},
+ {k:"B",max:18,t:"Premiers mots",cats:["fam","ani","nou","obj"],ch:[2,2],cou:1,cnt:0,lim:5,
+  ms:"Votre enfant dit ses premiers mots (papa, maman…), comprend des consignes simples avec un geste, montre ce qu'il veut et reconnaît les images familières.",
+  help:"Nommez les objets qu'il touche. Lisez des livres d'images en montrant du doigt. Dites « Bismillah » et « Al-hamdu lillah » à voix haute à chaque repas.",
+  off:["Donnez-lui un vrai fruit et nommez-le en français et en arabe.","Dites « Bismillah » à voix haute avant chaque repas pour qu'il l'entende.","Lisez un livre d'images en montrant chaque image du doigt.","Demandez « Où est papa ? » et laissez-le montrer.","Faites rouler un ballon entre vous en disant « à toi, à moi ».","Imitez ensemble les cris des animaux."]},
+ {k:"C",max:24,t:"L'explosion du langage",cats:["fam","ani","nou","obj","cor","nat"],ch:[2,3],cou:1,cnt:0,lim:8,
+  ms:"Le vocabulaire grandit très vite (souvent une cinquantaine de mots vers 2 ans). Votre enfant assemble deux mots (« encore lait »), montre les parties du corps et les images.",
+  help:"Ajoutez un mot aux siens : s'il dit « lait », dites « encore du lait ». Donnez des consignes simples. Laissez-le vous imiter quand vous priez.",
+  off:["Donnez des consignes simples : « Apporte la chaussure ».","Ajoutez un mot à ses mots : s'il dit « balle », dites « la grosse balle ».","Jouez à « Où est ton nez ? Où sont tes yeux ? ».","Rangez les jouets ensemble en chantant.","Promenez-vous dehors et nommez tout ce que vous voyez.","Laissez-le se mettre à côté de vous pendant la prière."]},
+ {k:"D",max:36,t:"Couleurs, nombres et politesse",cats:["fam","ani","nou","obj","cor","nat","col","num"],ch:[3,4],cou:0,cnt:5,lim:15,
+  ms:"Votre enfant fait des phrases de plus en plus longues, apprend les couleurs, compte de petites quantités et répète les formules de politesse et les petites paroles de l'islam.",
+  help:"Posez-lui des questions ouvertes (« Qu'est-ce qu'il fait, le chat ? »). Comptez tout ce que vous voyez. Félicitez l'effort, pas seulement la réussite.",
+  off:["Triez ensemble des objets par couleur (bouchons, cubes, habits).","Comptez les marches de l'escalier ensemble.","Aidez-le à dire « Jazâk Allahu khayran » quand on lui donne quelque chose.","Racontez une courte histoire de prophète avec des gestes.","Cuisinez ensemble : il verse, mélange et compte les cuillères.","Faites la prière à côté de lui : il imitera les gestes."]},
+ {k:"E",max:61,t:"Prêt pour l'école",cats:["fam","ani","nou","obj","cor","nat","col","for","num","let"],ch:[3,4],cou:0,cnt:10,lim:15,
+  ms:"Votre enfant raconte, pose beaucoup de « pourquoi », compte jusqu'à 10, reconnaît les formes et peut apprendre les lettres arabes, de courtes invocations et sourates.",
+  help:"Lisez chaque jour une histoire et demandez-lui de la raconter. Apprenez un verset par semaine. Montrez-lui la lettre de son prénom en arabe et en français.",
+  off:["Dessinez des formes dans le sable ou sur une feuille.","Écrivez la première lettre de son prénom en arabe et en français.","Apprenez-lui une courte sourate, un verset par semaine.","Jouez à « Je vois quelque chose de rouge… ».","Demandez-lui de raconter sa journée le soir.","Comptez les dattes avant de les partager en famille."]}];
+
+// ---------- Enfants et âge ----------
+function bbMonths(b){const d=new Date(b+"T00:00:00"),n=new Date();let m=(n.getFullYear()-d.getFullYear())*12+n.getMonth()-d.getMonth();if(n.getDate()<d.getDate())m--;return m}
+function bbAgeTxt(m){const y=Math.floor(m/12),r=m%12;return y?`${y} an${y>1?"s":""}${r?` ${r} mois`:""}`:`${m} mois`}
+function bbKids(){return (S.family||[]).filter(f=>(f.rel==="son"||f.rel==="daughter")&&f.birth&&bbMonths(f.birth)>=6&&bbMonths(f.birth)<61)}
+function bbKid(){const L=bbKids();return L.find(k=>k.id===S.bb.cur)||L[0]||null}
+function bbStage(m){return BBST.find(s=>m<s.max)||BBST[BBST.length-1]}
+function bbCfg(k){return S.bb.k[k.id]=S.bb.k[k.id]||{lang:"both",lim:0}}
+function bbProg(k){return S.bb.p[k.id]=S.bb.p[k.id]||{w:{},t:{},acc:[]}}
+const bbFem=k=>k.rel==="daughter";
+const bbDay=()=>{const d=new Date();d.setHours(0,0,0,0);return iso(d)};
+const bbAddDays=n=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return iso(d)};
+
+// ---------- Voix : le prénom (voix des parents ou synthèse) ----------
+const bbNameUrls={};
+async function bbNameUrl(k){
+  if(bbNameUrls[k.id]!==undefined) return bbNameUrls[k.id];
+  try{const c=await caches.open("djh-bebe");const r=await c.match("nom-"+k.id);bbNameUrls[k.id]=r?URL.createObjectURL(await r.blob()):null}catch(e){bbNameUrls[k.id]=null}
+  return bbNameUrls[k.id];
+}
+async function bbSay(k,parts){
+  voxStop(); const g=voxGen;
+  for(const p of parts){
+    if(g!==voxGen) return;
+    if(p==="N"){const u=await bbNameUrl(k);if(u&&await playUrl(u,g))continue;await ttsOne(bbCfg(k).phon||k.name,"fr-FR",g);continue}
+    const [tx,l]=p; if(!tx) continue;
+    const l2=l.slice(0,2), v=typeof VOX!=="undefined"&&VOX[voxKey(l2,tx)];
+    if(v&&typeof v==="string"&&!v.startsWith("q:")&&await playUrl("voix/"+voxKey(l2,tx)+".mp3",g)) continue;
+    await ttsOne(tx,l,g);
+  }
+}
+const FR="fr-FR",AR="ar-SA";
+const bbCap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function bbWordParts(k,w,full){
+  const L=bbCfg(k).lang, out=[];
+  if(L!=="ar") out.push([bbCap(w[4])+" !",FR]);
+  if(L!=="fr") out.push([w[5],AR]);
+  if(full&&w[6]&&L!=="ar") out.push([w[6],FR]);
+  return out;
+}
+const BBOK_F=["Bravo {n} !","Très bien {n} !","Super {n} !","Mâ châ Allah, {n} !","Oui {n}, c'est ça !"];
+function bbBravo(k){const L=bbCfg(k).lang,f=bbFem(k);
+  const ar=f?"أَحْسَنْتِ":"أَحْسَنْتَ";
+  const fr=BBOK_F[Math.floor(Math.random()*BBOK_F.length)].split("{n}");
+  return L==="ar"?["N",[ar,AR]]:L==="fr"?[[fr[0],FR],"N",[fr[1],FR]]:[[fr[0],FR],"N",[fr[1],FR],[ar,AR]];
+}
+
+// ---------- Mémoire de l'apprentissage (répétition espacée) ----------
+const BBGAP=[0,1,2,4,7,14,30];
+function bbW(k,key){const P=bbProg(k);return P.w[key]=P.w[key]||{s:0,c:0,l:0,n:""}}
+function bbSeen(k,key){const x=bbW(k,key);x.s++;if(!x.n)x.n=bbAddDays(1);save()}
+function bbAnswer(k,key,first){const x=bbW(k,key),P=bbProg(k);
+  if(first){x.c++;x.l=Math.min(x.l+1,BBGAP.length-1);x.n=bbAddDays(BBGAP[x.l])}else{x.l=Math.max(0,x.l-1);x.n=bbDay()}
+  P.acc.push(first?1:0);if(P.acc.length>12)P.acc.shift();save()}
+const bbKnown=(k,key)=>(bbProg(k).w[key]||{}).l>=3;
+function bbPool(k,cat){const m=bbMonths(k.birth),st=bbStage(m);return BBW.filter(w=>(cat?w[1]===cat:st.cats.includes(w[1]))&&w[2]<=Math.max(m,8))}
+function bbChoices(k){const st=bbStage(bbMonths(k.birth)),P=bbProg(k);if(!st.ch[1])return 0;
+  const a=P.acc,r=a.length>=5?a.slice(-6).reduce((x,y)=>x+y,0)/Math.min(6,a.length):.6;
+  let n=st.ch[0];if(r>=.8)n=st.ch[1];if(r<.5)n=Math.max(2,st.ch[0]-1);return n}
+function bbShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+// Séance du jour : révisions dues + mots nouveaux + parole de l'islam + jeu de l'âge
+function bbSession(k){
+  const m=bbMonths(k.birth),st=bbStage(m),P=bbProg(k),d=bbDay(),pool=bbPool(k);
+  const due=bbShuffle(pool.filter(w=>{const x=P.w[w[0]];return x&&x.s>0&&x.n&&x.n<=d})).sort((a,b)=>(P.w[a[0]].l-P.w[b[0]].l)).slice(0,4);
+  const fresh=pool.filter(w=>!P.w[w[0]]||!P.w[w[0]].s).sort((a,b)=>a[2]-b[2]||BBW.indexOf(a)-BBW.indexOf(b)).slice(0,st.k==="A"?4:3);
+  const steps=[];
+  if(st.k==="A"){fresh.concat(due).slice(0,6).forEach((w,i)=>steps.push({g:i%2?"cou":"img",w}));}
+  else{
+    fresh.forEach(w=>steps.push({g:"img",w}));
+    due.forEach(w=>steps.push({g:(P.w[w[0]].s>=2?"show":"img"),w}));
+    fresh.forEach(w=>{if(bbW(k,w[0]).s>=1)steps.push({g:"show",w})});
+    if(st.cou&&steps.length<6&&pool.length) steps.push({g:"cou",w:pool[Math.floor(Math.random()*pool.length)]});
+  }
+  const ph=BBP.filter(p=>p[1]<=Math.max(m,8)).sort((a,b)=>((P.w["p_"+a[0]]||{}).s||0)-((P.w["p_"+b[0]]||{}).s||0))[0];
+  if(ph) steps.push({g:"par",p:ph});
+  if(st.cnt) steps.push({g:"cnt"});
+  if(!steps.some(s=>s.g==="show"||s.g==="img")&&pool.length) steps.unshift({g:"img",w:pool[0]});
+  return steps;
+}
+
+// ---------- Temps d'écran (OMS : court, et avec un parent) ----------
+function bbLimit(k){return bbCfg(k).lim||bbStage(bbMonths(k.birth)).lim}
+function bbUsed(k){return Math.round((bbProg(k).t[bbDay()]||0))}
+function bbTick(k,s){const P=bbProg(k),d=bbDay();P.t[d]=(P.t[d]||0)+s;const ks=Object.keys(P.t).sort();while(ks.length>40)delete P.t[ks.shift()]}
+
+// ---------- Page parent ----------
+function bbLetterSvg(c,sz){return `<span class="bb-gl" style="font-size:${sz}px">${c}</span>`}
+function bbShape(code,sz){const s=sz||120,col="#E46B4F";
+  const P={c:`<circle cx="50" cy="50" r="40" fill="${col}"/>`,s:`<rect x="12" y="12" width="76" height="76" rx="4" fill="#3E86D6"/>`,t:`<path d="M50 10L92 88H8z" fill="#F2B632"/>`,
+   h:`<path d="M50 86C20 64 8 48 8 32 8 18 19 10 30 10c9 0 16 5 20 12 4-7 11-12 20-12 11 0 22 8 22 22 0 16-12 32-42 54z" fill="#E0457B"/>`,e:`<path d="M50 6l12 30 32 2-25 20 9 32-28-18-28 18 9-32L6 38l32-2z" fill="#F2B632"/>`};
+  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100" aria-hidden="true">${P[code]}</svg>`}
+function bbPic(w,sz){const e=w[3];sz=sz||130;
+  if(e[0]==="#"&&isNaN(+e.slice(1))) return bbShape(e.slice(1),sz);
+  if(e[0]==="#") {const n=+e.slice(1);return `<span class="bb-gl bb-num" style="font-size:${sz*.8}px">${n}<small>${String(n).split("").map(c=>BBAD[c]).join("")}</small></span>`}
+  if(e[0]==="@") return bbLetterSvg(e.slice(1),sz);
+  return `<span class="bb-em" style="font-size:${sz}px">${e}</span>`}
+function viewBebe(){
+  const L=bbKids(),k=bbKid();
+  let h=`<section class="hello"><h1>👶 Éveil de bébé</h1><p>De 8 mois à 4 ans : votre enfant apprend les mots, les couleurs, les chiffres, les lettres arabes et les belles paroles de l'islam, en entendant son prénom.</p></section>`;
+  if(!k) return h+`<div class="card"><p>Ajoutez votre enfant (de 6 mois à 4 ans) pour commencer. Il apparaîtra aussi dans votre famille.</p>${bbAddForm()}</div>`;
+  const m=bbMonths(k.birth),st=bbStage(m),P=bbProg(k),cfg=bbCfg(k),pool=bbPool(k),known=pool.filter(w=>bbKnown(k,w[0])).length;
+  const learning=pool.filter(w=>(P.w[w[0]]||{}).s&&!bbKnown(k,w[0])).length,used=bbUsed(k),lim=bbLimit(k)*60;
+  const cats=[...new Set(pool.map(w=>w[1]))];
+  const offA=st.off, off=offA[noRep("bboff_"+k.id,offA.length,bbDay())].replace(/\{n\}/g,esc(k.name));
+  h+=`${L.length>1?`<div class="seg bb-kids">${L.map(x=>`<button type="button" data-bbkid="${x.id}" aria-pressed="${x.id===k.id}">${esc(x.name)}</button>`).join("")}</div>`:""}
+  <div class="card bb-head"><div class="bb-av">${bbFem(k)?"👧":"👦"}</div><div><b>${esc(k.name)}</b><span>${bbAgeTxt(m)} · étape « ${st.t} »</span></div></div>
+  <button class="bb-go" data-bbplay="session"><span class="bb-go-ic">▶</span><span><b>Séance du jour</b><span>${Math.max(1,Math.round(bbLimit(k)))} min maximum · choisie pour ${esc(k.name)}</span></span></button>
+  <div class="bb-stats"><div><b>${known}</b><span>mots acquis</span></div><div><b>${learning}</b><span>en cours</span></div><div><b>${Math.floor(used/60)}/${bbLimit(k)}</b><span>min aujourd'hui</span></div></div>
+  <h3 class="lx-h">Jeux</h3><div class="bb-games">
+   ${bbGame("img","🖼️","Imagier parlant","Il voit, il entend son prénom et le mot")}
+   ${st.cou?bbGame("cou","🙈","Coucou !","Cacher et retrouver : l'objet existe encore"):""}
+   ${st.ch[1]?bbGame("show","👆",`Montre-moi`,`« ${esc(k.name)}, montre-moi… » · ${bbChoices(k)} choix`):""}
+   ${st.cnt?bbGame("cnt","🔢","Compter",`Toucher et compter jusqu'à ${st.cnt}`):""}
+   ${bbGame("par","🤲","Paroles de l'islam","Bismillah, Al-hamdu lillah, As-salâmu 'alaykum…")}
+   ${st.k==="E"?bbGame("let","ا","Lettres arabes","De Alif à Yâ, avec un mot pour chaque lettre"):""}
+  </div>
+  <h3 class="lx-h">Ce qu'il connaît</h3><div class="card bb-cats">${cats.map(c=>{const p=pool.filter(w=>w[1]===c),kn=p.filter(w=>bbKnown(k,w[0])).length;
+    return `<button class="bb-cat" data-bbplay="img" data-bbcat="${c}"><span>${BBCAT[c]}</span><i><em style="width:${Math.round(kn/p.length*100)}%"></em></i><small>${kn}/${p.length}</small></button>`}).join("")}</div>
+  <div class="card bb-guide"><h3>🌱 À ${bbAgeTxt(m)}</h3><p>${st.ms}</p><div class="how"><b>Comment l'aider</b>${st.help}</div>
+   <div class="how bb-off"><b>🌿 Sans écran aujourd'hui</b>${off}</div>
+   <p class="note">Chaque enfant a son propre rythme. Si quelque chose vous inquiète (pas de babillage vers 12 mois, aucun mot vers 18 mois, perte de mots déjà acquis), parlez-en au médecin.</p></div>
+  <div class="card bb-screen"><h3>📵 Le bon usage de l'écran</h3><p>L'OMS déconseille les écrans pour un enfant de moins de 2 ans quand il est seul et passif, et recommande moins d'une heure par jour entre 2 et 4 ans. Ici, les séances sont très courtes et faites pour être vécues <b>avec vous</b> : asseyez-vous près de ${esc(k.name)}, répétez les mots avec lui, montrez-lui les vrais objets.</p>
+   <label for="bb-lim" style="flex-direction:row;align-items:center;justify-content:space-between">Temps maximum par jour<select id="bb-lim" style="width:auto">${[3,5,8,10,15,20].map(v=>`<option value="${v}" ${v===bbLimit(k)?"selected":""}>${v} min</option>`).join("")}</select></label></div>
+  <div class="card bb-set"><h3>🗣️ La voix</h3>
+   <label for="bb-lang">Langue<select id="bb-lang"><option value="both" ${cfg.lang==="both"?"selected":""}>Français + arabe</option><option value="fr" ${cfg.lang==="fr"?"selected":""}>Français</option><option value="ar" ${cfg.lang==="ar"?"selected":""}>Arabe</option></select></label>
+   <label for="bb-phon">Comment prononcer « ${esc(k.name)} » (écrivez-le comme il se dit)<input id="bb-phon" value="${esc(cfg.phon||"")}" placeholder="${esc(k.name)}"></label>
+   <div class="bb-rec"><button class="btn ghost" data-bbrec>🎙 Enregistrer le prénom avec ma voix</button><button class="btn ghost" data-bbtest>▶ Écouter</button>${cfg.rec?`<button class="btn ghost" data-bbrecdel>✕</button>`:""}</div>
+   <p class="note" id="bb-recmsg">${cfg.rec?"✓ Votre voix est utilisée pour dire son prénom.":"Avec votre propre voix, votre enfant reconnaît mieux son prénom."}</p></div>
+  <details class="card"><summary><b>➕ Ajouter un autre enfant</b></summary>${bbAddForm()}</details>`;
+  return h;
+}
+function bbGame(g,ic,t1,t2){return `<button class="bb-game" data-bbplay="${g}"><span class="bb-gic">${ic}</span><b>${t1}</b><span>${t2}</span></button>`}
+function bbAddForm(){return `<div class="bb-add"><label for="bb-nm">Prénom<input id="bb-nm" placeholder="Aïcha"></label><label for="bb-bd">Date de naissance<input id="bb-bd" type="date"></label>
+  <div class="seg"><button type="button" data-bbsex="daughter" aria-pressed="${S.bb.sex!=="son"}">Fille</button><button type="button" data-bbsex="son" aria-pressed="${S.bb.sex==="son"}">Garçon</button></div>
+  <button class="btn" data-bbadd>Ajouter</button></div>`}
+
+// ---------- Mode enfant (plein écran verrouillé) ----------
+let BB=null;
+function bbOpen(k,mode,cat){
+  if(bbUsed(k)>=bbLimit(k)*60){bbStart(k,[],true);return}
+  let steps=[];const pool=bbPool(k,cat);
+  if(mode==="session") steps=bbSession(k);
+  else if(mode==="img") steps=bbOrder(k,pool).slice(0,10).map(w=>({g:"img",w}));
+  else if(mode==="cou") steps=bbShuffle(pool).slice(0,6).map(w=>({g:"cou",w}));
+  else if(mode==="show"){const seen=pool.filter(w=>(bbProg(k).w[w[0]]||{}).s);steps=bbOrder(k,seen.length>=4?seen:pool).slice(0,8).map(w=>({g:"show",w}))}
+  else if(mode==="cnt") steps=[{g:"cnt"},{g:"cnt"},{g:"cnt"}];
+  else if(mode==="par") steps=BBP.filter(p=>p[1]<=Math.max(bbMonths(k.birth),8)).map(p=>({g:"par",p}));
+  else if(mode==="let") steps=bbOrder(k,BBW.filter(w=>w[1]==="let")).slice(0,6).map(w=>({g:"img",w})).concat(bbShuffle(BBW.filter(w=>w[1]==="let"&&(bbProg(k).w[w[0]]||{}).s)).slice(0,4).map(w=>({g:"show",w})));
+  bbStart(k,steps);
+}
+// d'abord ce qui est à revoir, puis le nouveau, puis le reste
+function bbOrder(k,pool){const P=bbProg(k).w,d=bbDay();
+  const due=pool.filter(w=>P[w[0]]&&P[w[0]].n<=d),nw=pool.filter(w=>!P[w[0]]),rest=pool.filter(w=>P[w[0]]&&P[w[0]].n>d);
+  return [...bbShuffle(due),...nw,...bbShuffle(rest)]}
+function bbStart(k,steps,lim){
+  bbClose(true);
+  BB={k,steps,i:-1,stars:0,t0:Date.now(),tick:null};
+  const el=document.createElement("div");el.id="bb-play";
+  el.innerHTML=`<div class="bb-top"><span class="bb-name">${esc(k.name)}</span><div class="bb-bar"><i></i></div><button class="bb-x" aria-label="Maintenir pour quitter"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="16"/></svg><span>✕</span></button></div><div class="bb-stage"></div><div class="bb-stars"></div>`;
+  document.body.appendChild(el);document.documentElement.classList.add("cr-lock");
+  BB.tick=setInterval(()=>{if(!BB)return;bbTick(k,1);const u=bbUsed(k),l=bbLimit(k)*60;el.querySelector(".bb-bar i").style.width=Math.min(100,u/l*100)+"%";if(u>=l&&!BB.over){BB.over=1;bbEnd(true)}},1000);
+  if(lim){BB.over=1;bbEnd(true)}else bbNext();
+}
+function bbClose(silent){if(!BB&&!document.getElementById("bb-play"))return;if(BB&&BB.tick)clearInterval(BB.tick);const el=document.getElementById("bb-play");el&&el.remove();document.documentElement.classList.remove("cr-lock");BB=null;if(!silent){voxStop();save();const y=scrollY;render();scrollTo(0,y)}}
+function bbStageEl(){return document.querySelector("#bb-play .bb-stage")}
+function bbNext(){if(!BB)return;BB.i++;const s=BB.steps[BB.i];if(!s){bbEnd(false);return}BB.miss=0;
+  ({img:bbImg,cou:bbCou,show:bbShow,cnt:bbCnt,par:bbPar})[s.g](s)}
+function bbNav(){return `<button class="bb-next" data-bbnext aria-label="Suivant">➜</button>`}
+function bbImg(s){const k=BB.k,w=s.w;
+  bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay>${bbPic(w,150)}<b>${bbCap(w[4])}</b><span class="ar">${w[5]}</span></button>${bbNav()}`;
+  bbSeen(k,w[0]);bbSay(k,["N",[bbCfg(k).lang==="ar"?(bbFem(k)?"اُنْظُرِي":"اُنْظُرْ"):"regarde !",bbCfg(k).lang==="ar"?AR:FR],...bbWordParts(k,w,true)]);
+  BB.say=()=>bbSay(k,bbWordParts(k,w,true));
+}
+function bbCou(s){const k=BB.k,w=s.w;
+  bbStageEl().innerHTML=`<button class="bb-card bb-cover" data-bbuncover><span class="bb-veil">🙈</span><div class="bb-hid">${bbPic(w,150)}<b>${bbCap(w[4])}</b></div></button>`;
+  bbSay(k,[["Où est",FR],[w[4].replace(/^(le |la |les |l')/,"")+" ?",FR]]);
+  BB.say=()=>{const c=bbStageEl().querySelector(".bb-cover");if(!c||c.classList.contains("open"))return bbSay(k,bbWordParts(k,w,true));
+    c.classList.add("open");bbSeen(k,w[0]);bbSay(k,[["Coucou",FR],"N",[" !",FR],...bbWordParts(k,w,true)]);
+    bbStageEl().insertAdjacentHTML("beforeend",bbNav())};
+}
+function bbShow(s){const k=BB.k,w=s.w,n=Math.max(2,bbChoices(k)||2);
+  const others=bbShuffle(BBW.filter(x=>x[1]===w[1]&&x[0]!==w[0]&&x[3]!==w[3]&&x[2]<=Math.max(bbMonths(k.birth)+6,24))).slice(0,n-1);
+  const opts=bbShuffle([w,...others]);
+  bbStageEl().innerHTML=`<p class="bb-q">${bbCap(w[4])} ?</p><div class="bb-opts n${opts.length}">${opts.map(o=>`<button class="bb-opt" data-bbopt="${o[0]}">${bbPic(o,opts.length>2?90:120)}</button>`).join("")}</div>`;
+  BB.target=w;
+  const L=bbCfg(k).lang;
+  BB.say=()=>bbSay(k,L==="ar"?["N",["أَيْنَ "+w[5]+"؟",AR]]:["N",["montre-moi "+w[4]+" !",FR],...(L==="both"?[[w[5],AR]]:[])]);
+  BB.say();
+}
+function bbPick(key,btn){const k=BB.k,w=BB.target;if(!w||BB.lock)return;
+  if(key===w[0]){BB.lock=1;bbAnswer(k,w[0],!BB.miss);btn.classList.add("ok");bbStar();
+    bbSay(k,[...bbBravo(k),...bbWordParts(k,w,false)]).then(()=>{});setTimeout(()=>{BB&&(BB.lock=0,bbNext())},2600)}
+  else{BB.miss++;btn.classList.remove("no");void btn.offsetWidth;btn.classList.add("no");
+    const o=BBW.find(x=>x[0]===key),L=bbCfg(k).lang;
+    if(BB.miss>=2){const c=bbStageEl().querySelector(`[data-bbopt="${w[0]}"]`);c&&c.classList.add("hint")}
+    bbSay(k,L==="ar"?[[o[5],AR],["أَيْنَ "+w[5]+"؟",AR]]:[["Ça, c'est "+o[4]+".",FR],["Montre-moi "+w[4]+",",FR],"N"])}
+}
+function bbCnt(){const k=BB.k,st=bbStage(bbMonths(k.birth)),max=st.cnt||3;
+  const N=1+Math.floor(Math.random()*Math.min(max,BB.i<2?3:max)),w=bbShuffle(BBW.filter(x=>(x[1]==="nou"||x[1]==="ani")&&x[3][0]!=="#"))[0];
+  BB.cnt={N,c:0,w};
+  bbStageEl().innerHTML=`<p class="bb-q">On compte ensemble !</p><div class="bb-cnt">${Array.from({length:N},(_,i)=>`<button class="bb-ci" data-bbci="${i}">${w[3]}</button>`).join("")}</div><div class="bb-cn"></div>`;
+  bbSay(k,["N",[bbCfg(k).lang==="ar"?"هَيَّا نَعُدُّ":"on compte ensemble ! Touche chaque image.",bbCfg(k).lang==="ar"?AR:FR]]);
+  BB.say=()=>{};
+}
+function bbCount(btn){const C=BB.cnt,k=BB.k;if(!C||btn.classList.contains("done"))return;
+  C.c++;btn.classList.add("done");btn.dataset.n=C.c;const L=bbCfg(k).lang,[f,a]=BBN[C.c-1];
+  bbStageEl().querySelector(".bb-cn").innerHTML=`<b>${C.c}</b> <span class="ar">${String(C.c).split("").map(x=>BBAD[x]).join("")}</span>`;
+  if(C.c<C.N){bbSay(k,[L==="ar"?[a,AR]:[bbCap(f),FR]]);return}
+  bbStar();bbAnswer(k,"n"+C.N,true);
+  bbSay(k,[L==="ar"?[a,AR]:[bbCap(f)+" !",FR],...(L==="both"?[[a,AR]]:[]),...bbBravo(k)]);
+  setTimeout(()=>{BB&&bbStageEl().insertAdjacentHTML("beforeend",bbNav())},900);
+}
+function bbPar(s){const k=BB.k,p=s.p,L=bbCfg(k).lang;
+  bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay><span class="bb-em" style="font-size:96px">${p[2]}</span><span class="ar bb-par">${p[3]}</span><b>${p[4]}</b><small>${p[5]}</small></button>${bbNav()}`;
+  bbSeen(k,"p_"+p[0]);
+  BB.say=()=>bbSay(k,[[p[3],AR],[p[3],AR]]);
+  bbSay(k,["N",[L==="ar"?(bbFem(k)?"قُولِي مَعِي":"قُلْ مَعِي"):"répète avec moi :",L==="ar"?AR:FR],[p[3],AR],[p[3],AR],...(L!=="ar"?[[p[5],FR]]:[])]);
+}
+function bbStar(){if(!BB)return;BB.stars++;const s=document.querySelector("#bb-play .bb-stars");if(!s)return;
+  s.insertAdjacentHTML("beforeend","<i>⭐</i>");const b=document.createElement("div");b.className="bb-burst";b.innerHTML="⭐🌟✨⭐🌟".split("").filter(x=>x.trim()).map((x,i)=>`<i style="--a:${i*72}deg">${x}</i>`).join("");document.getElementById("bb-play").appendChild(b);setTimeout(()=>b.remove(),1200);
+  try{if(NATIVE&&PL.Haptics)PL.Haptics.impact({style:"LIGHT"}).catch(()=>{})}catch(e){}}
+function bbEnd(limit){if(!BB)return;const k=BB.k;BB.steps=[];BB.target=null;BB.over=1;if(BB.tick){clearInterval(BB.tick);BB.tick=null}
+  const st=bbStage(bbMonths(k.birth)),off=st.off[noRep("bboff_"+k.id,st.off.length,bbDay())].replace(/\{n\}/g,esc(k.name));
+  bbStageEl().innerHTML=`<div class="bb-end"><span class="bb-em" style="font-size:90px">${limit?"🌙":"🏆"}</span><h2>${limit?"C'est fini pour aujourd'hui !":"Bravo "+esc(k.name)+" !"}</h2>
+   ${BB.stars?`<p class="bb-endstars">${"⭐".repeat(Math.min(BB.stars,10))}</p>`:""}<p>${limit?"Le temps d'écran du jour est terminé. On joue maintenant ensemble, sans écran :":"Maintenant, continuez sans écran :"}</p><p class="bb-off2">🌿 ${off}</p>
+   <p class="note">Pour quitter : maintenez le bouton ✕ en haut.</p></div>`;
+  if(limit) bbSay(k,[["Bravo",FR],"N",["! C'est fini pour aujourd'hui. Maintenant, on joue avec papa et maman !",FR]]);
+  else bbSay(k,[...bbBravo(k)]);
+}
+// quitter : maintenir 1,5 s (les petits doigts ne sortent pas par erreur)
+let bbHold=null;
+document.addEventListener("pointerdown",e=>{const x=e.target.closest&&e.target.closest("#bb-play .bb-x");if(!x)return;x.classList.add("hold");bbHold=setTimeout(()=>{bbHold=null;bbClose(false)},1500)});
+["pointerup","pointercancel","pointerleave"].forEach(ev=>document.addEventListener(ev,e=>{if(!bbHold)return;clearTimeout(bbHold);bbHold=null;document.querySelectorAll("#bb-play .bb-x.hold").forEach(x=>x.classList.remove("hold"))}));
+if(typeof appBack==="function"){const _appBackBb=appBack;appBack=function(){if(BB)return true;return _appBackBb()}}
+
+// ---------- Clics et réglages ----------
+document.addEventListener("click",e=>{
+  const el=e.target.closest&&e.target.closest("[data-bbplay],[data-bbkid],[data-bbnext],[data-bbsay],[data-bbuncover],[data-bbopt],[data-bbci],[data-bbsex],[data-bbadd],[data-bbrec],[data-bbtest],[data-bbrecdel]");if(!el)return;
+  const d=el.dataset;
+  if(d.bbplay){const k=bbKid();if(k)bbOpen(k,d.bbplay,d.bbcat);return}
+  if(d.bbkid){S.bb.cur=+d.bbkid;save();const y=scrollY;render();scrollTo(0,y);return}
+  if(d.bbnext!=null){bbNext();return}
+  if(d.bbuncover!=null||d.bbsay!=null){BB&&BB.say&&BB.say();return}
+  if(d.bbopt){bbPick(d.bbopt,el);return}
+  if(d.bbci){bbCount(el);return}
+  if(d.bbsex){S.bb.sex=d.bbsex;el.parentElement.querySelectorAll("[data-bbsex]").forEach(b=>b.setAttribute("aria-pressed",b===el));return}
+  if(d.bbadd!=null){const box=el.closest(".bb-add"),nm=box.querySelector("#bb-nm").value.trim(),bd=box.querySelector("#bb-bd").value;
+    if(!nm||!bd){(nm?box.querySelector("#bb-bd"):box.querySelector("#bb-nm")).focus();return}
+    const id=Date.now();S.family.push({id,name:nm,rel:S.bb.sex==="son"?"son":"daughter",birth:bd});S.bb.cur=id;save();render();scrollTo(0,0);return}
+  if(d.bbtest!=null){const k=bbKid();k&&bbSay(k,["N",[" !",FR]]);return}
+  if(d.bbrecdel!=null){const k=bbKid();if(!k)return;caches.open("djh-bebe").then(c=>c.delete("nom-"+k.id)).catch(()=>{});delete bbNameUrls[k.id];bbCfg(k).rec=0;save();render();return}
+  if(d.bbrec!=null){bbRecord(el);return}
+});
+async function bbRecord(btn){
+  const k=bbKid(),msg=document.getElementById("bb-recmsg");if(!k)return;
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    const rec=new MediaRecorder(st),ch=[];rec.ondataavailable=e=>e.data.size&&ch.push(e.data);
+    rec.onstop=async()=>{st.getTracks().forEach(t=>t.stop());const b=new Blob(ch,{type:rec.mimeType||"audio/webm"});
+      try{const c=await caches.open("djh-bebe");await c.put("nom-"+k.id,new Response(b,{headers:{"Content-Type":b.type}}));bbNameUrls[k.id]=URL.createObjectURL(b);bbCfg(k).rec=1;save();
+        msg.textContent="✓ Enregistré. Écoutez le résultat.";btn.textContent="🎙 Recommencer";const a=new Audio(bbNameUrls[k.id]);a.play().catch(()=>{})}catch(e){msg.textContent="L'enregistrement n'a pas pu être gardé."}};
+    rec.start();let n=3;btn.disabled=true;msg.textContent=`🔴 Dites « ${k.name} » maintenant… ${n}`;
+    const iv=setInterval(()=>{n--;if(n>0)msg.textContent=`🔴 Dites « ${k.name} » maintenant… ${n}`;else{clearInterval(iv);btn.disabled=false;rec.stop()}},1000);
+  }catch(e){msg.textContent="Le micro n'est pas accessible sur ce téléphone. Autorisez le micro pour l'application, ou écrivez la prononciation ci-dessus."}
+}
+document.addEventListener("change",e=>{const el=e.target,k=bbKid();if(!k||!el.id||!el.id.startsWith("bb-"))return;
+  if(el.id==="bb-lang")bbCfg(k).lang=el.value;
+  if(el.id==="bb-phon")bbCfg(k).phon=el.value.trim();
+  if(el.id==="bb-lim")bbCfg(k).lim=+el.value;
+  save();if(el.id!=="bb-phon"){const y=scrollY;render();scrollTo(0,y)}});
+
+// ---------- Place dans l'application : espace Apprendre ----------
+if(typeof SUBTAB!=="undefined") SUBTAB.bebe="learn";
+MOTIF.bebe=`<circle cx="40" cy="44" r="15" fill="${IC.cream}"/><circle cx="34.5" cy="43" r="1.8" fill="${IC.bg2}"/><circle cx="45.5" cy="43" r="1.8" fill="${IC.bg2}"/><path d="M35 50q5 4 10 0" stroke="${IC.bg2}" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M38 29q2-5 6-3" stroke="${IC.gold}" stroke-width="2" fill="none" stroke-linecap="round"/>${typeof moon==="function"?moon(58,24,.4):""}`;
+const _viewLearnBb=viewLearn;
+viewLearn=function(){return _viewLearnBb().replace('<div class="card" style="padding-block:4px">',`<div class="card" style="padding-block:4px">${hubRow("bebe","👶 Éveil de bébé (8 mois – 4 ans)","Les premiers mots, couleurs, chiffres, lettres arabes et paroles de l'islam, avec son prénom",'data-sub="bebe"')}`)};
+if(typeof VIEWS!=="undefined"&&VIEWS.learn) VIEWS.learn=viewLearn;
+
+document.head.insertAdjacentHTML("beforeend",`<style>
+.bb-kids{margin:0 0 12px}.bb-head{display:flex!important;flex-direction:row!important;align-items:center;gap:14px}.bb-av{font-size:42px;line-height:1}.bb-head b{display:block;font-size:19px}.bb-head span{opacity:.8;font-size:14px}
+.bb-go{display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin:0 0 14px;border:none;border-radius:22px;background:linear-gradient(135deg,#F2B632,#E46B4F);color:#fff;text-align:start;font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(228,107,79,.3)}
+.bb-go-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);font-size:22px;flex:none}.bb-go b{display:block;font-size:18px}.bb-go span span{font-size:13.5px;opacity:.95}
+.bb-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 6px}.bb-stats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}.bb-stats b{display:block;font-size:22px;color:var(--ok,#0D6657)}.bb-stats span{font-size:12px;opacity:.8}
+.bb-games{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}.bb-game{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.bb-game b{font-size:15px}.bb-game span:last-child{font-size:12.5px;opacity:.75;line-height:1.3}.bb-gic{font-size:30px;line-height:1.2;font-family:var(--f-ar)}
+.bb-cats{display:grid;gap:4px;padding-block:8px}.bb-cat{display:grid;grid-template-columns:1fr 90px 40px;align-items:center;gap:10px;border:none;background:none;font:inherit;color:var(--ink);padding:8px 0;cursor:pointer;text-align:start}
+.bb-cat i{height:8px;border-radius:8px;background:var(--line);overflow:hidden}.bb-cat em{display:block;height:100%;background:var(--ok,#0D6657);border-radius:8px}.bb-cat small{text-align:end;opacity:.75}
+.bb-off{background:rgba(13,102,87,.07)}.bb-rec{display:flex;gap:8px;flex-wrap:wrap}.bb-rec .btn{width:auto;margin:0}.bb-add{display:grid;gap:10px;margin-top:10px}
+#bb-play{position:fixed;inset:0;z-index:99990;background:radial-gradient(circle at 50% 30%,#FFF8E6,#FCE3C2 70%,#F9D3A6);color:#3A2A08;display:flex;flex-direction:column;user-select:none;-webkit-user-select:none;touch-action:manipulation;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bb-top{display:flex;align-items:center;gap:12px;padding:12px 14px}.bb-name{font-weight:800;font-size:18px;color:#B4501F}.bb-bar{flex:1;height:8px;border-radius:8px;background:rgba(0,0,0,.08);overflow:hidden}.bb-bar i{display:block;height:100%;width:0;background:#7BB661;transition:width 1s linear}
+.bb-x{position:relative;width:44px;height:44px;border:none;background:none;cursor:pointer;font:inherit;color:#7a5a30;font-size:16px}.bb-x svg{position:absolute;inset:0;transform:rotate(-90deg)}.bb-x circle{fill:rgba(255,255,255,.6);stroke:#B4501F;stroke-width:3;stroke-dasharray:101;stroke-dashoffset:101}
+.bb-x.hold circle{transition:stroke-dashoffset 1.5s linear;stroke-dashoffset:0}.bb-x span{position:relative}
+.bb-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:10px 16px;text-align:center;overflow:auto}
+.bb-card{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:240px;max-width:92vw;padding:26px 24px;border:none;border-radius:34px;background:#fff;box-shadow:0 18px 40px rgba(180,80,31,.18);font:inherit;color:inherit;cursor:pointer}
+.bb-card b{font-size:30px;color:#B4501F}.bb-card .ar{font-size:30px;font-family:var(--f-ar)}.bb-card small{font-size:14px;opacity:.8;max-width:300px}
+.bb-em{line-height:1.1}.bb-gl{font-family:var(--f-ar);line-height:1.15;color:#0D6657;font-weight:700}.bb-num{font-family:inherit;display:flex;align-items:baseline;gap:18px}.bb-num small{font-family:var(--f-ar);font-size:.6em;opacity:.7}
+.bb-par{font-size:34px!important;color:#0D6657;line-height:1.8}
+.bb-pop{animation:bb-pop .45s cubic-bezier(.3,1.6,.5,1)}@keyframes bb-pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.bb-next{width:74px;height:74px;border-radius:50%;border:none;background:#7BB661;color:#fff;font-size:34px;cursor:pointer;box-shadow:0 8px 18px rgba(80,140,60,.35);animation:bb-pop .4s .3s both}
+.bb-cover{position:relative;min-height:260px;justify-content:center}.bb-veil{position:absolute;inset:0;display:grid;place-items:center;font-size:110px;background:#FFD27A;border-radius:34px;transition:transform .6s cubic-bezier(.5,-.3,.5,1.3)}
+.bb-cover.open .bb-veil{transform:translateY(-110%) rotate(-8deg)}.bb-hid{display:flex;flex-direction:column;align-items:center;gap:8px}
+.bb-q{font-size:28px;font-weight:800;color:#B4501F;margin:0}.bb-opts{display:grid;gap:14px;width:100%;max-width:440px}.bb-opts.n2{grid-template-columns:1fr 1fr}.bb-opts.n3,.bb-opts.n4{grid-template-columns:1fr 1fr}
+.bb-opt{aspect-ratio:1;display:grid;place-items:center;border:none;border-radius:28px;background:#fff;box-shadow:0 10px 24px rgba(180,80,31,.15);cursor:pointer;font:inherit;transition:transform .15s}
+.bb-opt:active{transform:scale(.95)}.bb-opt.ok{background:#DFF3D2;box-shadow:0 0 0 6px #7BB661;animation:bb-yes .6s}.bb-opt.no{animation:bb-no .45s}.bb-opt.hint{animation:bb-hint 1s infinite}
+@keyframes bb-yes{40%{transform:scale(1.12)}}@keyframes bb-no{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}@keyframes bb-hint{50%{box-shadow:0 0 0 8px rgba(242,182,50,.7)}}
+.bb-cnt{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:420px}.bb-ci{position:relative;width:84px;height:84px;border:none;border-radius:24px;background:#fff;font-size:52px;cursor:pointer;box-shadow:0 8px 18px rgba(180,80,31,.15)}
+.bb-ci.done{background:#DFF3D2;transform:scale(.92)}.bb-ci.done::after{content:attr(data-n);position:absolute;top:-8px;right:-8px;width:30px;height:30px;border-radius:50%;background:#B4501F;color:#fff;font-size:17px;font-weight:800;display:grid;place-items:center}
+.bb-cn{font-size:64px;font-weight:800;color:#B4501F;min-height:80px}.bb-cn .ar{font-family:var(--f-ar);opacity:.7;margin-inline-start:12px}
+.bb-stars{position:absolute;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));font-size:22px;display:flex;flex-wrap:wrap;max-width:60%}
+.bb-burst{position:fixed;left:50%;top:45%;pointer-events:none}.bb-burst i{position:absolute;font-size:36px;font-style:normal;animation:bb-fly 1.1s ease-out forwards;transform:rotate(var(--a))}
+@keyframes bb-fly{to{transform:rotate(var(--a)) translateY(-160px) scale(.4);opacity:0}}
+.bb-end h2{font-size:30px;color:#B4501F;margin:6px 0}.bb-endstars{font-size:28px;margin:0}.bb-off2{background:#fff;border-radius:18px;padding:14px;font-size:16px;line-height:1.5;max-width:380px}
+</style>`);
+
 // Police arabe à voyelles bien placées (Noto Naskh Arabic, licence OFL)
 (function(){
   const U=NATIVE?"https://amodgroup031-cloud.github.io/djamillah-hayat-web/fonts/noto-naskh/NotoNaskhArabic.ttf":"fonts/noto-naskh/NotoNaskhArabic.ttf";
@@ -6171,7 +6564,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.44";
+var DJH_BOOTV="1.0.45";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
