@@ -1492,7 +1492,7 @@ const WBW={"L04": [[36, 27, 2, "غَفَرَ"], [36, 36, 3, "خَلَقَ"], [36
 const CAP = window.Capacitor;
 const NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const PL = (NATIVE && CAP.Plugins) || {};
-const APP_VERSION = "1.0.49";
+const APP_VERSION = "1.0.50";
 // Toujours le thème clair, même si le téléphone est en mode sombre
 document.documentElement.setAttribute("data-theme","light");
 
@@ -6274,7 +6274,7 @@ const BB_IKHLAS="قُلْ هُوَ اللَّهُ أَحَدٌ";
 const bbIntro=k=>bbCfg(k).lang==="ar"?["هَيَّا نَلْعَبُ مَعًا",AR]:["On va jouer ensemble !",FR];
 async function bbSay(k,parts){
   // le prénom n'est prononcé qu'une seule fois, au début du jeu
-  if(BB){if(!BB.named){BB.named=1;parts=["N",bbIntro(k),...parts.filter(p=>p!=="N")]}else parts=parts.filter(p=>p!=="N")}
+  if(BB){if(!BB.named){BB.named=1;parts=["N",...parts.filter(p=>p!=="N")]}else parts=parts.filter(p=>p!=="N")}
   voxStop(); const g=voxGen;
   for(const p of parts){
     if(g!==voxGen) return;
@@ -6452,9 +6452,9 @@ function bbImg(s){const k=BB.k,w=s.w;
 }
 function bbCou(s){const k=BB.k,w=s.w;
   bbStageEl().innerHTML=`<button class="bb-card bb-cover" data-bbuncover><span class="bb-veil">🙈</span><div class="bb-hid">${bbPic(w,150)}<b>${bbCap(w[4])}</b></div></button>`;
-  bbLoop(k,bbCfg(k).lang==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[[bbOu(w),FR]],null,3200);
+  bbLoop(k,bbWordParts(k,w,true),null,3200);
   BB.say=()=>{const c=bbStageEl().querySelector(".bb-cover"),P=bbWordParts(k,w,true);if(!c||c.classList.contains("open"))return bbLoop(k,P);
-    c.classList.add("open");bbSeen(k,w[0]);bbLoop(k,[["Coucou !",FR],...P],P);
+    c.classList.add("open");bbSeen(k,w[0]);bbLoop(k,P);
     bbStageEl().insertAdjacentHTML("beforeend",bbNav())};
 }
 function bbShow(s){const k=BB.k,w=s.w,n=Math.max(2,bbChoices(k)||2);
@@ -6463,23 +6463,23 @@ function bbShow(s){const k=BB.k,w=s.w,n=Math.max(2,bbChoices(k)||2);
   bbStageEl().innerHTML=`<p class="bb-q">${bbCap(w[4])} ?</p><div class="bb-opts n${opts.length}">${opts.map(o=>`<button class="bb-opt" data-bbopt="${o[0]}">${bbPic(o,opts.length>2?90:120)}</button>`).join("")}</div>`;
   BB.target=w;
   const L=bbCfg(k).lang;
-  BB.ask=L==="ar"?[["أَيْنَ "+w[5]+"؟",AR]]:[["Montre-moi "+w[4]+" !",FR],...(L==="both"?[[w[5],AR]]:[])];
+  BB.ask=bbWordParts(k,w,true);
   BB.say=()=>bbLoop(k,BB.ask,null,3500);
   BB.say();
 }
 function bbPick(key,btn){const k=BB.k,w=BB.target;if(!w||BB.lock)return;
   if(key===w[0]){BB.lock=1;bbAnswer(k,w[0],!BB.miss);btn.classList.add("ok");bbStar();
-    bbStop();bbSay(k,[...bbBravo(k),...bbWordParts(k,w,false)]).then(()=>{});setTimeout(()=>{BB&&(BB.lock=0,bbNext())},2600)}
+    bbStop();bbSay(k,bbWordParts(k,w,false));setTimeout(()=>{BB&&(BB.lock=0,bbNext())},2600)}
   else{BB.miss++;btn.classList.remove("no");void btn.offsetWidth;btn.classList.add("no");
     const o=BBW.find(x=>x[0]===key),L=bbCfg(k).lang;
     if(BB.miss>=2){const c=bbStageEl().querySelector(`[data-bbopt="${w[0]}"]`);c&&c.classList.add("hint")}
-    bbLoop(k,L==="ar"?[[o[5],AR],["أَيْنَ "+w[5]+"؟",AR]]:[["Ça, c'est "+o[4]+".",FR],["Montre-moi "+w[4]+" !",FR]],BB.ask,3500)}
+    bbLoop(k,BB.ask,null,3500)}
 }
 function bbCnt(){const k=BB.k,st=bbStage(bbMonths(k.birth)),max=st.cnt||3;
   const N=1+Math.floor(Math.random()*Math.min(max,BB.i<2?3:max)),w=bbShuffle(BBW.filter(x=>(x[1]==="nou"||x[1]==="ani")&&x[3][0]!=="#"))[0];
   BB.cnt={N,c:0,w};
   bbStageEl().innerHTML=`<p class="bb-q">On compte ensemble !</p><div class="bb-cnt">${Array.from({length:N},(_,i)=>`<button class="bb-ci" data-bbci="${i}">${w[3]}</button>`).join("")}</div><div class="bb-cn"></div>`;
-  bbSay(k,[[bbCfg(k).lang==="ar"?"هَيَّا نَعُدُّ":"On compte ensemble ! Touche chaque image.",bbCfg(k).lang==="ar"?AR:FR]]);
+  bbSay(k,[]);
   BB.say=()=>{};
 }
 function bbCount(btn){const C=BB.cnt,k=BB.k;if(!C||btn.classList.contains("done"))return;
@@ -6487,14 +6487,14 @@ function bbCount(btn){const C=BB.cnt,k=BB.k;if(!C||btn.classList.contains("done"
   bbStageEl().querySelector(".bb-cn").innerHTML=`<b>${C.c}</b> <span class="ar">${String(C.c).split("").map(x=>BBAD[x]).join("")}</span>`;
   if(C.c<C.N){bbSay(k,[L==="ar"?[a,AR]:[bbCap(f)+" !",FR]]);return}
   bbStar();bbAnswer(k,"n"+C.N,true);
-  bbSay(k,[L==="ar"?[a,AR]:[bbCap(f)+" !",FR],...(L==="both"?[[a,AR]]:[]),...bbBravo(k)]);
+  bbSay(k,[L==="ar"?[a,AR]:[bbCap(f)+" !",FR],...(L==="both"?[[a,AR]]:[])]);
   setTimeout(()=>{BB&&bbStageEl().insertAdjacentHTML("beforeend",bbNav())},900);
 }
 function bbPar(s){const k=BB.k,p=s.p,L=bbCfg(k).lang;
   bbStageEl().innerHTML=`<button class="bb-card bb-pop" data-bbsay><span class="bb-em" style="font-size:96px">${p[2]}</span><span class="ar bb-par">${p[3]}</span><b>${p[4]}</b><small>${p[5]}</small></button>${bbNav()}`;
   bbSeen(k,"p_"+p[0]);
   BB.say=()=>bbLoop(k,[[p[3],AR]],null,3000);
-  bbLoop(k,[[L==="ar"?(bbFem(k)?"قُولِي مَعِي":"قُلْ مَعِي"):"Répète avec moi :",L==="ar"?AR:FR],[p[3],AR]],[[p[3],AR]],3000);
+  bbLoop(k,[[p[3],AR]],null,3000);
 }
 function bbStar(){if(!BB)return;BB.stars++;const s=document.querySelector("#bb-play .bb-stars");if(!s)return;
   s.insertAdjacentHTML("beforeend","<i>⭐</i>");const b=document.createElement("div");b.className="bb-burst";b.innerHTML="⭐🌟✨⭐🌟".split("").filter(x=>x.trim()).map((x,i)=>`<i style="--a:${i*72}deg">${x}</i>`).join("");document.getElementById("bb-play").appendChild(b);setTimeout(()=>b.remove(),1200);
@@ -6504,8 +6504,7 @@ function bbEnd(limit){if(!BB)return;const k=BB.k;BB.steps=[];BB.target=null;BB.o
   bbStageEl().innerHTML=`<div class="bb-end"><span class="bb-em" style="font-size:90px">${limit?"🌙":"🏆"}</span><h2>${limit?"C'est fini pour aujourd'hui !":"Bravo "+esc(k.name)+" !"}</h2>
    ${BB.stars?`<p class="bb-endstars">${"⭐".repeat(Math.min(BB.stars,10))}</p>`:""}<p>${limit?"Le temps d'écran du jour est terminé. On joue maintenant ensemble, sans écran :":"Maintenant, continuez sans écran :"}</p><p class="bb-off2">🌿 ${off}</p>
    <p class="note">Pour quitter : maintenez le bouton ✕ en haut.</p></div>`;
-  if(limit) bbSay(k,[["Bravo !",FR],["C'est fini pour aujourd'hui. Maintenant, on joue avec papa et maman !",FR]]);
-  else bbSay(k,[...bbBravo(k)]);
+  voxStop();
 }
 // quitter : maintenir 1,5 s (les petits doigts ne sortent pas par erreur)
 let bbHold=null;
@@ -6613,7 +6612,7 @@ if(S.tab==="challenges"){S.tab="more";S.sub="challenges"}
 render();
 </script>
 <script>
-var DJH_BOOTV="1.0.49";
+var DJH_BOOTV="1.0.50";
 (function(){
  var A=document.getElementById("djh-app");window.DJH_BOOTV=DJH_BOOTV;
  function cmp(a,b){a=String(a).split(".").map(Number);b=String(b).split(".").map(Number);for(var i=0;i<3;i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
